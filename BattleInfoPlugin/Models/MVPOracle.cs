@@ -59,9 +59,9 @@ namespace BattleInfoPlugin.Models
 
 		public MVPOracle Initialize(params FleetData[] shipDatas)
 		{
-			this.AliasDamages = new DamageContainer[13]; // dummy + 6 + 6
+			this.AliasDamages = new DamageContainer[12]; // 6 + 6
 			for (var i = 0; i < this.AliasDamages.Length; i++)
-				this.AliasDamages[i].Index = i;
+				this.AliasDamages[i].Index = i + 1;
 
 			this.shipData = shipDatas.Where(x => x != null)
 				.Select(x => x.Ships)
@@ -196,12 +196,12 @@ namespace BattleInfoPlugin.Models
 			if (data.api_opening_taisen != null)
 			{
 				var src = data.api_opening_taisen;
-				for (int i = 1; i < src.api_at_list.Length; i++)
-				{
-					var from = src.api_at_list[i];
-					if (!isCombined && from > 6) continue;
+                for (int i = 0; i < src.api_damage.Length; i++)
+                {
+                    var from = src.api_at_list[i];
+                    if (!isCombined && src.api_at_eflag[i] == 1) continue; // from enemy
 
-					var dmg = (src.api_damage[i] is Array)
+                    var dmg = (src.api_damage[i] is Array)
 						? (src.api_damage[i] as object[]).Select(Convert.ToInt32).Sum(x => (int)x)
 						: (int)src.api_damage[i];
 
@@ -223,12 +223,12 @@ namespace BattleInfoPlugin.Models
 			if (data.api_hougeki != null)
 			{
 				var src = data.api_hougeki;
-				for (int i = 1; i < src.api_at_list.Length; i++)
-				{
-					var from = src.api_at_list[i];
-					if (!isCombined && from > 6) continue;
+                for (int i = 0; i < src.api_damage.Length; i++)
+                {
+                    var from = src.api_at_list[i];
+                    if (!isCombined && src.api_at_eflag[i] == 1) continue; // from enemy
 
-					var dmg = (src.api_damage[i] is Array)
+                    var dmg = (src.api_damage[i] is Array)
 						? (src.api_damage[i] as object[]).Select(Convert.ToInt32).Sum(x => (int)x)
 						: (int)src.api_damage[i];
 
@@ -241,12 +241,12 @@ namespace BattleInfoPlugin.Models
 			if (data.api_hougeki1 != null)
 			{
 				var src = data.api_hougeki1;
-				for (int i = 1; i < src.api_at_list.Length; i++)
+				for (int i = 0; i < src.api_damage.Length; i++)
 				{
 					var from = src.api_at_list[i];
-					if (!isCombined && from > 6) continue;
+                    if (!isCombined && src.api_at_eflag[i] == 1) continue; // from enemy
 
-					var dmg = (src.api_damage[i] is Array)
+                    var dmg = (src.api_damage[i] is Array)
 						? (src.api_damage[i] as object[]).Select(Convert.ToInt32).Sum(x => (int)x)
 						: (int)src.api_damage[i];
 
@@ -259,12 +259,12 @@ namespace BattleInfoPlugin.Models
 			if (data.api_hougeki2 != null)
 			{
 				var src = data.api_hougeki2;
-				for (int i = 1; i < src.api_at_list.Length; i++)
-				{
-					var from = src.api_at_list[i];
-					if (!isCombined && from > 6) continue;
+                for (int i = 0; i < src.api_damage.Length; i++)
+                {
+                    var from = src.api_at_list[i];
+                    if (!isCombined && src.api_at_eflag[i] == 1) continue; // from enemy
 
-					var dmg = (src.api_damage[i] is Array)
+                    var dmg = (src.api_damage[i] is Array)
 						? (src.api_damage[i] as object[]).Select(Convert.ToInt32).Sum(x => (int)x)
 						: (int)src.api_damage[i];
 
@@ -277,12 +277,12 @@ namespace BattleInfoPlugin.Models
 			if (data.api_hougeki3 != null)
 			{
 				var src = data.api_hougeki3;
-				for (int i = 1; i < src.api_at_list.Length; i++)
-				{
-					var from = src.api_at_list[i];
-					if (!isCombined && from > 6) continue;
+                for (int i = 0; i < src.api_damage.Length; i++)
+                {
+                    var from = src.api_at_list[i];
+                    if (!isCombined && src.api_at_eflag[i] == 1) continue; // from enemy
 
-					var dmg = (src.api_damage[i] is Array)
+                    var dmg = (src.api_damage[i] is Array)
 						? (src.api_damage[i] as object[]).Select(Convert.ToInt32).Sum(x => (int)x)
 						: (int)src.api_damage[i];
 
@@ -300,11 +300,11 @@ namespace BattleInfoPlugin.Models
 			}
 			#endregion
 
-			this.MVP1 = this.AliasDamages.Where((x, y) => (y >= 1 && y <= 6))
+			this.MVP1 = this.AliasDamages.Where((x, y) => (y >= 0 && y < 6))
 				.OrderByDescending(x => x.GetTotal())
 				.FirstOrDefault().Index;
 
-			this.MVP2 = this.AliasDamages.Where((x, y) => (y >= 7 && y <= 12))
+			this.MVP2 = this.AliasDamages.Where((x, y) => (y >= 6 && y < 12))
 				.OrderByDescending(x => x.GetTotal())
 				.FirstOrDefault().Index;
 			return this;
