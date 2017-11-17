@@ -28,11 +28,11 @@ namespace BattleInfoPlugin.Models.Raw
 
 		#region 포격전
 		public static FleetDamages GetFriendDamages(this Hougeki hougeki)
-			=> hougeki?.api_damage?.GetFriendDamages(hougeki.api_df_list)
+			=> hougeki?.api_damage?.GetFriendDamages(hougeki.api_df_list, hougeki.api_at_eflag)
 			   ?? defaultValue;
 
 		public static FleetDamages GetEnemyDamages(this Hougeki hougeki)
-			=> hougeki?.api_damage?.GetEnemyDamages(hougeki.api_df_list)
+			=> hougeki?.api_damage?.GetEnemyDamages(hougeki.api_df_list, hougeki.api_at_eflag)
 			   ?? defaultValue;
 
 		public static FleetDamages GetEachFirstFriendDamages(this Hougeki hougeki)
@@ -53,11 +53,11 @@ namespace BattleInfoPlugin.Models.Raw
 
 		#region 야전
 		public static FleetDamages GetFriendDamages(this Midnight_Hougeki hougeki)
-			=> hougeki?.api_damage?.GetFriendDamages(hougeki.api_df_list)
+			=> hougeki?.api_damage?.GetFriendDamages(hougeki.api_df_list, hougeki.api_at_eflag)
 			   ?? defaultValue;
 
 		public static FleetDamages GetEnemyDamages(this Midnight_Hougeki hougeki)
-			=> hougeki?.api_damage?.GetEnemyDamages(hougeki.api_df_list)
+			=> hougeki?.api_damage?.GetEnemyDamages(hougeki.api_df_list, hougeki.api_at_eflag)
 			   ?? defaultValue;
 		#endregion
 
@@ -166,6 +166,7 @@ namespace BattleInfoPlugin.Models.Raw
 		#endregion
 
 		#region 데미지 계산 공통
+
 		/// <summary>
 		/// 12項目中先頭6項目取得
 		/// </summary>
@@ -173,7 +174,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="source"></param>
 		/// <param name="origin">ゴミ-1が付いてる場合1オリジン</param>
 		/// <returns></returns>
-		public static IEnumerable<T> GetFriendData<T>(this IEnumerable<T> source, int origin = 1)
+		public static IEnumerable<T> GetFriendData<T>(this IEnumerable<T> source, int origin = 0)
 			=> source.Skip(origin).Take(6);
 
 		/// <summary>
@@ -183,7 +184,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="source"></param>
 		/// <param name="origin">ゴミ-1が付いてる場合1オリジン</param>
 		/// <returns></returns>
-		public static IEnumerable<T> GetEnemyData<T>(this IEnumerable<T> source, int origin = 1)
+		public static IEnumerable<T> GetEnemyData<T>(this IEnumerable<T> source, int origin = 0)
 			=> source.Skip(origin + 6).Take(6);
 
 		/// <summary>
@@ -193,7 +194,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="source"></param>
 		/// <param name="origin">ゴミ-1が付いてる場合1オリジン</param>
 		/// <returns></returns>
-		public static IEnumerable<T> GetEachFriendData<T>(this IEnumerable<T> source, int origin = 1)
+		public static IEnumerable<T> GetEachFriendData<T>(this IEnumerable<T> source, int origin = 0)
 			=> source.Skip(origin).Take(6);
 
 		/// <summary>
@@ -203,7 +204,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="source"></param>
 		/// <param name="origin">ゴミ-1が付いてる場合1オリジン</param>
 		/// <returns></returns>
-		public static IEnumerable<T> GetEachEnemyData<T>(this IEnumerable<T> source, int origin = 1)
+		public static IEnumerable<T> GetEachEnemyData<T>(this IEnumerable<T> source, int origin = 0)
 			=> source.Skip(origin + 12).Take(6);
 
 		/// <summary>
@@ -225,7 +226,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <returns></returns>
 		public static FleetDamages GetEachDamages(this decimal[] damages, bool IsSecond = false)
 			=> damages
-				.GetFriendData(IsSecond ? 7 : 1) //敵味方共通
+				.GetFriendData(IsSecond ? 6 : 0) //敵味方共通
 				.Select(Convert.ToInt32)
 				.ToArray()
 				.ToFleetDamages();
@@ -237,11 +238,12 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="damages">api_damage</param>
 		/// <param name="df_list">api_df_list</param>
 		/// <returns></returns>
-		public static FleetDamages GetFriendDamages(this object[] damages, object[] df_list)
+		public static FleetDamages GetFriendDamages(this object[] damages, object[] df_list, int[] eflag)
 			=> damages
-				.ToIntArray()
-				.ToSortedDamages(df_list.ToIntArray())
-				.GetFriendData(0)
+                // .ToIntArray()
+                .ToIntArray2()
+                .ToSortedDamages(df_list.ToIntArray2(), eflag, 1) // 아군이 쏘는게 아니라 적군이 쏘는거니까 1
+				// .GetFriendData(0)
 				.ToFleetDamages();
 
 		/// <summary>
@@ -250,12 +252,13 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <param name="damages">api_damage</param>
 		/// <param name="df_list">api_df_list</param>
 		/// <returns></returns>
-		public static FleetDamages GetEnemyDamages(this object[] damages, object[] df_list)
+		public static FleetDamages GetEnemyDamages(this object[] damages, object[] df_list, int[] eflag)
 			=> damages
-				.ToIntArray()
-				.ToSortedDamages(df_list.ToIntArray())
-				.GetEnemyData(0)
-				.ToFleetDamages();
+                // .ToIntArray()
+                .ToIntArray2()
+                .ToSortedDamages(df_list.ToIntArray2(), eflag, 0) // 적군이 쏘는게 아니라 아군이 쏘는거니까 0
+                // .GetEnemyData(0)
+                .ToFleetDamages();
 
 		/// <summary>
 		/// 심해연합함대와의 포격/지원 데미지 리스트 산출
@@ -265,8 +268,9 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <returns></returns>
 		public static FleetDamages GetEachFriendDamages(this object[] damages, object[] df_list, int[] at_eflag, bool IsSecond = false)
 			=> damages
-				.ToSortedDamages(df_list, at_eflag)
-				.GetEachFriendData(IsSecond ? 6 : 0)
+                .ToIntArray2()
+                .ToSortedDamages(df_list.ToIntArray2(), at_eflag, 1)
+				// .GetEachFriendData(IsSecond ? 6 : 0)
 				.ToFleetDamages();
 
 		/// <summary>
@@ -277,8 +281,9 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <returns></returns>
 		public static FleetDamages GetEachEnemyDamages(this object[] damages, object[] df_list, int[] at_eflag, bool IsSecond = false)
 			=> damages
-				.ToSortedDamages(df_list, at_eflag)
-				.GetEachEnemyData(IsSecond ? 6 : 0)
+                .ToIntArray2()
+                .ToSortedDamages(df_list.ToIntArray2(), at_eflag, 0)
+				// .GetEachEnemyData(IsSecond ? 6 : 0)
 				.ToFleetDamages();
 
 		/// <summary>
@@ -295,32 +300,49 @@ namespace BattleInfoPlugin.Models.Raw
 				.SelectMany(x => x.Select(Convert.ToInt32))
 				.ToArray();
 
-		/// <summary>
-		/// フラット化したapi_damageとapi_df_listを元に
-		/// 自軍6隻＋敵軍6隻の長さ12のダメージ合計配列を作成
-		/// </summary>
-		/// <param name="damages">api_damage</param>
-		/// <param name="dfList">api_df_list</param>
-		/// <returns></returns>
-		private static int[] ToSortedDamages(this int[] damages, int[] dfList)
-		{
-			var zip = damages.Zip(dfList, (da, df) => new {df, da});
-			var ret = new int[12];
-			foreach (var d in zip.Where(d => 0 < d.df))
-			{
-				ret[d.df - 1] += d.da;
-			}
-			return ret;
+        private static int[][] ToIntArray2(this object[] damages)
+            => damages
+                .Where(x => x is Array)
+                .Select(x => ((Array)x).Cast<object>())
+                .Select(x => x.Select(Convert.ToInt32).ToArray())
+                .ToArray();
+
+        /// <summary>
+        /// フラット化したapi_damageとapi_df_listを元に
+        /// 自軍6隻＋敵軍6隻の長さ12のダメージ合計配列を作成
+        /// </summary>
+        /// <param name="damages">api_damage</param>
+        /// <param name="dfList">api_df_list</param>
+        /// <returns></returns>
+        private static int[] ToSortedDamages(this int[][] damages, int[][] dfList, int[] _eflag, int target)
+        {
+            var zip = damages
+                .Zip(
+                    dfList,
+                    (_da, _df)
+                        => _da.Zip(
+                            _df,
+                            (da, df) => new { df, da }
+                        )
+                )
+                .Zip(_eflag, (data, eflag) => new { data, eflag });
+
+            var ret = new int[6];
+            foreach (var da in zip.Where(x => x.eflag == target))
+                foreach (var d in da.data)
+                    ret[d.df] += d.da;
+
+            return ret;
 		}
 
-		/// <summary>
-		/// フラット化したapi_damageとapi_df_listを元に
-		/// 自軍12隻＋敵軍12隻の長さ24のダメージ合計配列を作成
-		/// </summary>
-		/// <param name="damages">api_damage</param>
-		/// <param name="dfList">api_df_list</param>
-		/// <returns></returns>
-		private static int[] ToSortedDamages(this object[] damages, object[] dfList, int[] at_eflag)
+        /// <summary>
+        /// フラット化したapi_damageとapi_df_listを元に
+        /// 自軍12隻＋敵軍12隻の長さ24のダメージ合計配列を作成
+        /// </summary>
+        /// <param name="damages">api_damage</param>
+        /// <param name="dfList">api_df_list</param>
+        /// <returns></returns>
+        private static int[] ToSortedDamages(this object[] damages, object[] dfList, int[] at_eflag)
 		{
 			var zip = damages.Zip(dfList, (da, df) => new { df, da })
 				.Zip(at_eflag, (dl, ef) => new { ef, dl.df, dl.da });

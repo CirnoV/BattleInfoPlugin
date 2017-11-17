@@ -564,9 +564,9 @@ namespace BattleInfoPlugin.Models
 					break;
 			}
 
-			this.UpdateFleets(data.api_dock_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps);
-			this.UpdateNowHP(data.api_nowhps);
+			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
 			this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 			this.UpdateUsedFlag(data.api_support_info);
@@ -651,10 +651,10 @@ namespace BattleInfoPlugin.Models
 			int EnemyBeforedayBattle = this.Enemies.Ships.Sum(x => x.BeforeNowHP);
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps);
-			this.UpdateNowHP(data.api_nowhps);
+            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
-			this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
+            this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
 
 			if (apiType == ApiTypes.battle_midnight_sp_midnight)
 				mvpOracle.Initialize(this.FirstFleet, this.SecondFleet);
@@ -699,11 +699,11 @@ namespace BattleInfoPlugin.Models
 					break;
 			}
 
-			this.UpdateFleets(data.api_dock_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps);
-			this.UpdateNowHP(data.api_nowhps);
+			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
+            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
-			this.UpdateUsedFlag(data.api_support_info);
+            this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data);
 			UpdateMVP(mvpOracle.MVP1, mvpOracle.MVP2);
@@ -757,10 +757,10 @@ namespace BattleInfoPlugin.Models
 			}
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps, data.api_maxhps_combined);
-			this.UpdateNowHP(data.api_nowhps, data.api_nowhps_combined);
+            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-			this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
+            this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 			this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
@@ -840,10 +840,10 @@ namespace BattleInfoPlugin.Models
 			}
 
 			this.UpdateFleetsCombinedEnemy(data.api_deck_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps, data.api_maxhps_combined);
-			this.UpdateNowHP(data.api_nowhps, data.api_nowhps_combined);
+            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-			this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
+            this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 			this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet)
@@ -1019,10 +1019,10 @@ namespace BattleInfoPlugin.Models
 			}
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-			this.UpdateMaxHP(data.api_maxhps, data.api_maxhps_combined);
-			this.UpdateNowHP(data.api_nowhps, data.api_nowhps_combined);
+            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
+            mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
 			UpdateMVP(mvpOracle.MVP1, mvpOracle.MVP2);
 
 			this.UpdateUsedFlag(data.api_support_info);
@@ -1097,8 +1097,8 @@ namespace BattleInfoPlugin.Models
 			if (apiType == ApiTypes.combined_battle_sp_midnight)
 			{
 				this.UpdateFleets(data.api_deck_id, data);
-				this.UpdateMaxHP(data.api_maxhps, data.api_maxhps_combined);
-				this.UpdateNowHP(data.api_nowhps, data.api_nowhps_combined);
+				this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+				this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 			}
 
 			this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
@@ -1139,8 +1139,8 @@ namespace BattleInfoPlugin.Models
 			EnemyBeforedayBattle += this.SecondEnemies.Ships.Sum(x => x.BeforeNowHP);
 
 			this.UpdateFleetsCombinedEnemy(data.api_deck_id, data);
-			this.UpdateEnemyMaxHP(data.api_maxhps, data.api_maxhps_combined);
-			this.UpdateNowHP(data.api_nowhps, data.api_nowhps_combined);
+			this.UpdateEnemyMaxHP(data.api_e_maxhps, data.api_e_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
 			this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
 
@@ -1343,31 +1343,35 @@ namespace BattleInfoPlugin.Models
 			this.SecondFleet.TotalDamaged = secondTotal;
 		}
 
-		private void UpdateMaxHP(int[] api_maxhps, int[] api_maxhps_combined = null)
+		private void UpdateMaxHP(int[] api_f_maxhps, int[] api_e_maxhps, int[] api_f_maxhps_combined = null, int[] api_e_maxhps_combined = null)
 		{
-			this.FirstFleet.Ships.SetValues(api_maxhps.GetFriendData(), (s, v) => s.MaxHP = v);
-			this.Enemies.Ships.SetValues(api_maxhps.GetEnemyData(), (s, v) => s.MaxHP = v);
+			this.FirstFleet.Ships.SetValues(api_f_maxhps, (s, v) => s.MaxHP = v);
+			this.Enemies.Ships.SetValues(api_e_maxhps, (s, v) => s.MaxHP = v);
 
-			if (api_maxhps_combined == null) return;
-			this.SecondFleet.Ships.SetValues(api_maxhps_combined.GetFriendData(), (s, v) => s.MaxHP = v);
-			this.SecondEnemies.Ships.SetValues(api_maxhps_combined.GetEnemyData(), (s, v) => s.MaxHP = v);
+            if (api_f_maxhps_combined != null)
+                this.SecondFleet.Ships.SetValues(api_f_maxhps_combined, (s, v) => s.MaxHP = v);
+
+            if (api_e_maxhps_combined != null)
+                this.SecondEnemies.Ships.SetValues(api_e_maxhps_combined, (s, v) => s.MaxHP = v);
 		}
-		private void UpdateNowHP(int[] api_nowhps, int[] api_nowhps_combined = null)
-		{
-			this.FirstFleet.Ships.SetValues(api_nowhps.GetFriendData(), (s, v) => s.NowHP = s.BeforeNowHP = v);
-			this.Enemies.Ships.SetValues(api_nowhps.GetEnemyData(), (s, v) => s.NowHP = s.BeforeNowHP = v);
+		private void UpdateNowHP(int[] api_f_nowhps, int[] api_e_nowhps, int[] api_f_nowhps_combined = null, int[] api_e_nowhps_combined = null)
+        {
+			this.FirstFleet.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			this.Enemies.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
 
-			if (api_nowhps_combined == null) return;
-			this.SecondFleet.Ships.SetValues(api_nowhps_combined.GetFriendData(), (s, v) => s.NowHP = s.BeforeNowHP = v);
-			this.SecondEnemies.Ships.SetValues(api_nowhps_combined.GetEnemyData(), (s, v) => s.NowHP = s.BeforeNowHP = v);
+            if (api_f_nowhps_combined != null)
+                this.SecondFleet.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+
+            if (api_e_nowhps_combined != null)
+                this.SecondEnemies.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
 		}
 
 		private void UpdateEnemyMaxHP(int[] api_maxhps, int[] api_maxhps_combined = null)
 		{
-			this.Enemies.Ships.SetValues(api_maxhps.GetEnemyData(), (s, v) => s.MaxHP = v);
+			this.Enemies.Ships.SetValues(api_maxhps, (s, v) => s.MaxHP = v);
 
 			if (api_maxhps_combined == null) return;
-			this.SecondEnemies.Ships.SetValues(api_maxhps_combined.GetEnemyData(), (s, v) => s.MaxHP = v);
+			this.SecondEnemies.Ships.SetValues(api_maxhps_combined, (s, v) => s.MaxHP = v);
 		}
 
 		private void ResultClear(kcsapi_port port)

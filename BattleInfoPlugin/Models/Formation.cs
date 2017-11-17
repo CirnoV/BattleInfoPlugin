@@ -17,9 +17,11 @@ namespace BattleInfoPlugin.Models
 		윤형진 = 3,
 		[EnumMember]
 		제형진 = 4,
-		[EnumMember]
-		단횡진 = 5,
-		[EnumMember]
+        [EnumMember]
+        단횡진 = 5,
+        [EnumMember]
+        경계진 = 6,
+        [EnumMember]
 		대잠진형 = 11,
 		[EnumMember]
 		전방진형 = 12,

@@ -7,9 +7,11 @@ namespace BattleInfoPlugin.Models.Raw
 	{
 		int[] api_ship_ke { get; set; }
 		int[] api_ship_lv { get; set; }
-		int[] api_nowhps { get; set; }
-		int[] api_maxhps { get; set; }
-		int[][] api_eSlot { get; set; }
+        int[] api_f_nowhps { get; set; }
+        int[] api_f_maxhps { get; set; }
+        int[] api_e_nowhps { get; set; }
+        int[] api_e_maxhps { get; set; }
+        int[][] api_eSlot { get; set; }
 		int[][] api_eKyouka { get; set; }
 		int[][] api_fParam { get; set; }
 		int[][] api_eParam { get; set; }
@@ -24,7 +26,7 @@ namespace BattleInfoPlugin.Models.Raw
 				.Where(x => x != -1)
 				.Select((x, i) => new MastersShipData(master.Ships[x])
 				{
-					Level = data.api_ship_lv[i + 1],
+					Level = data.api_ship_lv[i],
 					Firepower = data.api_eParam[i][0],
 					Torpedo = data.api_eParam[i][1],
 					AA = data.api_eParam[i][2],

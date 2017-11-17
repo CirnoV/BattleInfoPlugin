@@ -80,7 +80,7 @@ namespace BattleInfoPlugin
 				data.api_eKyouka,
 				data.api_eParam,
 				data.api_ship_lv,
-				data.api_maxhps);
+				data.api_e_maxhps);
 			this.provider.UpdateBattleTypes(data);
 		}
 
