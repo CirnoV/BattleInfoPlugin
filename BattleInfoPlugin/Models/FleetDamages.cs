@@ -15,8 +15,9 @@ namespace BattleInfoPlugin.Models
 		public int Ship4 { get; set; }
 		public int Ship5 { get; set; }
 		public int Ship6 { get; set; }
+        public int Ship7 { get; set; }
 
-		public int[] ToArray()
+        public int[] ToArray()
 		{
 			return new[]
 			{
@@ -25,8 +26,9 @@ namespace BattleInfoPlugin.Models
 				this.Ship3,
 				this.Ship4,
 				this.Ship5,
-				this.Ship6,
-			};
+                this.Ship6,
+                this.Ship7,
+            };
 		}
 
 		public FleetDamages Add(FleetDamages value)
@@ -38,8 +40,9 @@ namespace BattleInfoPlugin.Models
 				this.Ship3 + value.Ship3,
 				this.Ship4 + value.Ship4,
 				this.Ship5 + value.Ship5,
-				this.Ship6 + value.Ship6,
-			});
+                this.Ship6 + value.Ship6,
+                this.Ship7 + value.Ship7,
+            });
 		}
 
 		public static FleetDamages Parse(IEnumerable<int> damages)
@@ -47,7 +50,7 @@ namespace BattleInfoPlugin.Models
 			if (damages == null) throw new ArgumentNullException();
 
 			var arr = damages.ToArray();
-            var dat = new int[6];
+            var dat = new int[7];
             for (var i = 0; i < arr.Length; i++)
                 dat[i] = arr[i];
 
@@ -60,8 +63,9 @@ namespace BattleInfoPlugin.Models
 				Ship3 = dat[2],
 				Ship4 = dat[3],
 				Ship5 = dat[4],
-				Ship6 = dat[5],
-			};
+                Ship6 = dat[5],
+                Ship7 = dat[6],
+            };
 		}
 	}
 

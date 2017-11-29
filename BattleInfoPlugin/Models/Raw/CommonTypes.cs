@@ -40,9 +40,9 @@
 
 	public class Api_Stage3
 	{
-		public int[] api_frai_flag { get; set; }
+		public int?[] api_frai_flag { get; set; }
 		public int[] api_erai_flag { get; set; }
-		public int[] api_fbak_flag { get; set; }
+		public int?[] api_fbak_flag { get; set; }
 		public int[] api_ebak_flag { get; set; }
 		public int[] api_fcl_flag { get; set; }
 		public int[] api_ecl_flag { get; set; }

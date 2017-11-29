@@ -214,7 +214,7 @@ namespace BattleInfoPlugin.Models.Raw
 		/// <returns></returns>
 		public static FleetDamages GetDamages(this decimal[] damages)
 			=> damages
-				.GetFriendData() //敵味方共通
+				// .GetFriendData() //敵味方共通
 				.Select(Convert.ToInt32)
 				.ToArray()
 				.ToFleetDamages();
@@ -327,7 +327,7 @@ namespace BattleInfoPlugin.Models.Raw
                 )
                 .Zip(_eflag, (data, eflag) => new { data, eflag });
 
-            var ret = new int[6];
+            var ret = new int[7];
             foreach (var da in zip.Where(x => x.eflag == target))
                 foreach (var d in da.data)
                     ret[d.df] += d.da;

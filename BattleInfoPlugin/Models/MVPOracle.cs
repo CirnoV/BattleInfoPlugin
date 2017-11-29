@@ -59,7 +59,7 @@ namespace BattleInfoPlugin.Models
 
 		public MVPOracle Initialize(params FleetData[] shipDatas)
 		{
-			this.AliasDamages = new DamageContainer[12]; // 6 + 6
+			this.AliasDamages = new DamageContainer[14]; // 7 + 7
 			for (var i = 0; i < this.AliasDamages.Length; i++)
 				this.AliasDamages[i].Index = i + 1;
 
