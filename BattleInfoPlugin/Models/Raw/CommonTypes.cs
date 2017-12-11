@@ -54,6 +54,9 @@
 	#region 지원함대
 	public class Api_Support_Info
 	{
+		public int api_support_flag { get; set; }
+		public int api_n_support_flag { get; set; }
+
 		public Api_Support_Airatack api_support_airatack { get; set; }
 		public Api_Support_Hourai api_support_hourai { get; set; }
 	}

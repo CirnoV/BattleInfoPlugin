@@ -16,7 +16,7 @@ namespace BattleInfoPlugin.ViewModels
 		private BattleData BattleData { get; } = new BattleData();
 
 		public string BattleName
-			=> this.BattleData?.Name ?? "";
+			=> this.BattleData?.BattleName ?? "";
 
 		public string UpdatedTime
 			=> this.BattleData != null && this.BattleData.UpdatedTime != default(DateTimeOffset)
@@ -318,7 +318,7 @@ namespace BattleInfoPlugin.ViewModels
                     (_, __) => this.RaisePropertyChanged(() => this.CurrentMap)
                 },
                 {
-                    nameof(this.BattleData.Name),
+                    nameof(this.BattleData.BattleName),
                     (_, __) => this.RaisePropertyChanged(nameof(this.BattleName))
                 },
                 {

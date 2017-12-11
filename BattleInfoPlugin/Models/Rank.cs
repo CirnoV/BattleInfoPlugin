@@ -18,6 +18,7 @@ namespace BattleInfoPlugin.Models
 		C패배 = 5,
 		D패배 = 6,
 		E패배 = 7,
+
 		공습전 = 8
 	}
 

@@ -29,24 +29,24 @@ namespace BattleInfoPlugin.Models
 	{
 		#region Properties
 
-		#region Name変更通知プロパティ
-		private string _Name;
+		#region BattleName 변경통지 프로퍼티
+		private string _BattleName;
 
-		public string Name
+		public string BattleName
 		{
 			get
-			{ return this._Name; }
+			{ return this._BattleName; }
 			set
 			{ 
-				if (this._Name == value)
+				if (this._BattleName == value)
 					return;
-				this._Name = value;
+				this._BattleName = value;
 				this.RaisePropertyChanged();
 			}
 		}
 		#endregion
 
-		#region UpdatedTime変更通知プロパティ
+		#region UpdatedTime 변경통지 프로퍼티
 		private DateTimeOffset _UpdatedTime;
 
 		public DateTimeOffset UpdatedTime
@@ -63,9 +63,9 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region CellEvent変更通知プロパティ
-		private int _CellEvent;
-		public int CellEvent
+		#region CellEvent 변경통지 프로퍼티
+		private CellType _CellEvent;
+		public CellType CellEvent
 		{
 			get { return this._CellEvent; }
 			set
@@ -79,39 +79,41 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Cells変更通知プロパティ
-		private List<CellData> _Cells;
-		public List<CellData> Cells
+
+		#region CurrentSortie 변경통지 프로퍼티
+		private SortieInfo _CurrentSortie;
+		public SortieInfo CurrentSortie
 		{
-			get { return this._Cells; }
+			get { return this._CurrentSortie; }
 			set
 			{
-				if (this._Cells != value)
+				if (this._CurrentSortie != value)
 				{
-					this._Cells = value;
+					this._CurrentSortie = value;
 					this.RaisePropertyChanged();
 				}
 			}
 		}
 		#endregion
 
-		#region CurrentMap変更通知プロパティ
-		private string _CurrentMap;
-		public string CurrentMap
+		#region CurrentBattleFlag 변경통지 프로퍼티
+		private BattleFlags _CurrentBattleFlag;
+		public BattleFlags CurrentBattleFlag
 		{
-			get { return this._CurrentMap; }
+			get { return this._CurrentBattleFlag; }
 			set
 			{
-				if (this._CurrentMap != value)
+				if (this._CurrentBattleFlag != value)
 				{
-					this._CurrentMap = value;
+					this._CurrentBattleFlag = value;
 					this.RaisePropertyChanged();
 				}
 			}
 		}
 		#endregion
 
-		#region BattleSituation変更通知プロパティ
+
+		#region BattleSituation 변경통지 프로퍼티
 
 		private BattleSituation _BattleSituation;
 
@@ -129,7 +131,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region FirstFleet変更通知プロパティ
+		#region FirstFleet 변경통지 프로퍼티
 		private FleetData _FirstFleet;
 
 		public FleetData FirstFleet
@@ -148,7 +150,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region SecondFleet変更通知プロパティ
+		#region SecondFleet 변경통지 프로퍼티
 		private FleetData _SecondFleet;
 
 		public FleetData SecondFleet
@@ -167,7 +169,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Enemies変更通知プロパティ
+		#region Enemies 변경통지 프로퍼티
 		private FleetData _Enemies;
 
 		public FleetData Enemies
@@ -185,7 +187,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region SecondEnemies変更通知プロパティ
+		#region SecondEnemies 변경통지 프로퍼티
 		private FleetData _SecondEnemies;
 
 		public FleetData SecondEnemies
@@ -203,7 +205,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region RankResult変更通知プロパティ
+		#region RankResult 변경통지 프로퍼티
 		private Rank _RankResult;
 
 		public Rank RankResult
@@ -220,7 +222,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region AirRankResult変更通知プロパティ
+		#region AirRankResult 변경통지 프로퍼티
 		private Rank _AirRankResult;
 
 		public Rank AirRankResult
@@ -236,7 +238,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region FriendAirSupremacy変更通知プロパティ
+		#region FriendAirSupremacy 변경통지 프로퍼티
 		private AirSupremacy _FriendAirSupremacy = AirSupremacy.항공전없음;
 
 		public AirSupremacy FriendAirSupremacy
@@ -253,7 +255,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region AirCombatResults変更通知プロパティ
+		#region AirCombatResults 변경통지 프로퍼티
 		private AirCombatResult[] _AirCombatResults = new AirCombatResult[0];
 
 		public AirCombatResult[] AirCombatResults
@@ -270,7 +272,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region DropShipName変更通知プロパティ
+		#region DropShipName 변경통지 프로퍼티
 		private string _DropShipName;
 
 		public string DropShipName
@@ -287,129 +289,19 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region FlareUsed変更通知プロパティ
-		private UsedFlag _FlareUsed;
-		public UsedFlag FlareUsed
-		{
-			get { return this._FlareUsed; }
-			set
-			{
-				if (this._FlareUsed != value)
-				{
-					this._FlareUsed = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
 		#endregion
 
-		#region NightReconScouted変更通知プロパティ
-		private UsedFlag _NightReconScouted;
-		public UsedFlag NightReconScouted
-		{
-			get { return this._NightReconScouted; }
-			set
-			{
-				if (this._NightReconScouted != value)
-				{
-					this._NightReconScouted = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-		#endregion
-
-		#region AntiAirFired変更通知プロパティ
-		private AirFireFlag _AntiAirFired;
-		public AirFireFlag AntiAirFired
-		{
-			get { return this._AntiAirFired; }
-			set
-			{
-				if (this._AntiAirFired != value)
-				{
-					this._AntiAirFired = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-
-		private string _AntiAirFiredDetail;
-		public string AntiAirFiredDetail
-		{
-			get { return this._AntiAirFiredDetail; }
-			set
-			{
-				if (this._AntiAirFiredDetail != value)
-				{
-					this._AntiAirFiredDetail = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-		#endregion
-
-		#region SupportUsed変更通知プロパティ
-		private UsedSupport _SupportUsed;
-		public UsedSupport SupportUsed
-		{
-			get { return this._SupportUsed; }
-			set
-			{
-				if (this._SupportUsed != value)
-				{
-					this._SupportUsed = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-		#endregion
-
-		#region MechanismOn変更通知プロパティ
-		private bool _MechanismOn;
-		public bool MechanismOn
-		{
-			get { return this._MechanismOn; }
-			set
-			{
-				if (this._MechanismOn != value)
-				{
-					this._MechanismOn = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-        #endregion
-
-        #region MapExtended変更通知プロパティ
-        private bool _MapExtended;
-        public bool MapExtended
-        {
-            get { return this._MapExtended; }
-            set
-            {
-                if (this._MapExtended != value)
-                {
-                    this._MechanismOn = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-        #endregion
-
-        #endregion
-
-        /// <summary>
-        /// MVP 추적기
-        /// </summary>
-        private MVPOracle mvpOracle { get; set; }
+		private MVPOracle mvpOracle { get; set; }
+		private MapDifficulty[] EventMapDifficulty = new MapDifficulty[10];
 
 		private int CurrentDeckId { get; set; }
 		private bool IsInSortie = false;
 
 		public BattleData()
 		{
-			this.Cells = new List<CellData>();
+			this.CurrentSortie = new SortieInfo();
+			this.CurrentBattleFlag = new BattleFlags();
+
 			this.mvpOracle = new MVPOracle();
 
 			var proxy = KanColleClient.Current.Proxy;
@@ -421,7 +313,7 @@ namespace BattleInfoPlugin.Models
 			proxy.ApiSessionSource.Where(x => x.Request.PathAndQuery == "/kcsapi/api_req_map/next")
 				.Subscribe(x => this.ProcessStartNext(x, true));
 
-			proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => this.ResultClear(x.Data));
+			proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => this.ReturnHomeport(x.Data));
 			#endregion
 
 			#region 통상 - 주간전 / 연습 - 주간전
@@ -540,14 +432,14 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.sortie_battle:
-					this.Name = "통상 - 주간전";
+					this.BattleName = "통상 - 주간전";
 					break;
 				case ApiTypes.practice_battle:
-					this.Name = "연습 - 주간전";
+					this.BattleName = "연습 - 주간전";
 
 					this.Clear();
 
-					this.CellEvent = (int)CellType.연습전;
+					this.CellEvent = CellType.연습전;
 					this.Cells.Clear();
 
 					this.Cells.ForEach(x => x.IsOld = true);
@@ -560,7 +452,7 @@ namespace BattleInfoPlugin.Models
 					});
 					this.RaisePropertyChanged(nameof(this.Cells));
 
-					this.CurrentMap = "";
+					this.CurrentSortie = "";
 					break;
 			}
 
@@ -635,13 +527,13 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.battle_midnight_battle:
-					this.Name = "통상 - 야전";
+					this.BattleName = "통상 - 야전";
 					break;
 				case ApiTypes.battle_midnight_sp_midnight:
-					this.Name = "통상 - 개막야전";
+					this.BattleName = "통상 - 개막야전";
 					break;
 				case ApiTypes.practice_midnight_battle:
-					this.Name = "연습 - 야전";
+					this.BattleName = "연습 - 야전";
 					break;
 			}
 
@@ -651,10 +543,10 @@ namespace BattleInfoPlugin.Models
 			int EnemyBeforedayBattle = this.Enemies.Ships.Sum(x => x.BeforeNowHP);
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
-            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
-            this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
+			this.UpdateUsedFlag(data.api_flare_pos, data.api_touch_plane);
 
 			if (apiType == ApiTypes.battle_midnight_sp_midnight)
 				mvpOracle.Initialize(this.FirstFleet, this.SecondFleet);
@@ -686,7 +578,7 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.sortie_airbattle:
-					this.Name = "항공전 - 주간전";
+					this.BattleName = "항공전 - 주간전";
 
 					this.UpdateUsedFlag(
 						data.api_kouku?.api_stage2?.api_air_fire,
@@ -694,16 +586,16 @@ namespace BattleInfoPlugin.Models
 					);
 					break;
 				case ApiTypes.sortie_ld_airbattle:
-					this.Name = "공습전 - 주간전";
+					this.BattleName = "공습전 - 주간전";
 					this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 					break;
 			}
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
-            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
-            this.UpdateUsedFlag(data.api_support_info);
+			this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data);
 			UpdateMVP(mvpOracle.MVP1, mvpOracle.MVP2);
@@ -749,18 +641,18 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.combined_battle_battle:
-					this.Name = "연합함대 - 기동부대 - 주간전";
+					this.BattleName = "연합함대 - 기동부대 - 주간전";
 					break;
 				case ApiTypes.combined_battle_battle_water:
-					this.Name = "연합함대 - 수상부대 - 주간전";
+					this.BattleName = "연합함대 - 수상부대 - 주간전";
 					break;
 			}
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
-            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-            this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
+			this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 			this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
@@ -829,21 +721,21 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.combined_battle_ec_battle:
-					this.Name = "심해연합 - 주간전";
+					this.BattleName = "심해연합 - 주간전";
 					break;
 				case ApiTypes.combined_battle_each_battle:
-					this.Name = "기동부대vs심해연합 - 주간전";
+					this.BattleName = "기동부대vs심해연합 - 주간전";
 					break;
 				case ApiTypes.combined_battle_each_battle_water:
-					this.Name = "수상부대vs심해연합 - 주간전";
+					this.BattleName = "수상부대vs심해연합 - 주간전";
 					break;
 			}
 
 			this.UpdateFleetsCombinedEnemy(data.api_deck_id, data, data.api_formation);
-            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
-            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-            this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
+			this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 			this.UpdateUsedFlag(data.api_support_info);
 
 			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet)
@@ -1006,23 +898,23 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.combined_battle_airbattle:
-					this.Name = "연합함대 - 항공전 - 주간";
+					this.BattleName = "연합함대 - 항공전 - 주간";
 					this.UpdateUsedFlag(
 						data.api_kouku?.api_stage2?.api_air_fire,
 						data.api_kouku2?.api_stage2?.api_air_fire
 					);
 					break;
 				case ApiTypes.combined_battle_ld_airbattle:
-					this.Name = "연합함대 - 공습전 - 주간";
+					this.BattleName = "연합함대 - 공습전 - 주간";
 					this.UpdateUsedFlag(data.api_kouku?.api_stage2?.api_air_fire);
 					break;
 			}
 
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
-            this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
-            this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
-            mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
+			mvpOracle.Initialize(this.FirstFleet, this.SecondFleet).Update(data, true);
 			UpdateMVP(mvpOracle.MVP1, mvpOracle.MVP2);
 
 			this.UpdateUsedFlag(data.api_support_info);
@@ -1076,10 +968,10 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.combined_battle_midnight_battle:
-					this.Name = "연합함대 - 야전";
+					this.BattleName = "연합함대 - 야전";
 					break;
 				case ApiTypes.combined_battle_sp_midnight:
-					this.Name = "연합함대 - 개막야전";
+					this.BattleName = "연합함대 - 개막야전";
 					this.FriendAirSupremacy = AirSupremacy.항공전없음;
 					break;
 			}
@@ -1126,7 +1018,7 @@ namespace BattleInfoPlugin.Models
 		private void Update(combined_battle_ec_midnight_battle data, ApiTypes apiType)
 		{
 			AutoSelectTab();
-			this.Name = "연합vs연합 - 야전";
+			this.BattleName = "연합vs연합 - 야전";
 
 			int BeforedayBattleHP = this.FirstFleet.Ships
 				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
@@ -1179,10 +1071,10 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 
-            if (data.api_m1.HasValue)
-                this.MapExtended = (data.api_m1.Value == 1);
+			if (data.api_m1.HasValue)
+				this.MapExtended = (data.api_m1.Value == 1);
 
-            UpdateMVP(data.api_mvp, data.api_mvp_combined ?? 0);
+			UpdateMVP(data.api_mvp, data.api_mvp_combined ?? 0);
 		}
 		private void UpdateMVP(int mvp1 = 0, int mvp2 = 0)
 		{
@@ -1201,45 +1093,48 @@ namespace BattleInfoPlugin.Models
 			if (!SvData.TryParse<map_start_next>(session, out data)) return;
 
 			var startNext = data.Data;
-			string api_deck_id = data.Request["api_deck_id"];
-
-			this.IsInSortie = true;
-			this.Clear();
-
-			this.CurrentMap = getMapText(startNext);
-
-			this.RankResult = Rank.없음;
-			this.AirRankResult = Rank.없음;
-
-			if (!isNext)
-			{
-				this.CurrentDeckId = int.Parse(api_deck_id);
-				this.Cells.Clear();
-			}
-
-			#region Cell list
-			string Cell = "";
-			this.CellEvent = startNext.api_event_id;
-			if (startNext.api_no != 0)
-				Cell = startNext.api_maparea_id + "-" + startNext.api_mapinfo_no + "-" + startNext.api_no;
-
-			this.Cells.ForEach(x => x.IsOld = true);
-			this.Cells.Add(new CellData
-			{
-				CellName = MapAreaData.MapAreaTable.SingleOrDefault(x => x.Key == Cell).Value ?? (startNext.api_no.ToString()), // Cell,
-				CellEvent = this.CellEvent.ToString(),
-				CellText = getCellText(startNext, session),
-				IsOld = false
-			});
-			this.RaisePropertyChanged(nameof(this.Cells));
-			#endregion
-
+			if (!isNext) this.CurrentDeckId = int.Parse(data.Request["api_deck_id"]);
 			if (this.CurrentDeckId < 1) return;
 
 			this.UpdateFriendFleets(this.CurrentDeckId);
 
 			if (this.FirstFleet != null) this.FirstFleet.TotalDamaged = 0;
 			if (this.SecondFleet != null) this.SecondFleet.TotalDamaged = 0;
+
+			this.IsInSortie = true;
+
+			// Reset enemy fleet
+			this.Enemies = new FleetData();
+			this.SecondEnemies = new FleetData();
+			if (this.FirstFleet != null) this.FirstFleet.Formation = Formation.없음;
+
+			CurrentSortie.Initialize(
+				data.Data.api_maparea_id,
+				data.Data.api_mapinfo_no,
+				data.Data.api_eventmap != null ? EventMapDifficulty[data.Data.api_mapinfo_no] : MapDifficulty.None
+			);
+			CurrentSortie.Update(
+				data.Data.api_no,
+				data.Data.api_event_kind,
+				data.Data.api_event_id,
+				session
+			);
+
+			this.UpdatedTime = DateTimeOffset.Now;
+			this.BattleName = "";
+			this.DropShipName = null;
+
+			if (this.FirstFleet != null) FirstFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
+			if (this.SecondFleet != null) SecondFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
+
+			this.CurrentBattleFlag.Clear();
+
+			this.BattleSituation = BattleSituation.없음;
+			this.FriendAirSupremacy = AirSupremacy.항공전없음;
+			this.AirCombatResults = new AirCombatResult[0];
+
+			this.RankResult = Rank.없음;
+			this.AirRankResult = Rank.없음;
 
 			AutoSelectTab();
 		}
@@ -1348,22 +1243,22 @@ namespace BattleInfoPlugin.Models
 			this.FirstFleet.Ships.SetValues(api_f_maxhps, (s, v) => s.MaxHP = v);
 			this.Enemies.Ships.SetValues(api_e_maxhps, (s, v) => s.MaxHP = v);
 
-            if (api_f_maxhps_combined != null)
-                this.SecondFleet.Ships.SetValues(api_f_maxhps_combined, (s, v) => s.MaxHP = v);
+			if (api_f_maxhps_combined != null)
+				this.SecondFleet.Ships.SetValues(api_f_maxhps_combined, (s, v) => s.MaxHP = v);
 
-            if (api_e_maxhps_combined != null)
-                this.SecondEnemies.Ships.SetValues(api_e_maxhps_combined, (s, v) => s.MaxHP = v);
+			if (api_e_maxhps_combined != null)
+				this.SecondEnemies.Ships.SetValues(api_e_maxhps_combined, (s, v) => s.MaxHP = v);
 		}
 		private void UpdateNowHP(int[] api_f_nowhps, int[] api_e_nowhps, int[] api_f_nowhps_combined = null, int[] api_e_nowhps_combined = null)
-        {
+		{
 			this.FirstFleet.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
 			this.Enemies.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
 
-            if (api_f_nowhps_combined != null)
-                this.SecondFleet.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			if (api_f_nowhps_combined != null)
+				this.SecondFleet.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
 
-            if (api_e_nowhps_combined != null)
-                this.SecondEnemies.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			if (api_e_nowhps_combined != null)
+				this.SecondEnemies.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
 		}
 
 		private void UpdateEnemyMaxHP(int[] api_maxhps, int[] api_maxhps_combined = null)
@@ -1374,7 +1269,7 @@ namespace BattleInfoPlugin.Models
 			this.SecondEnemies.Ships.SetValues(api_maxhps_combined, (s, v) => s.MaxHP = v);
 		}
 
-		private void ResultClear(kcsapi_port port)
+		private void ReturnHomeport(kcsapi_port port)
 		{
 			if (this.FirstFleet != null) this.FirstFleet.TotalDamaged = 0;
 			if (this.SecondFleet != null) this.SecondFleet.TotalDamaged = 0;
@@ -1383,30 +1278,6 @@ namespace BattleInfoPlugin.Models
 			this.IsInSortie = false;
 
 			this.MechanismOn = (port.api_event_object?.api_m_flag2 == 1);
-		}
-		private void Clear()
-		{
-			this.UpdatedTime = DateTimeOffset.Now;
-			this.Name = "";
-			this.DropShipName = null;
-
-			if (this.FirstFleet != null) FirstFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
-			if (this.SecondFleet != null) SecondFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
-
-			this.FlareUsed = UsedFlag.Unset;
-			this.NightReconScouted = UsedFlag.Unset;
-			this.AntiAirFired = AirFireFlag.Unset;
-			this.SupportUsed = UsedSupport.Unset;
-
-			this.BattleSituation = BattleSituation.없음;
-			this.FriendAirSupremacy = AirSupremacy.항공전없음;
-			this.AirCombatResults = new AirCombatResult[0];
-			if (this.FirstFleet != null) this.FirstFleet.Formation = Formation.없음;
-			this.Enemies = new FleetData();
-			this.SecondEnemies = new FleetData();
-
-			this.MechanismOn = false;
-            this.MapExtended = false;
 		}
 
 		private bool CalcOverKill(int MaxCount, int SinkCount)
@@ -1709,82 +1580,6 @@ namespace BattleInfoPlugin.Models
 			}
 		}
 
-		private void UpdateUsedFlag(int[] flare, int[] nightrecon)
-		{
-			try
-			{
-				if (flare[0] == -1 && flare[1] == -1)
-					this.FlareUsed = UsedFlag.Unused;
-				else if (flare[0] != -1)
-					this.FlareUsed = UsedFlag.Used;
-				else if (flare[1] != -1)
-					this.FlareUsed = UsedFlag.EnemyUsed;
-				else
-					this.FlareUsed = UsedFlag.BothUsed;
-
-				if (nightrecon[0] == -1 && nightrecon[1] == -1)
-					this.NightReconScouted = UsedFlag.Unused;
-				else if (nightrecon[0] != -1)
-					this.NightReconScouted = UsedFlag.Used;
-				else if (nightrecon[1] != -1)
-					this.NightReconScouted = UsedFlag.EnemyUsed;
-				else
-					this.NightReconScouted = UsedFlag.BothUsed;
-			}
-			catch
-			{
-				this.FlareUsed = UsedFlag.Unset;
-				this.NightReconScouted = UsedFlag.Unset;
-			}
-		}
-		private void UpdateUsedFlag(Api_Air_Fire data)
-		{
-			try
-			{
-				this.AntiAirFired = data == null ? AirFireFlag.Unused : AirFireFlag.Used;
-			}
-			catch
-			{
-				this.AntiAirFired = AirFireFlag.Unset;
-			}
-		}
-		private void UpdateUsedFlag(Api_Air_Fire data1, Api_Air_Fire data2)
-		{
-			try
-			{
-				if (data1 == null && data2 == null)
-					this.AntiAirFired = AirFireFlag.Unused;
-				else if (data2 == null)
-					this.AntiAirFired = AirFireFlag.Used1;
-				else if (data1 == null)
-					this.AntiAirFired = AirFireFlag.Used2;
-				else
-					this.AntiAirFired = AirFireFlag.UsedAll;
-			}
-			catch
-			{
-				this.AntiAirFired = AirFireFlag.Unset;
-			}
-		}
-		private void UpdateUsedFlag(Api_Support_Info data)
-		{
-			try
-			{
-				if (data == null)
-					this.SupportUsed = UsedSupport.Unused;
-				else if (data.api_support_airatack != null)
-					this.SupportUsed = UsedSupport.Kouku;
-				else if (data.api_support_hourai != null)
-					this.SupportUsed = UsedSupport.Hourai;
-				else
-					this.SupportUsed = UsedSupport.Unset;
-			}
-			catch
-			{
-				this.SupportUsed = UsedSupport.Unset;
-			}
-		}
-
 		private string MakeGaugeText(int current, int max, decimal percent)
 		{
 			StringBuilder temp = new StringBuilder();
@@ -1794,124 +1589,6 @@ namespace BattleInfoPlugin.Models
 			return temp.ToString();
 		}
 
-		private string getCellText(map_start_next data, Nekoxy.Session session)
-		{
-			Dictionary<int, string> resources = new Dictionary<int, string>()
-			{
-				{  0, "연료" },
-				{  1, "탄약" },
-				{  2, "강재" },
-				{  3, "보크사이트" },
-				{  4, "고속건조재" },
-				{  5, "고속수복재" },
-				{  6, "개발자재" },
-				{  7, "개수자재" },
-				{  9, "가구함(소)" },
-				{ 10, "가구함(중)" },
-				{ 11, "가구함(대)" },
-			};
-
-			int eventId = data.api_event_id;
-
-			switch (eventId)
-			{
-				case 2: // 일반 자원획득
-					if (data.api_itemget == null)
-						return "자원획득";
-
-					return string.Join(
-						" ",
-						data.api_itemget
-							.Select(x => {
-								var resname = resources.ContainsKey(x.api_id - 1)
-									? resources[x.api_id - 1]
-									: (x.api_name?.Length > 0 ? x.api_name : "???");
-
-								return x.api_getcount > 1
-									? string.Format("{0} +{1}", resname, x.api_getcount)
-									: resname;
-							})
-							.ToArray()
-					);
-				case 3:
-					if (data.api_happening == null || data.api_happening.api_count == 0)
-						return "소용돌이";
-
-					{
-						var resname = resources.ContainsKey(data.api_happening.api_mst_id - 1)
-							? resources[data.api_happening.api_mst_id - 1]
-							: "???";
-
-						return data.api_happening.api_count > 1
-							? string.Format("{0}-{1}", resname, data.api_happening.api_count)
-							: resname;
-					}
-
-				case 4:
-				case 31:
-					switch (data.api_event_kind) {
-						case 1: return "적군조우";
-						case 2: return "개막야전";
-						case 3: return "야전>주간전";
-						case 4: return "항공전";
-						case 5: return "심해연합";
-						case 6: return "공습전";
-					}
-					break;
-
-				case 5:
-					switch (data.api_event_kind)
-					{
-						case 2: return "보스 (개막야전)";
-						case 3: return "보스 (야전>주간전)";
-						case 5: return "보스 (심해연합)";
-					}
-					return "보스전";
-
-				case 6:
-					if(data.api_select_route == null) return "기분탓";
-					return "능동분기";
-				case 7: // 항공정찰 자원획득
-					if (data.api_event_kind == 0)
-					{
-						SvData<map_start_next2> svdata;
-						if (!SvData.TryParse<map_start_next2>(session, out svdata))
-							return "정찰실패";
-
-						var data2 = svdata.Data;
-						if (data2.api_itemget == null) return "정찰실패";
-
-						var resname = resources.ContainsKey(data2.api_itemget.api_id - 1)
-							? resources[data2.api_itemget.api_id - 1]
-							: (data2.api_itemget.api_name?.Length > 0 ? data2.api_itemget.api_name : "???");
-
-						return data2.api_itemget.api_getcount > 1
-							? string.Format("{0}+{1}", resname, data2.api_itemget.api_getcount)
-							: resname;
-					}
-					else return "항공전";
-
-				case 8: // EO (1-6)
-					{
-						var x = data.api_itemget_eo_comment;
-						if (x == null)
-							return "자원획득";
-
-						var resname = resources.ContainsKey(x.api_id - 1)
-							? resources[x.api_id - 1]
-							: (x.api_name?.Length > 0 ? x.api_name : "???");
-
-						return x.api_getcount > 1
-							? string.Format("{0}+{1}", resname, x.api_getcount)
-							: resname;
-					}
-				case 9: // TP
-					return "수송지점";
-				case 10:
-					return "공습전";
-			}
-			return "?";
-		}
 		private string getMapText(map_start_next startNext)
 		{
 			int maparea_id, mapinfo_no;
