@@ -54,9 +54,6 @@
 	#region 지원함대
 	public class Api_Support_Info
 	{
-		public int api_support_flag { get; set; }
-		public int api_n_support_flag { get; set; }
-
 		public Api_Support_Airatack api_support_airatack { get; set; }
 		public Api_Support_Hourai api_support_hourai { get; set; }
 	}
@@ -100,21 +97,21 @@
 		public int[] api_at_eflag { get; set; }
 		public int[] api_at_list { get; set; }
 		public int[] api_at_type { get; set; }
-		public object[] api_df_list { get; set; }
-		public object[] api_si_list { get; set; }
-		public object[] api_cl_list { get; set; }
-		public object[] api_damage { get; set; }
+		public int[][] api_df_list { get; set; }
+		public object api_si_list { get; set; }
+		public object api_cl_list { get; set; }
+		public decimal[][] api_damage { get; set; }
 	}
 
 	public class Midnight_Hougeki
 	{
 		public int[] api_at_eflag { get; set; }
 		public int[] api_at_list { get; set; }
-		public object[] api_df_list { get; set; }
+		public int[][] api_df_list { get; set; }
 		public object[] api_si_list { get; set; }
 		public object[] api_cl_list { get; set; }
 		public int[] api_sp_list { get; set; }
-		public object[] api_damage { get; set; }
+		public decimal[][] api_damage { get; set; }
 	}
 	#endregion
 
@@ -133,9 +130,8 @@
 	}
 
 	// 기지항공대 분식 항공전
-	public class Api_Air_Base_Injection : Api_Kouku
+	public class Api_Air_Base_Injection : Api_Air_Base_Attack
 	{
-		public Api_Squadron_Plane[] api_air_base_data { get; set; }
 	}
 	#endregion
 }

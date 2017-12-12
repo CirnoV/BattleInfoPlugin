@@ -24,7 +24,7 @@ namespace BattleInfoPlugin.Models.Raw
 					Firepower = data.api_eParam[i][0],
 					Torpedo = data.api_eParam[i][1],
 					AA = data.api_eParam[i][2],
-					Armer = data.api_eParam[i][3],
+					Armor = data.api_eParam[i][3],
 					Slots = data.api_eSlot[i]
 						.Where(s => 0 < s)
 						.Select(s => master.SlotItems[s])
@@ -44,7 +44,7 @@ namespace BattleInfoPlugin.Models.Raw
 					Firepower = data.api_eParam_combined[i][0],
 					Torpedo = data.api_eParam_combined[i][1],
 					AA = data.api_eParam_combined[i][2],
-					Armer = data.api_eParam_combined[i][3],
+					Armor = data.api_eParam_combined[i][3],
 					Slots = data.api_eSlot_combined[i]
 						.Where(s => 0 < s)
 						.Select(s => master.SlotItems[s])

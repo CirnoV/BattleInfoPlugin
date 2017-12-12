@@ -26,33 +26,13 @@
 		public Api_Select_Route api_select_route { get; set; }
 		public int api_ration_flag { get; set; }
 		public Api_Itemget api_itemget_eo_comment { get; set; }
+
+		public int? api_m1 { get; set; }
 	}
 	public class map_start_next2
 	{
-		public int api_rashin_flg { get; set; }
-		public int api_rashin_id { get; set; }
-		public int api_maparea_id { get; set; }
-		public int api_mapinfo_no { get; set; }
-		public int api_no { get; set; }
-		public int api_color_no { get; set; }
-		public int api_event_id { get; set; }
-		public int api_event_kind { get; set; }
-		public int api_next { get; set; }
-		public int api_bosscell_no { get; set; }
-		public int api_bosscomp { get; set; }
-		public Api_Airsearch api_airsearch { get; set; }
-		public Api_Eventmap api_eventmap { get; set; }
-		public int api_from_no { get; set; }
-		public Api_Distance_Data[] api_distance_data { get; set; }
-		// 以下next
-		public int api_comment_kind { get; set; }
-		public int api_production_kind { get; set; }
-		public Api_Enemy api_enemy { get; set; }
-		public Api_Happening api_happening { get; set; }
+		// 다른 값은 무시
 		public Api_Itemget api_itemget { get; set; }
-		public Api_Select_Route api_select_route { get; set; }
-		public int api_ration_flag { get; set; }
-		public Api_Itemget api_itemget_eo_comment { get; set; }
 	}
 
 	public class Api_Airsearch

@@ -1,9 +1,9 @@
 ﻿namespace BattleInfoPlugin.Models.Raw
 {
 	/// <summary>
-	/// 심해연합함대 - 야전
+	/// vs 심해연합함대 - 야전
 	/// </summary>
-	public class combined_battle_ec_midnight_battle : ICommonEachBattleMembers
+	public class combined_battle_midnight_ec : ICommonEachBattleMembers
 	{
 		public int[] api_active_deck { get; set; }
 		public int api_deck_id { get; set; }
@@ -28,6 +28,10 @@
 		public int[][] api_eParam_combined { get; set; }
 		public int[] api_touch_plane { get; set; }
 		public int[] api_flare_pos { get; set; }
+
+		public int api_n_support_flag { get; set; }
+		public Api_Support_Info api_n_support_info { get; set; }
+
 		public Midnight_Hougeki api_hougeki { get; set; }
 	}
 

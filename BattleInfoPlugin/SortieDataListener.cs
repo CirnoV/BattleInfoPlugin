@@ -6,12 +6,12 @@ using Grabacr07.KanColleWrapper;
 
 #region Alias
 using practice_battle = BattleInfoPlugin.Models.Raw.sortie_battle;
-using battle_midnight_sp_midnight = BattleInfoPlugin.Models.Raw.battle_midnight_battle;
-using practice_midnight_battle = BattleInfoPlugin.Models.Raw.battle_midnight_battle;
+using battle_midnight_sp_midnight = BattleInfoPlugin.Models.Raw.sortie_battle_midnight;
+using practice_midnight_battle = BattleInfoPlugin.Models.Raw.sortie_battle_midnight;
 using sortie_ld_airbattle = BattleInfoPlugin.Models.Raw.sortie_airbattle;
-using combined_battle_battle_water = BattleInfoPlugin.Models.Raw.combined_battle_battle;
-using combined_battle_ld_airbattle = BattleInfoPlugin.Models.Raw.combined_battle_airbattle;
-using combined_battle_sp_midnight = BattleInfoPlugin.Models.Raw.combined_battle_midnight_battle;
+using combined_battle_battle_water = BattleInfoPlugin.Models.Raw.combined_battle;
+using combined_battle_ld_airbattle = BattleInfoPlugin.Models.Raw.combined_airbattle;
+using combined_battle_sp_midnight = BattleInfoPlugin.Models.Raw.combined_battle_midnight;
 #endregion
 
 namespace BattleInfoPlugin
@@ -28,10 +28,10 @@ namespace BattleInfoPlugin
 				.TryParse<battle_midnight_sp_midnight>().Subscribe(x => this.Update(x.Data));
 
 			proxy.api_req_combined_battle_airbattle
-				.TryParse<combined_battle_airbattle>().Subscribe(x => this.Update(x.Data));
+				.TryParse<combined_airbattle>().Subscribe(x => this.Update(x.Data));
 
 			proxy.api_req_combined_battle_battle
-				.TryParse<combined_battle_battle>().Subscribe(x => this.Update(x.Data));
+				.TryParse<combined_battle>().Subscribe(x => this.Update(x.Data));
 
 			proxy.ApiSessionSource.Where(x => x.Request.PathAndQuery == "/kcsapi/api_req_combined_battle/battle_water")
 				.TryParse<combined_battle_battle_water>().Subscribe(x => this.Update(x.Data));

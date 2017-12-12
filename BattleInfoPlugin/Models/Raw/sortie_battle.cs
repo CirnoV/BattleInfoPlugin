@@ -25,8 +25,10 @@
 		public Api_Air_Base_Attack[] api_air_base_attack { get; set; }
 		public int[] api_stage_flag { get; set; }
 		public Api_Kouku api_kouku { get; set; }
+
 		public int api_support_flag { get; set; }
 		public Api_Support_Info api_support_info { get; set; }
+
 		public int api_opening_taisen_flag { get; set; }
 		public Hougeki api_opening_taisen { get; set; }
 		public int api_opening_flag { get; set; }

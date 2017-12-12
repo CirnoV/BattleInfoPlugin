@@ -275,24 +275,20 @@ namespace BattleInfoPlugin.Models
 		/// <summary>
 		/// 지원함대 정보 갱신
 		/// </summary>
-		/// <param name="data"></param>
-		public void UpdateSupport(Api_Support_Info data)
+		/// <param name="support_flag">주간 지원함대 종류</param>
+		/// <param name="n_support_flag">야간 지원함대 종류</param>
+		public void UpdateSupport(int support_flag, int n_support_flag = 0)
 		{
 			this.SupportUsed = SupportType.Unset;
 			try
 			{
-				if (data == null)
-				{
-					this.SupportUsed = SupportType.Unused;
-					return;
-				}
-
 				int flag = 0;
 
-				if (data.api_support_flag != 0)
-					flag = data.api_support_flag;
-				else if (data.api_n_support_flag != 0)
-					flag = data.api_n_support_flag;
+				if (support_flag != 0)
+					flag = support_flag;
+
+				else if (n_support_flag != 0)
+					flag = n_support_flag;
 
 				switch (flag)
 				{

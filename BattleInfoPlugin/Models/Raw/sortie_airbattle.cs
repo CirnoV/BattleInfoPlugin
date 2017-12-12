@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// 통상함대 - 항공전, 장거리공습전
+	/// sortie_airbattle / sortie_ld_airbattle
 	/// </summary>
 	public class sortie_airbattle : ICommonFirstBattleMembers
 	{

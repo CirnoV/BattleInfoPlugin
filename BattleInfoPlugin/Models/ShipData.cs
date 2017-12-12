@@ -8,7 +8,7 @@ namespace BattleInfoPlugin.Models
 {
 	public class ShipData : NotificationObject
 	{
-		#region Id変更通知プロパティ
+		#region Id 변경통지 프로퍼티
 		private int _Id;
 		public int Id
 		{
@@ -24,7 +24,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region MasterId変更通知プロパティ
+		#region MasterId 변경통지 프로퍼티
 		private int _MasterId;
 		public int MasterId
 		{
@@ -40,9 +40,8 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Name変更通知プロパティ
+		#region Name 변경통지 프로퍼티
 		private string _Name;
-
 		public string Name
 		{
 			get
@@ -57,9 +56,8 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region AdditionalName変更通知プロパティ
+		#region AdditionalName 변경통지 프로퍼티
 		private string _AdditionalName;
-
 		public string AdditionalName
 		{
 			get
@@ -74,7 +72,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region ShipSpeed変更通知プロパティ
+		#region ShipSpeed 변경통지 프로퍼티
 		private ShipSpeed _ShipSpeed;
 		public ShipSpeed ShipSpeed
 		{
@@ -90,7 +88,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region ShipType変更通知プロパティ
+		#region ShipType 변경통지 프로퍼티
 		private int _ShipType;
 		public int ShipType
 		{
@@ -106,9 +104,8 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region TypeName変更通知プロパティ
+		#region TypeName 변경통지 프로퍼티
 		private string _TypeName;
-
 		public string TypeName
 		{
 			get
@@ -123,7 +120,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Level変更通知プロパティ
+		#region Level 변경통지 프로퍼티
 		private int _Level;
 		public int Level
 		{
@@ -138,9 +135,8 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Situation変更通知プロパティ
+		#region Situation 변경통지 프로퍼티
 		private ShipSituation _Situation;
-
 		public ShipSituation Situation
 		{
 			get
@@ -155,7 +151,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region MaxHP変更通知プロパティ
+		#region MaxHP 변경통지 프로퍼티
 		private int _MaxHP;
 		public int MaxHP
 		{
@@ -171,7 +167,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region NowHP変更通知プロパティ
+		#region NowHP 변경통지 프로퍼티
 		private int _NowHP;
 		public int NowHP
 		{
@@ -187,7 +183,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region BeforeNowHP変更通知プロパティ
+		#region BeforeNowHP 변경통지 프로퍼티
 		private int _BeforeNowHP;
 		public int BeforeNowHP
 		{
@@ -201,228 +197,214 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Firepower 変更通知プロパティ
-
-		private int _Firepower;
-
+		#region Firepower 변경통지 프로퍼티
 		/// <summary>
-		/// 火力ステータス値を取得します。
+		/// 화력 스테이터스
 		/// </summary>
 		public int Firepower
 		{
 			get { return this._Firepower; }
 			set
 			{
-				this._Firepower = value;
-				this.RaisePropertyChanged();
-
+				if (this._Firepower != value)
+				{
+					this._Firepower = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _Firepower;
 		#endregion
 
-		#region Torpedo 変更通知プロパティ
-
-		private int _Torpedo;
-
+		#region Torpedo 변경통지 프로퍼티
 		/// <summary>
-		/// 雷装ステータス値を取得します。
+		/// 뇌장 스테이터스
 		/// </summary>
 		public int Torpedo
 		{
 			get { return this._Torpedo; }
 			set
 			{
-				this._Torpedo = value;
-				this.RaisePropertyChanged();
-
+				if (this._Torpedo != value)
+				{
+					this._Torpedo = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _Torpedo;
 		#endregion
 
-		#region AA 変更通知プロパティ
-
-		private int _AA;
-
+		#region AA 변경통지 프로퍼티
 		/// <summary>
-		/// 対空ステータス値を取得します。
+		/// 대공 스테이터스
 		/// </summary>
 		public int AA
 		{
 			get { return this._AA; }
 			set
 			{
-				this._AA = value;
-				this.RaisePropertyChanged();
+				if (this._AA != value)
+				{
+					this._AA = value;
+					this.RaisePropertyChanged();
+				}
 			}
-
 		}
-
+		private int _AA;
 		#endregion
 
-		#region Armer 変更通知プロパティ
-
-		private int _Armer;
-
+		#region Armor 변경통지 프로퍼티
 		/// <summary>
-		/// 装甲ステータス値を取得します。
+		/// 장갑 스테이터스
 		/// </summary>
-		public int Armer
+		public int Armor
 		{
-			get { return this._Armer; }
+			get { return this._Armor; }
 			set
 			{
-				this._Armer = value;
-				this.RaisePropertyChanged();
-
+				if (this._Armor != value)
+				{
+					this._Armor = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _Armor;
 		#endregion
 
-		#region Luck 変更通知プロパティ
-
-		private int _Luck;
-
+		#region Luck 변경통지 프로퍼티
 		/// <summary>
-		/// 運のステータス値を取得します。
+		/// 운 스테이터스
 		/// </summary>
 		public int Luck
 		{
 			get { return this._Luck; }
 			set
 			{
-				this._Luck = value;
-				this.RaisePropertyChanged();
+				if (this._Luck != value)
+				{
+					this._Luck = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _Luck;
 		#endregion
 
-		#region ASW 変更通知プロパティ
-
-		private int _ASW;
-
+		#region ASW 변경통지 프로퍼티
 		/// <summary>
-		/// 対潜のステータス値を取得します。
+		/// 대잠 스테이터스
 		/// </summary>
 		public int ASW
 		{
 			get { return this._ASW; }
 			set
 			{
-				this._ASW = value;
-				this.RaisePropertyChanged();
+				if (this._ASW != value)
+				{
+					this._ASW = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _ASW;
 		#endregion
 
-		#region Evade 変更通知プロパティ
-
-		private int _Evade;
-
+		#region Evade 변경통지 프로퍼티
 		/// <summary>
-		/// 回避のステータス値を取得します。
+		/// 회피 스테이터스
 		/// </summary>
 		public int Evade
 		{
 			get { return this._Evade; }
 			set
 			{
-				this._Evade = value;
-				this.RaisePropertyChanged();
+				if (this._Evade != value)
+				{
+					this._Evade = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private int _Evade;
 		#endregion
 
-		#region Slots変更通知プロパティ
-		private IEnumerable<ShipSlotData> _Slots;
-
+		#region Slots 변경통지 프로퍼티
 		public IEnumerable<ShipSlotData> Slots
 		{
-			get
-			{ return this._Slots; }
-			set
-			{ 
-				if (this._Slots == value)
-					return;
-				this._Slots = value;
-				this.RaisePropertyChanged();
-			}
-		}
-		#endregion
-
-		#region ExSlot変更通知プロパティ
-		private ShipSlotData _ExSlot;
-
-		public ShipSlotData ExSlot
-		{
-			get
-			{ return this._ExSlot; }
+			get { return this._Slots; }
 			set
 			{
-				if (this._ExSlot == value)
-					return;
-				this._ExSlot = value;
-				this.RaisePropertyChanged();
+				if (this._Slots != value)
+				{
+					this._Slots = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
+		private IEnumerable<ShipSlotData> _Slots;
 		#endregion
 
-		#region IsUsedDamecon 変更通知プロパティ
+		#region ExSlot 변경통지 프로퍼티
+		public ShipSlotData ExSlot
+		{
+			get { return this._ExSlot; }
+			set
+			{
+				if (this._ExSlot != value)
+				{
+					this._ExSlot = value;
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		private ShipSlotData _ExSlot;
+		#endregion
 
-		private bool _IsUsedDamecon;
-
+		#region IsUsedDamecon 변경통지 프로퍼티
 		/// <summary>
-		/// 運のステータス値を取得します。
+		/// 다메콘 아이템 사용 여부
 		/// </summary>
 		public bool IsUsedDamecon
 		{
 			get { return this._IsUsedDamecon; }
 			set
 			{
-				this._IsUsedDamecon = value;
-				this.RaisePropertyChanged();
+				if (this._IsUsedDamecon != value)
+				{
+					this._IsUsedDamecon = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
-
+		private bool _IsUsedDamecon;
 		#endregion
 
-		#region Condition変更通知プロパティ
-		private int _Condition;
+		#region Condition 변경통지 프로퍼티
 		public int Condition
 		{
 			get { return this._Condition; }
 			set
 			{
-				if (this._Condition == value)
-					return;
-				this._Condition = value;
-				this.RaisePropertyChanged();
+				if (this._Condition != value)
+				{
+					this._Condition = value;
+					this.RaisePropertyChanged();
+					this.RaisePropertyChanged(nameof(this.ConditionType));
+				}
 			}
 		}
-		#endregion
+		private int _Condition;
 
-		#region ConditionType変更通知プロパティ
-		private ConditionType _ConditionType;
 		public ConditionType ConditionType
-		{
-			get { return this._ConditionType; }
-			set
-			{
-				if (this._ConditionType == value)
-					return;
-				this._ConditionType = value;
-				this.RaisePropertyChanged();
-			}
-		}
+			=> ConditionTypeHelper.ToConditionType(this.Condition);
 		#endregion
 
 		#region IsMvp 변경통지 프로퍼티
-		private bool _IsMvp;
+		/// <summary>
+		/// 이 함선이 MVP 인지 여부
+		/// </summary>
 		public bool IsMvp
 		{
 			get { return this._IsMvp; }
@@ -435,54 +417,63 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 		}
+		private bool _IsMvp;
 		#endregion
 
-		public int SlotsFirepower => this.Slots.Sum(x => x.Firepower) + (this.ExSlot?.Firepower ?? 0);
-		public int SlotsTorpedo => this.Slots.Sum(x => x.Torpedo) + (this.ExSlot?.Torpedo ?? 0);
-		public int SlotsAA => this.Slots.Sum(x => x.AA) + (this.ExSlot?.AA ?? 0);
-		public int SlotsArmer => this.Slots.Sum(x => x.Armer) + (this.ExSlot?.Armer ?? 0);
-		public int SlotsASW => this.Slots.Sum(x => x.ASW) + (this.ExSlot?.ASW ?? 0);
-		public int SlotsHit => this.Slots.Sum(x => x.Hit) + (this.ExSlot?.Hit ?? 0);
-		public int SlotsEvade => this.Slots.Sum(x => x.Evade) + (this.ExSlot?.Evade ?? 0);
 
-		public int SumFirepower => 0 < this.Firepower ? this.Firepower + this.SlotsFirepower : this.Firepower;
-		public int SumTorpedo => 0 < this.Torpedo ? this.Torpedo + this.SlotsTorpedo : this.Torpedo;
-		public int SumAA => 0 < this.AA ? this.AA + this.SlotsAA : this.AA;
-		public int SumArmer => 0 < this.Armer ? this.Armer + this.SlotsArmer : this.Armer;
-		public int SumASW => this.ASW + this.SlotsASW;
-		public int SumEvade => this.Evade; // + this.SlotsEvade;
+		#region 장비 수치 합계
+		public int EquipFirepower => this.Slots.Sum(x => x.Firepower) + (this.ExSlot?.Firepower ?? 0);
+		public int EquipTorpedo => this.Slots.Sum(x => x.Torpedo) + (this.ExSlot?.Torpedo ?? 0);
+		public int EquipAA => this.Slots.Sum(x => x.AA) + (this.ExSlot?.AA ?? 0);
+		public int EquipArmor => this.Slots.Sum(x => x.Armor) + (this.ExSlot?.Armor ?? 0);
+		public int EquipASW => this.Slots.Sum(x => x.ASW) + (this.ExSlot?.ASW ?? 0);
+		public int EquipAccuracy => this.Slots.Sum(x => x.Accuracy) + (this.ExSlot?.Accuracy ?? 0);
+		public int EquipEvade => this.Slots.Sum(x => x.Evade) + (this.ExSlot?.Evade ?? 0);
+		#endregion
 
-		public int ShipEvade => this.Evade - this.SlotsEvade;
+		#region 최종 수치
+		public int TotalFirepower => 0 < this.Firepower ? this.Firepower + this.EquipFirepower : this.Firepower;
+		public int TotalTorpedo => 0 < this.Torpedo ? this.Torpedo + this.EquipTorpedo : this.Torpedo;
+		public int TotalAA => 0 < this.AA ? this.AA + this.EquipAA : this.AA;
+		public int TotalArmor => 0 < this.Armor ? this.Armor + this.EquipArmor : this.Armor;
+		public int TotalASW => this.ASW + this.EquipASW;
+		public int TotalEvade => this.Evade; // + this.SlotsEvade;
+		#endregion
+
+		// 전달되는 값이 합산값이므로 함선 고유 회피를 구하려면 장비값을 빼야함
+		public int ShipEvade => this.Evade - this.EquipEvade;
 
 		// 선제대잠 가능 여부
 		public bool OpeningASW
 			=> this.MasterId == 141 ? true // 이스즈改2
-				: this.ShipType == 1 ? SumASW >= 60 // 해방함
-				: this.ShipType == 7 && this.ShipSpeed == ShipSpeed.Slow ? SumASW >= 65 // 저속 경공모
-				: SumASW >= 100;
+				: this.ShipType == 1 ? TotalASW >= 60 // 해방함
+				: this.ShipType == 7 && this.ShipSpeed == ShipSpeed.Slow ? TotalASW >= 65 // 저속 경공모
+				: TotalASW >= 100;
 
 		public LimitedValue HP => new LimitedValue(this.NowHP, this.MaxHP, 0);
 
+		#region TODO 나중에
 		public AttackType DayAttackType
-			=> this.HasScout() && this.Count(Type2.주포) == 2 && this.Count(Type2.철갑탄) == 1 ? AttackType.주주컷인
-			: this.HasScout() && this.Count(Type2.주포) == 1 && this.Count(Type2.부포) == 1 && this.Count(Type2.철갑탄) == 1 ? AttackType.주철컷인
-			: this.HasScout() && this.Count(Type2.주포) == 1 && this.Count(Type2.부포) == 1 && this.Count(Type2.전탐) == 1 ? AttackType.주전컷인
-			: this.HasScout() && this.Count(Type2.주포) >= 1 && this.Count(Type2.부포) >= 1 ? AttackType.주부컷인
-			: this.HasScout() && this.Count(Type2.주포) >= 2 ? AttackType.연격
+			=> this.HasScout() && this.Count(SlotitemCategoryType.主砲) == 2 && this.Count(SlotitemCategoryType.対艦強化弾) == 1 ? AttackType.주주컷인
+			: this.HasScout() && this.Count(SlotitemCategoryType.主砲) == 1 && this.Count(SlotitemCategoryType.副砲) == 1 && this.Count(SlotitemCategoryType.対艦強化弾) == 1 ? AttackType.주철컷인
+			: this.HasScout() && this.Count(SlotitemCategoryType.主砲) == 1 && this.Count(SlotitemCategoryType.副砲) == 1 && this.Count(SlotitemCategoryType.電探) == 1 ? AttackType.주전컷인
+			: this.HasScout() && this.Count(SlotitemCategoryType.主砲) >= 1 && this.Count(SlotitemCategoryType.副砲) >= 1 ? AttackType.주부컷인
+			: this.HasScout() && this.Count(SlotitemCategoryType.主砲) >= 2 ? AttackType.연격
 			: AttackType.통상;
 
 		public AttackType NightAttackType
 			=> this.SubmarineRaderCount() >= 1 && this.LateModelTorpedoCount() >= 1 ? AttackType.후기어뢰전탐컷인
 			: this.LateModelTorpedoCount() >= 2 ? AttackType.후기어뢰컷인
-			: this.Count(Type2.어뢰) >= 2 ? AttackType.뇌격컷인
-			: this.Count(Type2.주포) >= 3 ? AttackType.주주주컷인
-			: this.Count(Type2.주포) == 2 && this.Count(Type2.부포) >= 1 ? AttackType.주주부컷인
-			: this.Count(Type2.주포) == 2 && this.Count(Type2.부포) == 0 && this.Count(Type2.어뢰) == 1 ? AttackType.주뢰컷인
-			: this.Count(Type2.주포) == 1 && this.Count(Type2.어뢰) == 1 ? AttackType.주뢰컷인
-			: this.Count(Type2.주포) == 2 && this.Count(Type2.부포) == 0 && this.Count(Type2.어뢰) == 0 ? AttackType.연격
-			: this.Count(Type2.주포) == 1 && this.Count(Type2.부포) >= 1 && this.Count(Type2.어뢰) == 0 ? AttackType.연격
-			: this.Count(Type2.주포) == 0 && this.Count(Type2.부포) >= 2 && this.Count(Type2.어뢰) <= 1 ? AttackType.연격
+			: this.Count(SlotitemCategoryType.魚雷) >= 2 ? AttackType.뇌격컷인
+			: this.Count(SlotitemCategoryType.主砲) >= 3 ? AttackType.주주주컷인
+			: this.Count(SlotitemCategoryType.主砲) == 2 && this.Count(SlotitemCategoryType.副砲) >= 1 ? AttackType.주주부컷인
+			: this.Count(SlotitemCategoryType.主砲) == 2 && this.Count(SlotitemCategoryType.副砲) == 0 && this.Count(SlotitemCategoryType.魚雷) == 1 ? AttackType.주뢰컷인
+			: this.Count(SlotitemCategoryType.主砲) == 1 && this.Count(SlotitemCategoryType.魚雷) == 1 ? AttackType.주뢰컷인
+			: this.Count(SlotitemCategoryType.主砲) == 2 && this.Count(SlotitemCategoryType.副砲) == 0 && this.Count(SlotitemCategoryType.魚雷) == 0 ? AttackType.연격
+			: this.Count(SlotitemCategoryType.主砲) == 1 && this.Count(SlotitemCategoryType.副砲) >= 1 && this.Count(SlotitemCategoryType.魚雷) == 0 ? AttackType.연격
+			: this.Count(SlotitemCategoryType.主砲) == 0 && this.Count(SlotitemCategoryType.副砲) >= 2 && this.Count(SlotitemCategoryType.魚雷) <= 1 ? AttackType.연격
 			: AttackType.통상;
+		#endregion
 
 		public ShipData()
 		{
@@ -495,13 +486,12 @@ namespace BattleInfoPlugin.Models
 			this._ShipSpeed = ShipSpeed.Immovable;
 		}
 	}
-
 	public static class ShipDataExtensions
 	{
-		public static int Count(this ShipData data, Type2 type2)
+		public static int Count(this ShipData data, SlotitemCategoryType type2)
 		{
-			return data.Slots.Count(x => x.Type2 == type2)
-				+ (data.ExSlot?.Type2 == type2 ? 1 : 0);
+			return data.Slots.Count(x => x.CategoryType == type2)
+				+ (data.ExSlot?.CategoryType == type2 ? 1 : 0);
 		}
 
 		public static bool HasScout(this ShipData data)
@@ -536,7 +526,7 @@ namespace BattleInfoPlugin.Models
 
 	public class MembersShipData : ShipData
 	{
-		#region Source変更通知プロパティ
+		#region Source 변경통지 프로퍼티
 		private Ship _Source;
 		public Ship Source
 		{
@@ -556,27 +546,29 @@ namespace BattleInfoPlugin.Models
 		public MembersShipData()
 		{
 		}
-
 		public MembersShipData(Ship ship) : this()
 		{
-			this._Source = ship;
-			this.UpdateFromSource();
+			this.Source = ship;
 		}
 
 		private void UpdateFromSource()
 		{
 			this.Id = this.Source.Id;
 			this.MasterId = this.Source.Info.Id;
+
 			this.Name = this.Source.Info.Name;
-			this.ShipType = this.Source.Info.ShipType.Id;
+			this.Level = this.Source.Level;
+			this.Situation = this.Source.Situation;
+
+			this.NowHP = this.Source.HP.Current;
+			this.MaxHP = this.Source.HP.Maximum;
+
 			this.ShipSpeed = this.Source.Speed;
+			this.ShipType = this.Source.Info.ShipType.Id;
 			this.TypeName = this.Source.Speed == ShipSpeed.Immovable
 				? "육상기지"
 				: this.Source.Info.ShipType.Name;
-			this.Level = this.Source.Level;
-			this.Situation = this.Source.Situation;
-			this.NowHP = this.Source.HP.Current;
-			this.MaxHP = this.Source.HP.Maximum;
+
 			this.Slots = this.Source.Slots
 				.Where(s => s != null)
 				.Where(s => s.Equipped)
@@ -588,22 +580,19 @@ namespace BattleInfoPlugin.Models
 				: null;
 
 			this.Condition = this.Source.Condition;
-			this.ConditionType = this.Source.ConditionType;
 
 			this.Firepower = this.Source.Firepower.Current;
 			this.Torpedo = this.Source.Torpedo.Current;
 			this.AA = this.Source.AA.Current;
-			this.Armer = this.Source.Armer.Current;
+			this.Armor = this.Source.Armer.Current;
 			this.Luck = this.Source.Luck.Current;
-
 			this.ASW = this.Source.ASW.Current;
 			this.Evade = this.Source.RawData.api_kaihi[0];
 		}
 	}
-
 	public class MastersShipData : ShipData
 	{
-		#region Source変更通知プロパティ
+		#region Source 변경통지 프로퍼티
 		private ShipInfo _Source;
 		public ShipInfo Source
 		{
@@ -637,8 +626,8 @@ namespace BattleInfoPlugin.Models
 
 			this.Condition = -1;
 
-			var isEnemyID = this.Source?.Id > 1500;
-			this.AdditionalName = isEnemyID ? this.Source?.RawData.api_yomi : "";
+			this.AdditionalName = this.Source?.Id > 1500 ? this.Source?.RawData.api_yomi : "";
+
 			this.ShipSpeed = this.Source?.Speed ?? ShipSpeed.Immovable;
 			this.TypeName = this.Source?.Speed == ShipSpeed.Immovable
 				? "육상기지"

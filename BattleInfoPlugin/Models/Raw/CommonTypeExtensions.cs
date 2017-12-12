@@ -119,6 +119,25 @@ namespace BattleInfoPlugin.Models.Raw
 				}).ToArray()
 				: new AirCombatResult[0];
 		}
+		public static AirCombatResult[] ToResult(this Api_Air_Base_Injection attacks)
+		{
+			return attacks != null && Settings.Default.DetailKouku
+				? new[] {
+					attacks.api_stage1.ToResult($"제 {attacks.api_base_id}기항대 분식 공대공"),
+					attacks.api_stage2.ToResult($"제 {attacks.api_base_id}기항대 분식 공대함")
+				}.ToArray()
+				: new AirCombatResult[0];
+		}
+		public static AirCombatResult[] ToResult(this Api_Air_Base_Injection kouku, string prefixName = "")
+		{
+			return kouku != null
+				? new[]
+				{
+					kouku.api_stage1.ToResult($"{prefixName}분식 공대공"),
+					kouku.api_stage2.ToResult($"{prefixName}분식 공대함")
+				}
+				: new AirCombatResult[0];
+		}
 		#endregion
 
 		#region 기지항공대 분식

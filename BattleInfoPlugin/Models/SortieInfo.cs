@@ -202,27 +202,53 @@ namespace BattleInfoPlugin.Models
 		/// <summary>
 		/// 노드의 완성된 데이터 집합
 		/// </summary>
-		public class FullNodeData
+		public class BaseNodeData 
+		{
+			/// <summary>
+			/// 노드 알파벳
+			/// </summary>
+			public virtual string Name { get; set; }
+
+			/// <summary>
+			/// 노드 설명 (적군조우 등)
+			/// </summary>
+			public virtual string Detail { get; set; }
+
+			public bool Outdated { get; private set; }
+			public void Outdate() => this.Outdated = true;
+		}
+
+		/// <summary>
+		/// 출격 노드 정보
+		/// </summary>
+		public class SortieNodeData : BaseNodeData
 		{
 			private MapNodeInfo.NodeInfo NodeInfo { get; set; }
 			public int World => NodeInfo.World;
 			public int Map => NodeInfo.Map;
 			public int Node => NodeInfo.Node;
-			public string Name => NodeInfo.Display;
+			public override string Name => NodeInfo.Display;
 
 			private NodeEventInfo EventInfo { get; set; }
-			public string Detail => EventInfo.ToString();
+			public override string Detail => EventInfo.ToString();
 
-			public bool Outdated { get; private set; }
-
-			public FullNodeData(int World, int Map, int Node, NodeEventInfo EventInfo)
+			public SortieNodeData(int World, int Map, int Node, NodeEventInfo EventInfo)
 			{
 				this.NodeInfo = MapNodeInfo.GetNodeInfo(World, Map, Node);
 				this.EventInfo = EventInfo;
 			}
-			public void Outdate()
-			{ 
-				this.Outdated = true;
+		}
+
+		/// <summary>
+		/// 연습전 정보
+		/// </summary>
+		public class PracticeNodeData : BaseNodeData
+		{
+			public override string Name => "";
+			public override string Detail => "연습전";
+
+			public PracticeNodeData()
+			{
 			}
 		}
 		#endregion
@@ -313,9 +339,9 @@ namespace BattleInfoPlugin.Models
 		/// <summary>
 		/// 방문한 노드 기록 및 현재 방문중인 노드 정보
 		/// </summary>
-		public FullNodeData[] NodeHistory => this._NodeHistory.ToArray();
-		public FullNodeData CurrentNode => this._NodeHistory.LastOrDefault();
-		private List<FullNodeData> _NodeHistory { get; set; }
+		public BaseNodeData[] NodeHistory => this._NodeHistory.ToArray();
+		public BaseNodeData CurrentNode => this._NodeHistory.LastOrDefault();
+		private List<BaseNodeData> _NodeHistory { get; set; }
 
 
 		/// <summary>
@@ -336,6 +362,23 @@ namespace BattleInfoPlugin.Models
 		}
 
 		/// <summary>
+		/// 연습전인 경우에 초기화되는 정보
+		/// </summary>
+		public void Practice()
+		{
+			this.World = World;
+			this.Map = Map;
+			this.Node = 0;
+			this.NodeEvent = new NodeEventInfo();
+			this.Difficulty = Difficulty;
+
+			this._NodeHistory.Clear();
+			this._NodeHistory.Add(
+				new PracticeNodeData()
+			);
+		}
+
+		/// <summary>
 		/// 노드 정보 갱신, 새로운 노드에 진입한 경우 호출
 		/// </summary>
 		/// <param name="Node">노드</param>
@@ -352,7 +395,7 @@ namespace BattleInfoPlugin.Models
 			};
 
 			this._NodeHistory.Add(
-				new FullNodeData(this.World, this.Map, Node, this.NodeEvent)
+				new SortieNodeData(this.World, this.Map, Node, this.NodeEvent)
 			);
 		}
 	}

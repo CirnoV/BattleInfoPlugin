@@ -1474,11 +1474,32 @@ namespace BattleInfoPlugin.Models.Static
 		/// <param name="World">지역</param>
 		/// <param name="Map">해역</param>
 		/// <param name="Node">노드</param>
+		/// <param name="FullNode">Display에 지역과 해역도 표시할지 여부, 미리 정의되어있으면 항상 알파벳이 표시됨</param>
 		/// <returns></returns>
-		public static NodeInfo GetNodeInfo(int World, int Map, int Node)
+		public static NodeInfo GetNodeInfo(int World, int Map, int Node, bool FullNode = false)
 		{
-			return MapNodeInfo.NodeList
-				.FirstOrDefault(x => x.World == World && x.Map == Map && x.Node == Node);
+			var node = MapNodeInfo.NodeList.FirstOrDefault(x => x.World == World && x.Map == Map && x.Node == Node);
+
+			if (node == null) return MapNodeInfo.RawNode(World, Map, Node);
+			return node;
+		}
+
+		/// <summary>
+		/// 주어진 노드의 정보를 반환 (미리 입력되지 않은 단순 정보)
+		/// </summary>
+		/// <param name="World">지역</param>
+		/// <param name="Map">해역</param>
+		/// <param name="Node">노드</param>
+		/// <param name="FullNode">Display에 지역과 해역도 표시할지 여부</param>
+		/// <returns></returns>
+		private static NodeInfo RawNode(int World, int Map, int Node, bool FullNode = false)
+		{
+			return new NodeInfo(
+				World, Map, Node,
+				FullNode
+					? string.Format("{0}-{1}-{2}", World, Map, Node)
+					: Node.ToString()
+			);
 		}
 	}
 }

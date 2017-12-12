@@ -12,8 +12,8 @@ namespace BattleInfoPlugin.Models
 
 		public bool Equipped => this.Source != null;
 
+		#region 함재기 정보
 		#region Maximum 변경통지 프로퍼티
-		private int _Maximum { get; set; }
 		public int Maximum
 		{
 			get { return this._Maximum; }
@@ -27,10 +27,10 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 		}
+		private int _Maximum { get; set; }
 		#endregion
 
 		#region Current 변경통지 프로퍼티
-		private int _Current { get; set; }
 		public int Current
 		{
 			get { return this._Current; }
@@ -44,9 +44,11 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 		}
+		private int _Current { get; set; }
 		#endregion
 
 		public int Lost => this.Maximum - this.Current;
+		#endregion
 
 		#region Level 변경통지 프로퍼티
 		private int _Level { get; set; }
@@ -83,14 +85,14 @@ namespace BattleInfoPlugin.Models
 		public int Firepower => this.Source?.Firepower ?? 0;
 		public int Torpedo => this.Source?.Torpedo ?? 0;
 		public int AA => this.Source?.AA ?? 0;
-		public int Armer => this.Source?.Armer ?? 0;
+		public int Armor => this.Source?.Armer ?? 0;
 		public int Bomb => this.Source?.Bomb ?? 0;
 		public int ASW => this.Source?.ASW ?? 0;
-		public int Hit => this.Source?.Hit ?? 0;
+		public int Accuracy => this.Source?.Hit ?? 0;
 		public int Evade => this.Source?.Evade ?? 0;
 		public int LOS => this.Source?.ViewRange ?? 0;
 
-		public Type2 Type2 => (Type2)this.Source?.RawData.api_type[1];
+		public SlotitemCategoryType CategoryType => (SlotitemCategoryType)this.Source?.RawData.api_type[1];
 
 		public string ToolTip => this.Source?.ToolTipData;
 

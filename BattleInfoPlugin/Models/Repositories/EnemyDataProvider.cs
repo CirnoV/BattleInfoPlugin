@@ -154,7 +154,7 @@ namespace BattleInfoPlugin.Models.Repositories
 						Firepower = param[0],
 						Torpedo = param[1],
 						AA = param[2],
-						Armer = param[3],
+						Armor = param[3],
 						Slots = this.EnemyData.EnemySlotItems.ContainsKey(enemyId)
 							? this.EnemyData.EnemySlotItems[enemyId][i]
 								.Where(s => s != -1)
