@@ -24,6 +24,11 @@ namespace BattleInfoPlugin.Models
 		/// </summary>
 		private static List<DamageLog> AllDamageList { get; } = new List<DamageLog>();
 
+		/// <summary>
+		/// 초기화 및 갱신을 한 후에 호출됨
+		/// </summary>
+		public event EventHandler Updated;
+
 		#region Definitions
 		/// <summary>
 		/// 전투 페이즈 목록
@@ -560,6 +565,9 @@ namespace BattleInfoPlugin.Models
 			// 전체 전투 기록 초기화
 			BattleCalculator.AllDamageList.Clear();
 
+			// Event
+			Updated?.Invoke(this, EventArgs.Empty);
+
 			/// Chaining
 			return this;
 		}
@@ -691,6 +699,9 @@ namespace BattleInfoPlugin.Models
 				?.FirstOrDefault()
 				?.Index ?? 0;
 
+			// Event
+			Updated?.Invoke(this, EventArgs.Empty);
+
 			// Chaining
 			return this;
 		}
@@ -756,6 +767,9 @@ namespace BattleInfoPlugin.Models
 				?.OrderByDescending(x => x.TotalDealt)
 				?.FirstOrDefault()
 				?.Index ?? 0;
+
+			// Event
+			Updated?.Invoke(this, EventArgs.Empty);
 
 			// Chaining
 			return this;

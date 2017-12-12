@@ -65,7 +65,6 @@ namespace BattleInfoPlugin.Models
 
 
 		#region CurrentSortie 변경통지 프로퍼티
-		private SortieInfo _CurrentSortie;
 		public SortieInfo CurrentSortie
 		{
 			get { return this._CurrentSortie; }
@@ -78,10 +77,10 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 		}
+		private SortieInfo _CurrentSortie;
 		#endregion
 
 		#region CurrentBattleFlag 변경통지 프로퍼티
-		private BattleFlags _CurrentBattleFlag;
 		public BattleFlags CurrentBattleFlag
 		{
 			get { return this._CurrentBattleFlag; }
@@ -94,26 +93,26 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 		}
+		private BattleFlags _CurrentBattleFlag;
 		#endregion
 
 
 		#region BattleSituation 변경통지 프로퍼티
-
-		private BattleSituation _BattleSituation;
-
 		public BattleSituation BattleSituation
 		{
-			get
-			{ return this._BattleSituation; }
+			get { return this._BattleSituation; }
 			set
 			{
-				if (this._BattleSituation == value)
-					return;
-				this._BattleSituation = value;
-				this.RaisePropertyChanged();
+				if (this._BattleSituation != value)
+				{
+					this._BattleSituation = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
+		private BattleSituation _BattleSituation;
 		#endregion
+
 
 		#region FirstFleet 변경통지 프로퍼티
 		private FleetData _FirstFleet;
@@ -189,6 +188,7 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
+
 		#region RankResult 변경통지 프로퍼티
 		private Rank _RankResult;
 
@@ -222,60 +222,58 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region FriendAirSupremacy 변경통지 프로퍼티
-		private AirSupremacy _FriendAirSupremacy = AirSupremacy.항공전없음;
 
+		#region FriendAirSupremacy 변경통지 프로퍼티
 		public AirSupremacy FriendAirSupremacy
 		{
-			get
-			{ return this._FriendAirSupremacy; }
+			get { return this._FriendAirSupremacy; }
 			set
-			{ 
-				if (this._FriendAirSupremacy == value)
-					return;
-				this._FriendAirSupremacy = value;
-				this.RaisePropertyChanged();
+			{
+				if (this._FriendAirSupremacy != value)
+				{
+					this._FriendAirSupremacy = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
+		private AirSupremacy _FriendAirSupremacy = AirSupremacy.항공전없음;
 		#endregion
 
 		#region AirCombatResults 변경통지 프로퍼티
-		private AirCombatResult[] _AirCombatResults = new AirCombatResult[0];
-
 		public AirCombatResult[] AirCombatResults
 		{
-			get
-			{ return this._AirCombatResults; }
+			get { return this._AirCombatResults; }
 			set
 			{
-				if (this._AirCombatResults.Equals(value))
-					return;
-				this._AirCombatResults = value;
-				this.RaisePropertyChanged();
+				if (!this._AirCombatResults.Equals(value))
+				{
+					this._AirCombatResults = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
+		private AirCombatResult[] _AirCombatResults = new AirCombatResult[0];
 		#endregion
 
 		#region DropShipName 변경통지 프로퍼티
-		private string _DropShipName;
-
 		public string DropShipName
 		{
-			get
-			{ return this._DropShipName; }
+			get { return this._DropShipName; }
 			set
 			{
-				if (this._DropShipName == value)
-					return;
-				this._DropShipName = value;
-				this.RaisePropertyChanged();
+				if (this._DropShipName != value)
+				{
+					this._DropShipName = value;
+					this.RaisePropertyChanged();
+				}
 			}
 		}
+		private string _DropShipName;
 		#endregion
 
 		#endregion
 
-		private BattleCalculator battleCalculator { get; set; }
+		public BattleCalculator battleCalculator { get; }
 		private MapDifficulty[] EventMapDifficulty = new MapDifficulty[10];
 
 		private int CurrentDeckId { get; set; }
@@ -287,6 +285,7 @@ namespace BattleInfoPlugin.Models
 			this.CurrentBattleFlag = new BattleFlags();
 
 			this.battleCalculator = new BattleCalculator();
+			this.battleCalculator.Updated += (s, e) => this.RaisePropertyChanged(nameof(battleCalculator));
 
 			var proxy = KanColleClient.Current.Proxy;
 
@@ -480,12 +479,6 @@ namespace BattleInfoPlugin.Models
 					break;
 			}
 
-			int BeforedayBattleHP = this.FirstFleet.Ships
-				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
-				.Sum(x => x.BeforeNowHP); // 리스트 갱신하기전에 HP 최대값을 저장
-
-			int EnemyBeforedayBattle = this.Enemies.Ships.Sum(x => x.BeforeNowHP);
-
 			if (apiType == ApiTypes.sortie_battle_midnight_sp)
 			{
 				// 적, 아군 함대 정보 갱신
@@ -519,7 +512,7 @@ namespace BattleInfoPlugin.Models
 			if (apiType == ApiTypes.sortie_battle_midnight_sp)
 				this.RankResult = this.CalcRank();
 			else
-				this.RankResult = this.CalcRank(false, false, true, BeforedayBattleHP, EnemyBeforedayBattle);
+				this.RankResult = this.CalcRank(false, false);
 		}
 		private void Update(sortie_airbattle data, ApiTypes apiType)
 		{
@@ -685,7 +678,7 @@ namespace BattleInfoPlugin.Models
 					.Concat(data.api_air_base_attack.ToResult())
 					.Concat(data.api_kouku.ToResult()).ToArray();
 
-			this.RankResult = this.CalcRank(true, true, true);
+			this.RankResult = this.CalcRank(true, true);
 		}
 		private void Update(combined_airbattle data, ApiTypes apiType)
 		{
@@ -815,7 +808,7 @@ namespace BattleInfoPlugin.Models
 			switch (apiType)
 			{
 				case ApiTypes.combined_battle_midnight:
-					this.RankResult = this.CalcRank(true, true, true, BeforedayBattleHP, EnemyBeforedayBattle);
+					this.RankResult = this.CalcRank(true, true);
 					break;
 				case ApiTypes.combined_battle_midnight_sp:
 					this.RankResult = this.CalcRank(true);
@@ -854,7 +847,7 @@ namespace BattleInfoPlugin.Models
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
 
-			this.RankResult = this.CalcRank(true, true, true, BeforedayBattleHP, EnemyBeforedayBattle);
+			this.RankResult = this.CalcRank(true, true);
 		}
 		private void Update(combined_battle_ec_nighttoday data, ApiTypes apiType)
 		{
