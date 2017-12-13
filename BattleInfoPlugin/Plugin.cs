@@ -22,10 +22,6 @@ namespace BattleInfoPlugin
 		internal BrowserExtension browserEx { get; }
 		private ToolViewModel vm { get; }
 
-		internal static KcsResourceWriter ResourceWriter { get; private set; }
-		internal static SortieDataListener SortieListener { get; private set; }
-		// internal static kcsapi_start2 RawStart2 { get; private set; }
-
 		public Plugin()
 		{
 			// 기존 설정 불러오기..?

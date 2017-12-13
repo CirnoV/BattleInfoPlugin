@@ -37,7 +37,7 @@ namespace BattleInfoPlugin.Models
 			Unused = 1,
 
 			Alias = 2,
-			Enemy = 3,
+			Enemy = 4,
 			Both = Alias | Enemy
 		}
 
@@ -191,6 +191,24 @@ namespace BattleInfoPlugin.Models
 		}
 
 		/// <summary>
+		/// 같은 정보를 가지는 새 객체를 생성
+		/// </summary>
+		/// <returns></returns>
+		public BattleFlags Clone()
+		{
+			return new BattleFlags
+			{
+				FlareUsed = this.FlareUsed,
+				NightReconScouted = this.NightReconScouted,
+				AntiAirFired = this.AntiAirFired,
+				AntiAirFiredDetail = this.AntiAirFiredDetail,
+				SupportUsed = this.SupportUsed,
+				MechanismOn = this.MechanismOn,
+				MapExtended = this.MapExtended,
+			};
+		}
+
+		/// <summary>
 		/// 조명탄 정보 갱신
 		/// </summary>
 		public void UpdateFlare(int[] FlareData)
@@ -279,7 +297,7 @@ namespace BattleInfoPlugin.Models
 		/// <param name="n_support_flag">야간 지원함대 종류</param>
 		public void UpdateSupport(int support_flag, int n_support_flag = 0)
 		{
-			this.SupportUsed = SupportType.Unset;
+			this.SupportUsed = SupportType.Unused;
 			try
 			{
 				int flag = 0;

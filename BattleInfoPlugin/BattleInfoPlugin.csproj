@@ -103,8 +103,8 @@
     <Compile Include="Annotations\LightAttribute.cs" />
     <Compile Include="Models\ApiTypes.cs" />
     <Compile Include="Models\BattleFlags.cs" />
+    <Compile Include="Models\BattleHistory.cs" />
     <Compile Include="Models\BrowserExtension.cs" />
-    <Compile Include="Models\CellData.cs" />
     <Compile Include="Models\BattleCalculator.cs" />
     <Compile Include="Models\Raw\combined_battle_each.cs" />
     <Compile Include="Models\Raw\combined_battle_midnight_ec.cs" />
@@ -116,31 +116,23 @@
     <Compile Include="Models\Static\MapNodeInfo.cs" />
     <Compile Include="Models\Static\NodeItemInfo.cs" />
     <Compile Include="NotifyAttribute.cs" />
-    <Compile Include="Views\Converters\CellEventToEventColor.cs" />
-    <Compile Include="Views\Converters\CellEventToEventName.cs" />
-    <Compile Include="KcsResourceWriter.cs" />
+    <Compile Include="ViewModels\HistoryWindowViewModel.cs" />
+    <Compile Include="Views\Converters\AntiAirFireConverter.cs" />
+    <Compile Include="Views\Converters\NodeEventIdColorConverter.cs" />
     <Compile Include="Models\AirCombatResult.cs" />
     <Compile Include="Models\AirSupremacy.cs" />
     <Compile Include="Models\AttackType.cs" />
     <Compile Include="Models\BattleData.cs" />
     <Compile Include="Models\BattleSituation.cs" />
-    <Compile Include="Models\CellType.cs" />
-    <Compile Include="Models\FleetDamages.cs" />
     <Compile Include="Models\FleetData.cs" />
     <Compile Include="Models\FleetType.cs" />
     <Compile Include="Models\Formation.cs" />
-    <Compile Include="Models\MapArea.cs" />
-    <Compile Include="Models\MapCell.cs" />
-    <Compile Include="Models\MapCellData.cs" />
-    <Compile Include="Models\MapData.cs" />
-    <Compile Include="Models\MapInfo.cs" />
     <Compile Include="Models\Notifiers\BattleEndNotifier.cs" />
     <Compile Include="Models\Notifiers\BrowserImageMonitor.cs" />
     <Compile Include="Models\Rank.cs" />
     <Compile Include="Models\Raw\ICommonBattleMembers.cs" />
     <Compile Include="Models\Raw\ICommonFirstBattleMembers.cs" />
     <Compile Include="Models\Raw\member_mapinfo.cs" />
-    <Compile Include="Models\Repositories\EnemyData.cs" />
     <Compile Include="NotificationType.cs" />
     <Compile Include="Models\Raw\sortie_battle_midnight.cs" />
     <Compile Include="Models\Raw\battle_result.cs" />
@@ -152,39 +144,22 @@
     <Compile Include="Models\Raw\map_start_next.cs" />
     <Compile Include="Models\Raw\sortie_airbattle.cs" />
     <Compile Include="Models\Raw\sortie_battle.cs" />
-    <Compile Include="Models\Repositories\EnemyDataProvider.cs" />
-    <Compile Include="Models\Repositories\Extensions.cs" />
-    <Compile Include="Models\Repositories\MapResource.cs" />
-    <Compile Include="Models\Repositories\Master.cs" />
     <Compile Include="Models\ShipData.cs" />
     <Compile Include="Models\ShipSlotData.cs" />
     <Compile Include="Models\SlotitemCategoryType.cs" />
-    <Compile Include="SortieDataListener.cs" />
     <Compile Include="ViewModels\AirCombatResultViewModel.cs" />
-    <Compile Include="ViewModels\Enemies\CellPointViewModel.cs" />
-    <Compile Include="ViewModels\Enemies\EnemyFleetViewModel.cs" />
-    <Compile Include="ViewModels\Enemies\EnemyMapViewModel.cs" />
-    <Compile Include="ViewModels\Enemies\EnemyCellViewModel.cs" />
-    <Compile Include="ViewModels\Enemies\EnemyShipViewModel.cs" />
-    <Compile Include="ViewModels\EnemyWindowViewModel.cs" />
     <Compile Include="ViewModels\FleetViewModel.cs" />
-    <Compile Include="ViewModels\ItemViewModel.cs" />
-    <Compile Include="ViewModels\TabItemViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
-    <Compile Include="Views\Behaviors\ScrollToCellBehavior.cs" />
-    <Compile Include="Views\Controls\Cell.cs" />
-    <Compile Include="Views\Controls\Flag.cs" />
-    <Compile Include="Views\Converters\AddDoubleValueConverter.cs" />
     <Compile Include="Views\Converters\AdditionalNameColorConverter.cs" />
     <Compile Include="Views\Converters\AttackTypeToDisplayTextConverter.cs" />
-    <Compile Include="Views\Converters\BrTagToNewLineConverter.cs" />
-    <Compile Include="Views\Converters\FleetBackgroundConverter.cs" />
+    <Compile Include="Views\Converters\SupportUsedConverter.cs" />
     <Compile Include="Views\Converters\UnknownValueConverter.cs" />
-    <Compile Include="Views\EnemyWindow.xaml.cs">
-      <DependentUpon>EnemyWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Views\Converters\UsedFlagConverter.cs" />
     <Compile Include="Views\Fleet.xaml.cs">
       <DependentUpon>Fleet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HistoryWindow.xaml.cs">
+      <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ToolView.xaml.cs">
       <DependentUpon>ToolView.xaml</DependentUpon>
@@ -193,26 +168,18 @@
     <Compile Include="Win32\IServiceProvider.cs" />
     <Compile Include="Win32\IViewObject.cs" />
     <Compile Include="Win32\RECT.cs" />
-    <Page Include="Styles\Cell.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\Flag.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Styles\PluginStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Plugin.cs" />
-    <Page Include="Views\EnemyWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Fleet.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\HistoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ToolView.xaml">
       <Generator>MSBuild:Compile</Generator>

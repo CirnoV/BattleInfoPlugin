@@ -485,6 +485,37 @@ namespace BattleInfoPlugin.Models
 			this._Slots = new ShipSlotData[0];
 			this._ShipSpeed = ShipSpeed.Immovable;
 		}
+
+		public virtual ShipData Clone()
+		{
+			return new ShipData
+			{
+				Id = this.Id,
+				MasterId = this.MasterId,
+				Name = this.Name,
+				AdditionalName = this.AdditionalName,
+				ShipSpeed = this.ShipSpeed,
+				ShipType = this.ShipType,
+				TypeName = this.TypeName,
+				Level = this.Level,
+				Situation = this.Situation,
+				MaxHP = this.MaxHP,
+				NowHP = this.NowHP,
+				BeforeNowHP = this.BeforeNowHP,
+				Firepower = this.Firepower,
+				Torpedo = this.Torpedo,
+				AA = this.AA,
+				Armor = this.Armor,
+				Luck = this.Luck,
+				ASW = this.ASW,
+				Evade = this.Evade,
+				Slots = this.Slots,
+				ExSlot = this.ExSlot,
+				IsUsedDamecon = this.IsUsedDamecon,
+				Condition = this.Condition,
+				IsMvp = this.IsMvp
+			};
+		}
 	}
 	public static class ShipDataExtensions
 	{
@@ -526,112 +557,67 @@ namespace BattleInfoPlugin.Models
 
 	public class MembersShipData : ShipData
 	{
-		#region Source 변경통지 프로퍼티
-		private Ship _Source;
-		public Ship Source
-		{
-			get { return this._Source; }
-			set
-			{
-				if (this._Source != value)
-				{
-					this._Source = value;
-					this.RaisePropertyChanged();
-					this.UpdateFromSource();
-				}
-			}
-		}
-		#endregion
-
 		public MembersShipData()
 		{
 		}
 		public MembersShipData(Ship ship) : this()
 		{
-			this.Source = ship;
-		}
+			this.Id = ship.Id;
+			this.MasterId = ship.Info.Id;
 
-		private void UpdateFromSource()
-		{
-			this.Id = this.Source.Id;
-			this.MasterId = this.Source.Info.Id;
+			this.Name = ship.Info.Name;
+			this.Level = ship.Level;
+			this.Situation = ship.Situation;
 
-			this.Name = this.Source.Info.Name;
-			this.Level = this.Source.Level;
-			this.Situation = this.Source.Situation;
+			this.NowHP = ship.HP.Current;
+			this.MaxHP = ship.HP.Maximum;
 
-			this.NowHP = this.Source.HP.Current;
-			this.MaxHP = this.Source.HP.Maximum;
-
-			this.ShipSpeed = this.Source.Speed;
-			this.ShipType = this.Source.Info.ShipType.Id;
-			this.TypeName = this.Source.Speed == ShipSpeed.Immovable
+			this.ShipSpeed = ship.Speed;
+			this.ShipType = ship.Info.ShipType.Id;
+			this.TypeName = ship.Speed == ShipSpeed.Immovable
 				? "육상기지"
-				: this.Source.Info.ShipType.Name;
+				: ship.Info.ShipType.Name;
 
-			this.Slots = this.Source.Slots
+			this.Slots = ship.Slots
 				.Where(s => s != null)
 				.Where(s => s.Equipped)
 				.Select(s => new ShipSlotData(s))
 				.ToArray();
 			this.ExSlot =
-				this.Source.ExSlotExists && this.Source.ExSlot.Equipped
-				? new ShipSlotData(this.Source.ExSlot)
+				ship.ExSlotExists && ship.ExSlot.Equipped
+				? new ShipSlotData(ship.ExSlot)
 				: null;
 
-			this.Condition = this.Source.Condition;
+			this.Condition = ship.Condition;
 
-			this.Firepower = this.Source.Firepower.Current;
-			this.Torpedo = this.Source.Torpedo.Current;
-			this.AA = this.Source.AA.Current;
-			this.Armor = this.Source.Armer.Current;
-			this.Luck = this.Source.Luck.Current;
-			this.ASW = this.Source.ASW.Current;
-			this.Evade = this.Source.RawData.api_kaihi[0];
+			this.Firepower = ship.Firepower.Current;
+			this.Torpedo = ship.Torpedo.Current;
+			this.AA = ship.AA.Current;
+			this.Armor = ship.Armer.Current;
+			this.Luck = ship.Luck.Current;
+			this.ASW = ship.ASW.Current;
+			this.Evade = ship.RawData.api_kaihi[0];
 		}
 	}
 	public class MastersShipData : ShipData
 	{
-		#region Source 변경통지 프로퍼티
-		private ShipInfo _Source;
-		public ShipInfo Source
-		{
-			get { return this._Source; }
-			set
-			{
-				if (this._Source != value)
-				{
-					this._Source = value;
-					this.RaisePropertyChanged();
-					this.UpdateFromSource();
-				}
-			}
-		}
-		#endregion
-
 		public MastersShipData()
 		{
 		}
 
 		public MastersShipData(ShipInfo info) : this()
 		{
-			this._Source = info;
-			this.UpdateFromSource();
-		}
-
-		private void UpdateFromSource()
-		{
-			this.Id = this.Source.Id;
-			this.Name = this.Source.Name;
+			this.Id = info.Id;
+			this.Name = info.Name;
 
 			this.Condition = -1;
 
-			this.AdditionalName = this.Source?.Id > 1500 ? this.Source?.RawData.api_yomi : "";
+			this.AdditionalName = info?.Id > 1500 ? info?.RawData.api_yomi : "";
 
-			this.ShipSpeed = this.Source?.Speed ?? ShipSpeed.Immovable;
-			this.TypeName = this.Source?.Speed == ShipSpeed.Immovable
+			this.ShipSpeed = info?.Speed ?? ShipSpeed.Immovable;
+			this.TypeName = info?.Speed == ShipSpeed.Immovable
 				? "육상기지"
-				: this.Source?.ShipType.Name;
+				: info?.ShipType.Name;
 		}
 	}
 }

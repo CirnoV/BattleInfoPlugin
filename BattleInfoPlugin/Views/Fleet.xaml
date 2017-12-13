@@ -65,7 +65,7 @@
 		<TextBlock Margin="3, 4">
 				<Run Text="{Binding Name, Mode=OneWay}"/>
 				<Run Text="  "/>
-				<Run Text="{Binding FleetFormation, Mode=OneWay}"
+				<Run Text="{Binding Fleet.Formation, Mode=OneWay}"
 					 FontSize="12"
 					 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
 		</TextBlock>
@@ -80,10 +80,10 @@
 			<ItemsControl.Style>
 				<Style TargetType="{x:Type ItemsControl}">
 					<Style.Triggers>
-						<DataTrigger Binding="{Binding Fleet.FleetType, Converter={StaticResource HasFlagConverter}, ConverterParameter=Second}" Value="True">
+						<DataTrigger Binding="{Binding Fleet.FleetType, Converter={StaticResource HasFlagConverter}, ConverterParameter=AliasSecond}" Value="True">
 							<Setter Property="Visibility" Value="Hidden"/>
 						</DataTrigger>
-						<DataTrigger Binding="{Binding Fleet.FleetType, Converter={StaticResource HasFlagConverter}, ConverterParameter=SecondEnemy}" Value="True">
+						<DataTrigger Binding="{Binding Fleet.FleetType, Converter={StaticResource HasFlagConverter}, ConverterParameter=EnemySecond}" Value="True">
 							<Setter Property="Visibility" Value="Hidden"/>
 						</DataTrigger>
 					</Style.Triggers>
@@ -120,7 +120,7 @@
 				   Style="{DynamicResource SeparatorRectangleStyleKey}"/>
 
 		<TextBlock>
-			<Run Text="{Binding FleetGauge,Mode=OneWay}"/>
+			<Run Text="{Binding Fleet.AttackGauge,Mode=OneWay}"/>
 		</TextBlock>
 
 		<Rectangle Height="1"
@@ -168,14 +168,14 @@
 
 									<TextBlock Grid.Column="0" Grid.Row="0" Text="화력" />
 									<TextBlock Grid.Column="1" Grid.Row="0">
-										<Run Text="{Binding SumFirepower, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalFirepower, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 											 Style="{DynamicResource EmphaticTextElementStyleKey}"
 											 FontSize="12"/>
 										<Run>
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
 													<Binding Path="Firepower" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsFirepower" />
+													<Binding Path="EquipFirepower" />
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -183,14 +183,14 @@
 
 									<TextBlock Grid.Column="0" Grid.Row="1" Text="뇌장" />
 									<TextBlock Grid.Column="1" Grid.Row="1">
-										<Run Text="{Binding SumTorpedo, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalTorpedo, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 											 Style="{DynamicResource EmphaticTextElementStyleKey}"
 											 FontSize="12"/>
 										<Run>
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
 													<Binding Path="Torpedo" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsTorpedo" />
+													<Binding Path="EquipTorpedo" />
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -198,14 +198,14 @@
 
 									<TextBlock Grid.Column="0" Grid.Row="2" Text="대공" />
 									<TextBlock Grid.Column="1" Grid.Row="2">
-										<Run Text="{Binding SumAA, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalAA, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 											 Style="{DynamicResource EmphaticTextElementStyleKey}"
 											 FontSize="12"/>
 										<Run>
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
 													<Binding Path="AA" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsAA"/>
+													<Binding Path="EquipAA"/>
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -213,14 +213,14 @@
 
 									<TextBlock Grid.Column="0" Grid.Row="3" Text="장갑" />
 									<TextBlock Grid.Column="1" Grid.Row="3">
-										<Run Text="{Binding SumArmer, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalArmor, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 												Style="{DynamicResource EmphaticTextElementStyleKey}"
 												FontSize="12"/>
 										<Run>
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
-													<Binding Path="Armer" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsArmer"/>
+													<Binding Path="Armor" Converter="{StaticResource UnknownValueConverter}"/>
+													<Binding Path="EquipArmor"/>
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -228,7 +228,7 @@
 
 									<TextBlock Grid.Column="2" Grid.Row="0" Text="대잠" Margin="10,0,0,0" />
 									<TextBlock Grid.Column="3" Grid.Row="0">
-										<Run Text="{Binding SumASW, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalASW, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 											 FontSize="12">
 											<Run.Style>
 												<Style BasedOn="{StaticResource EmphaticTextElementStyleKey}" TargetType="{x:Type Run}">
@@ -245,7 +245,7 @@
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
 													<Binding Path="ASW" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsASW"/>
+													<Binding Path="EquipASW"/>
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -254,14 +254,14 @@
 
 									<TextBlock Grid.Column="2" Grid.Row="1" Text="회피" Margin="10,0,0,0" />
 									<TextBlock Grid.Column="3" Grid.Row="1">
-										<Run Text="{Binding SumEvade, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
+										<Run Text="{Binding TotalEvade, Mode=OneWay, Converter={StaticResource UnknownValueConverter}}"
 											 Style="{DynamicResource EmphaticTextElementStyleKey}"
 											 FontSize="12"/>
 										<Run>
 											<Run.Text>
 												<MultiBinding StringFormat="{}({0}+{1})" Mode="OneWay">
 													<Binding Path="ShipEvade" Converter="{StaticResource UnknownValueConverter}"/>
-													<Binding Path="SlotsEvade"/>
+													<Binding Path="EquipEvade"/>
 												</MultiBinding>
 											</Run.Text>
 										</Run>
@@ -318,17 +318,27 @@
 									<ItemsControl ItemsSource="{Binding Slots}">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<StackPanel Orientation="Horizontal">
+												<Grid Margin="0,4,0,0">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemIcon" />
+														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemName" />
+														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemLevel" />
+														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemProficiency" />
+														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemCount" />
+													</Grid.ColumnDefinitions>
+
 													<controls:SlotItemIcon Grid.Column="0"
 																		   Type="{Binding Source.IconType, Mode=OneWay}"
 																		   Width="14"
 																		   Height="14" />
-													<TextBlock Foreground="{DynamicResource ActiveForegroundBrushKey}"
+													<TextBlock Grid.Column="1"
+															   Foreground="{DynamicResource ActiveForegroundBrushKey}"
 															   Style="{DynamicResource DefaultTextStyleKey}"
 															   Text="{Binding Source.Name, Mode=OneWay}"
 															   Margin="5,1"/>
 
-													<TextBlock Margin="0,1,5,1"
+													<TextBlock Grid.Column="2"
+															   Margin="0,1,5,1"
 															   Foreground="#FF45A9A5">
 														<TextBlock.Style>
 															<Style TargetType="{x:Type TextBlock}">
@@ -345,7 +355,8 @@
 														</TextBlock.Style>
 													</TextBlock>
 
-													<TextBlock Margin="0,1,5,1"
+													<TextBlock Grid.Column="3"
+															   Margin="0,1,5,1"
 														   Text="{Binding Proficiency, StringFormat=+{0}}"
 														   Foreground="#FFD49C0F">
 														<TextBlock.Style>
@@ -359,7 +370,8 @@
 														</TextBlock.Style>
 													</TextBlock>
 
-													<TextBlock Margin="0,1,5,1">
+													<TextBlock Grid.Column="4"
+															   Margin="0,1,5,1">
 														<Run Text="(" />
 														<Run Text="{Binding Current, Mode=OneWay}" />
 														<Run Text="/" />
@@ -388,7 +400,7 @@
 															</Style>
 														</TextBlock.Style>
 													</TextBlock>
-												</StackPanel>
+												</Grid>
 											</DataTemplate>
 										</ItemsControl.ItemTemplate>
 									</ItemsControl>
@@ -397,18 +409,28 @@
 										<Rectangle Height="1"
 												   Margin="0,4,0,0"
 												   Style="{DynamicResource SeparatorRectangleStyleKey}" />
-										<StackPanel Margin="0,4,0,0"
-													Orientation="Horizontal">
+
+										<Grid Margin="0,4,0,0">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemIcon" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemName" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemLevel" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemProficiency" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemCount" />
+											</Grid.ColumnDefinitions>
+
 											<controls:SlotItemIcon Grid.Column="0"
 																   Type="{Binding ExSlot.Source.IconType, Mode=OneWay}"
 																   Width="14"
 																   Height="14" />
-											<TextBlock Foreground="{DynamicResource ActiveForegroundBrushKey}"
+											<TextBlock Grid.Column="1"
+													   Foreground="{DynamicResource ActiveForegroundBrushKey}"
 													   Style="{DynamicResource DefaultTextStyleKey}"
 													   Text="{Binding ExSlot.Source.Name, Mode=OneWay}"
 													   Margin="5,1"/>
 
-											<TextBlock Margin="0,1,5,1"
+											<TextBlock Grid.Column="2"
+													   Margin="0,1,5,1"
 													   Foreground="#FF45A9A5">
 												<TextBlock.Style>
 													<Style TargetType="{x:Type TextBlock}">
@@ -425,7 +447,8 @@
 												</TextBlock.Style>
 											</TextBlock>
 
-											<TextBlock Margin="0,1,5,1"
+											<TextBlock Grid.Column="3"
+													   Margin="0,1,5,1"
 													   Text="{Binding ExSlot.Proficiency, StringFormat=+{0}}"
 													   Foreground="#FFD49C0F">
 												<TextBlock.Style>
@@ -439,7 +462,8 @@
 												</TextBlock.Style>
 											</TextBlock>
 
-											<TextBlock Margin="0,1,5,1">
+											<TextBlock Grid.Column="4"
+													   Margin="0,1,5,1">
 												<Run Text="(" />
 												<Run Text="{Binding ExSlot.Current, Mode=OneWay}" />
 												<Run Text="/" />
@@ -468,8 +492,7 @@
 													</Style>
 												</TextBlock.Style>
 											</TextBlock>
-
-										</StackPanel>
+										</Grid>
 
 										<StackPanel.Style>
 											<Style TargetType="{x:Type StackPanel}">

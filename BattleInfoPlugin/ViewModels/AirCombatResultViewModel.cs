@@ -12,25 +12,28 @@ namespace BattleInfoPlugin.ViewModels
 	{
 		public string Name { get; }
 		public bool IsHappen { get; }
+
 		public int Count { get; }
 		public int LostCount { get; }
 		public int RemainingCount => this.Count - this.LostCount;
 
 		public AirCombatResultViewModel(AirCombatResult result, FleetType type)
 		{
-			if (type == FleetType.First)
+			switch (type)
 			{
-				this.Name = result.Name;
-				this.IsHappen = result.IsHappen;
-				this.Count = result.FriendCount;
-				this.LostCount = result.FriendLostCount;
-			}
-			if (type == FleetType.Enemy)
-			{
-				this.Name = result.Name;
-				this.IsHappen = result.IsHappen;
-				this.Count = result.EnemyCount;
-				this.LostCount = result.EnemyLostCount;
+				case FleetType.AliasFirst:
+					this.Name = result.Name;
+					this.IsHappen = result.IsHappen;
+					this.Count = result.FriendCount;
+					this.LostCount = result.FriendLostCount;
+					break;
+
+				case FleetType.EnemyFirst:
+					this.Name = result.Name;
+					this.IsHappen = result.IsHappen;
+					this.Count = result.EnemyCount;
+					this.LostCount = result.EnemyLostCount;
+					break;
 			}
 		}
 	}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using BattleInfoPlugin.Models.Raw;
-using BattleInfoPlugin.Models.Repositories;
 using Grabacr07.KanColleWrapper;
 using Livet;
 using Grabacr07.KanColleWrapper.Models;
@@ -114,75 +113,75 @@ namespace BattleInfoPlugin.Models
 		#endregion
 
 
-		#region FirstFleet 변경통지 프로퍼티
-		private FleetData _FirstFleet;
+		#region AliasFirst 변경통지 프로퍼티
+		private FleetData _AliasFirst;
 
-		public FleetData FirstFleet
+		public FleetData AliasFirst
 		{
 			get
-			{ return this._FirstFleet; }
+			{ return this._AliasFirst; }
 			set
 			{ 
-				if (this._FirstFleet == value)
+				if (this._AliasFirst == value)
 					return;
-				this._FirstFleet = value;
-				this._FirstFleet.FleetType = FleetType.First;
-				Settings.Default.FirstIsCritical = this._FirstFleet.CriticalCheck();
+				this._AliasFirst = value;
+				this._AliasFirst.FleetType = FleetType.AliasFirst;
+				Settings.Default.FirstIsCritical = this._AliasFirst.CriticalCheck();
 				this.RaisePropertyChanged();
 			}
 		}
 		#endregion
 
-		#region SecondFleet 변경통지 프로퍼티
-		private FleetData _SecondFleet;
+		#region AliasSecond 변경통지 프로퍼티
+		private FleetData _AliasSecond;
 
-		public FleetData SecondFleet
+		public FleetData AliasSecond
 		{
 			get
-			{ return this._SecondFleet; }
+			{ return this._AliasSecond; }
 			set
 			{ 
-				if (this._SecondFleet == value)
+				if (this._AliasSecond == value)
 					return;
-				this._SecondFleet = value;
-				this._SecondFleet.FleetType = FleetType.Second;
-				Settings.Default.SecondIsCritical = this._SecondFleet.CriticalCheck();
+				this._AliasSecond = value;
+				this._AliasSecond.FleetType = FleetType.AliasSecond;
+				Settings.Default.SecondIsCritical = this._AliasSecond.CriticalCheck();
 				this.RaisePropertyChanged();
 			}
 		}
 		#endregion
 
-		#region Enemies 변경통지 프로퍼티
-		private FleetData _Enemies;
+		#region EnemyFirst 변경통지 프로퍼티
+		private FleetData _EnemyFirst;
 
-		public FleetData Enemies
+		public FleetData EnemyFirst
 		{
 			get
-			{ return this._Enemies; }
+			{ return this._EnemyFirst; }
 			set
 			{ 
-				if (this._Enemies == value)
+				if (this._EnemyFirst == value)
 					return;
-				this._Enemies = value;
-				this._Enemies.FleetType = FleetType.Enemy;
+				this._EnemyFirst = value;
+				this._EnemyFirst.FleetType = FleetType.EnemyFirst;
 				this.RaisePropertyChanged();
 			}
 		}
 		#endregion
 
-		#region SecondEnemies 변경통지 프로퍼티
-		private FleetData _SecondEnemies;
+		#region EnemySecond 변경통지 프로퍼티
+		private FleetData _EnemySecond;
 
-		public FleetData SecondEnemies
+		public FleetData EnemySecond
 		{
 			get
-			{ return this._SecondEnemies; }
+			{ return this._EnemySecond; }
 			set
 			{
-				if (this._SecondEnemies == value)
+				if (this._EnemySecond == value)
 					return;
-				this._SecondEnemies = value;
-				this._SecondEnemies.FleetType = FleetType.SecondEnemy;
+				this._EnemySecond = value;
+				this._EnemySecond.FleetType = FleetType.EnemySecond;
 				this.RaisePropertyChanged();
 			}
 		}
@@ -281,8 +280,10 @@ namespace BattleInfoPlugin.Models
 
 		public BattleData()
 		{
-			this.CurrentSortie = new SortieInfo();
 			this.CurrentBattleFlag = new BattleFlags();
+
+			this.CurrentSortie = new SortieInfo();
+			this.CurrentSortie.Updated += (s, e) => this.RaisePropertyChanged(nameof(this.CurrentSortie));
 
 			this.battleCalculator = new BattleCalculator();
 			this.battleCalculator.Updated += (s, e) => this.RaisePropertyChanged(nameof(battleCalculator));
@@ -426,7 +427,7 @@ namespace BattleInfoPlugin.Models
 					this.BattleName = "연습 - 주간전";
 
 					this.ClearBattleInfo();
-					this.CurrentSortie.Practice();
+					this.CurrentSortie.Practice(this);
 					break;
 			}
 
@@ -444,8 +445,8 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator
 				.Initialize(
-					this.FirstFleet, this.SecondFleet,
-					this.Enemies, this.SecondEnemies
+					this.AliasFirst, this.AliasSecond,
+					this.EnemyFirst, this.EnemySecond
 				)
 				.Update(data, (ApiTypes_Sortie)apiType);
 
@@ -500,8 +501,8 @@ namespace BattleInfoPlugin.Models
 			if (apiType == ApiTypes.sortie_battle_midnight_sp)
 				battleCalculator
 					.Initialize(
-						this.FirstFleet, this.SecondFleet,
-						this.Enemies, this.SecondEnemies
+						this.AliasFirst, this.AliasSecond,
+						this.EnemyFirst, this.EnemySecond
 					);
 
 			battleCalculator.Update(data, (ApiTypes_SortieMidnight)apiType);
@@ -549,8 +550,8 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator
 				.Initialize(
-					this.FirstFleet, this.SecondFleet,
-					this.Enemies, this.SecondEnemies
+					this.AliasFirst, this.AliasSecond,
+					this.EnemyFirst, this.EnemySecond
 				)
 				.Update(data, (ApiTypes_SortieAirBattle)apiType);
 
@@ -605,8 +606,8 @@ namespace BattleInfoPlugin.Models
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
 
 			// 체력 갱신
-			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
-			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined);
 
 			// 대공컷인, 지원함대 갱신
 			this.CurrentBattleFlag.UpdateAntiAirFire(data.api_kouku?.api_stage2?.api_air_fire);
@@ -615,8 +616,8 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator
 				.Initialize(
-					this.FirstFleet, this.SecondFleet,
-					this.Enemies, this.SecondEnemies
+					this.AliasFirst, this.AliasSecond,
+					this.EnemyFirst, this.EnemySecond
 				)
 				.Update(data, (ApiTypes_CombinedBattle)apiType);
 
@@ -663,8 +664,8 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator
 				.Initialize(
-					this.FirstFleet, this.SecondFleet,
-					this.Enemies, this.SecondEnemies
+					this.AliasFirst, this.AliasSecond,
+					this.EnemyFirst, this.EnemySecond
 				)
 				.Update(data, (ApiTypes_CombinedBattleEC)apiType);
 
@@ -698,8 +699,8 @@ namespace BattleInfoPlugin.Models
 			this.UpdateFleets(data.api_deck_id, data, data.api_formation);
 
 			// 체력 갱신
-			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
-			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined);
 
 			// 대공컷인, 지원함대 갱신
 			if (apiType == ApiTypes.combined_airbattle)
@@ -715,8 +716,8 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator
 				.Initialize(
-					this.FirstFleet, this.SecondFleet,
-					this.Enemies, this.SecondEnemies
+					this.AliasFirst, this.AliasSecond,
+					this.EnemyFirst, this.EnemySecond
 				)
 				.Update(data, (ApiTypes_CombinedAirBattle)apiType);
 
@@ -766,13 +767,13 @@ namespace BattleInfoPlugin.Models
 					break;
 			}
 
-			int BeforedayBattleHP = this.FirstFleet.Ships
+			int BeforedayBattleHP = this.AliasFirst.Ships
 				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
 				.Sum(x => x.BeforeNowHP);//리스트 갱신하기전에 HP 최대값을 저장
 
-			int EnemyBeforedayBattle = this.Enemies.Ships.Sum(x => x.BeforeNowHP);
+			int EnemyBeforedayBattle = this.EnemyFirst.Ships.Sum(x => x.BeforeNowHP);
 
-			BeforedayBattleHP += this.SecondFleet.Ships
+			BeforedayBattleHP += this.AliasSecond.Ships
 				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
 				.Sum(x => x.BeforeNowHP);//리스트 갱신하기전에 HP 최대값을 저장
 
@@ -782,11 +783,11 @@ namespace BattleInfoPlugin.Models
 				this.UpdateFleets(data.api_deck_id, data, data.api_formation);
 
 				// 체력 갱신
-				this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+				this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
 			}
 
 			// 체력 갱신
-			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
+			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined);
 
 			// 지원함대, 조명탄, 야간정찰 갱신
 			this.CurrentBattleFlag.UpdateSupport(0, data.api_n_support_flag);
@@ -796,8 +797,8 @@ namespace BattleInfoPlugin.Models
 			if (apiType == ApiTypes.combined_battle_midnight_sp)
 				battleCalculator
 					.Initialize(
-						this.FirstFleet, this.SecondFleet,
-						this.Enemies, this.SecondEnemies
+						this.AliasFirst, this.AliasSecond,
+						this.EnemyFirst, this.EnemySecond
 					);
 
 			battleCalculator.Update(data, (ApiTypes_CombinedMidnight)apiType);
@@ -820,15 +821,15 @@ namespace BattleInfoPlugin.Models
 			AutoSelectTab();
 			this.BattleName = "vs심해연합 - 야전";
 
-			int BeforedayBattleHP = this.FirstFleet.Ships
+			int BeforedayBattleHP = this.AliasFirst.Ships
 				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
 				.Sum(x => x.BeforeNowHP); // 리스트 갱신하기전에 HP 최대값을 저장
-			BeforedayBattleHP += this.SecondFleet.Ships
+			BeforedayBattleHP += this.AliasSecond.Ships
 				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation))
 				.Sum(x => x.BeforeNowHP); // 리스트 갱신하기전에 HP 최대값을 저장
 
-			int EnemyBeforedayBattle = this.Enemies.Ships.Sum(x => x.BeforeNowHP);
-			EnemyBeforedayBattle += this.SecondEnemies.Ships.Sum(x => x.BeforeNowHP);
+			int EnemyBeforedayBattle = this.EnemyFirst.Ships.Sum(x => x.BeforeNowHP);
+			EnemyBeforedayBattle += this.EnemySecond.Ships.Sum(x => x.BeforeNowHP);
 
 			// 적, 아군 함대 정보 갱신
 			this.UpdateFleetsCombinedEnemy(data.api_deck_id, data);
@@ -909,6 +910,9 @@ namespace BattleInfoPlugin.Models
 			if (data.api_m1.HasValue)
 				this.CurrentBattleFlag.MapExtended = (data.api_m1.Value == 1);
 
+			// 현재 노드에 전투 결과를 반영
+			this.CurrentSortie.UpdateResult(this);
+
 			UpdateMVP(data.api_mvp, data.api_mvp_combined ?? 0);
 		}
 
@@ -923,10 +927,10 @@ namespace BattleInfoPlugin.Models
 			var secondMvp = new bool[6];
 
 			if (mvp1 > 0) firstMvp[(mvp1 - 1) % 6] = true;
-			if (FirstFleet != null) FirstFleet.Ships.SetValues(firstMvp, (s, v) => s.IsMvp = v);
+			if (AliasFirst != null) AliasFirst.Ships.SetValues(firstMvp, (s, v) => s.IsMvp = v);
 
 			if (mvp2 > 0) secondMvp[(mvp2 - 1) % 6] = true;
-			if (SecondFleet != null) SecondFleet.Ships.SetValues(secondMvp, (s, v) => s.IsMvp = v);
+			if (AliasSecond != null) AliasSecond.Ships.SetValues(secondMvp, (s, v) => s.IsMvp = v);
 		}
 
 		/// <summary>
@@ -959,20 +963,21 @@ namespace BattleInfoPlugin.Models
 				);
 			}
 
-			// 노드 방문
-			CurrentSortie.Update(
-				data.Data.api_no,
-				data.Data.api_event_kind,
-				data.Data.api_event_id,
-				session
-			);
-
 			// 전투 관련 정보들 초기화
 			this.ClearBattleInfo();
 
 			// 노드 방문만으로 맵이 확장되는 경우
 			if (data.Data.api_m1.HasValue)
 				this.CurrentBattleFlag.MapExtended = (data.Data.api_m1.Value == 1);
+
+			// 노드 방문
+			CurrentSortie.Update(
+				data.Data.api_no,
+				data.Data.api_event_id,
+				data.Data.api_event_kind,
+				session,
+				this
+			);
 
 			// 탭 자동 선택
 			AutoSelectTab();
@@ -984,9 +989,9 @@ namespace BattleInfoPlugin.Models
 		private void ClearBattleInfo()
 		{
 			// Reset enemy fleet
-			this.Enemies = new FleetData();
-			this.SecondEnemies = new FleetData();
-			if (this.FirstFleet != null) this.FirstFleet.Formation = Formation.없음;
+			this.EnemyFirst = new FleetData();
+			this.EnemySecond = new FleetData();
+			if (this.AliasFirst != null) this.AliasFirst.Formation = Formation.없음;
 
 			#region 전투 정보 초기화
 			// 시간 갱신, 전투명 및 드롭 초기화
@@ -995,8 +1000,8 @@ namespace BattleInfoPlugin.Models
 			this.DropShipName = null;
 
 			// MVP 초기화
-			if (this.FirstFleet != null) FirstFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
-			if (this.SecondFleet != null) SecondFleet.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
+			if (this.AliasFirst != null) AliasFirst.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
+			if (this.AliasSecond != null) AliasSecond.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);
 
 			// 각종 플래그들 초기화 (조명탄, 야정 등)
 			this.CurrentBattleFlag.Clear();
@@ -1025,21 +1030,19 @@ namespace BattleInfoPlugin.Models
 			// 아군 정보 모항 기준으로 갱신
 			this.UpdateFriendFleets(api_deck_id);
 
-			this.Enemies = new FleetData(
+			this.EnemyFirst = new FleetData(
 				data.ToMastersShipDataArray(),
-				this.Enemies?.Formation ?? Formation.없음,
-				this.Enemies?.Name ?? "",
-				FleetType.Enemy,
-				this.Enemies?.Rank
+				this.EnemyFirst?.Formation ?? Formation.없음,
+				this.EnemyFirst?.Name ?? "",
+				FleetType.EnemyFirst
 			);
 
 			// 제 2함대는 없음
-			this.SecondEnemies = new FleetData(
+			this.EnemySecond = new FleetData(
 				new MembersShipData[0],
 				Formation.없음,
 				"",
-				FleetType.SecondEnemy,
-				this.SecondEnemies?.Rank
+				FleetType.EnemySecond
 			);
 
 			// 진형과 전투형태 존재하면
@@ -1047,11 +1050,11 @@ namespace BattleInfoPlugin.Models
 			{
 				this.BattleSituation = (BattleSituation)api_formation[2];
 
-				if (this.FirstFleet != null)
-					this.FirstFleet.Formation = (Formation)api_formation[0];
+				if (this.AliasFirst != null)
+					this.AliasFirst.Formation = (Formation)api_formation[0];
 
-				if (this.Enemies != null)
-					this.Enemies.Formation = (Formation)api_formation[1];
+				if (this.EnemyFirst != null)
+					this.EnemyFirst.Formation = (Formation)api_formation[1];
 			}
 
 			// 출격중인 함대 번호 갱신
@@ -1071,20 +1074,18 @@ namespace BattleInfoPlugin.Models
 			// 아군 정보 모항 기준으로 갱신
 			this.UpdateFriendFleets(api_deck_id);
 
-			this.Enemies = new FleetData(
+			this.EnemyFirst = new FleetData(
 				data.ToMastersShipDataArray(),
-				this.Enemies?.Formation ?? Formation.없음,
-				this.Enemies?.Name ?? "",
-				FleetType.Enemy,
-				this.Enemies?.Rank
+				this.EnemyFirst?.Formation ?? Formation.없음,
+				this.EnemyFirst?.Name ?? "",
+				FleetType.EnemyFirst
 			);
 
-			this.SecondEnemies = new FleetData(
+			this.EnemySecond = new FleetData(
 				data.ToMastersSecondShipDataArray(),
-				this.SecondEnemies?.Formation ?? Formation.없음,
-				this.SecondEnemies?.Name ?? "",
-				FleetType.SecondEnemy,
-				this.SecondEnemies?.Rank
+				this.EnemySecond?.Formation ?? Formation.없음,
+				this.EnemySecond?.Name ?? "",
+				FleetType.EnemySecond
 			);
 
 			// 진형과 전투형태 존재하면
@@ -1092,11 +1093,11 @@ namespace BattleInfoPlugin.Models
 			{
 				this.BattleSituation = (BattleSituation)api_formation[2];
 
-				if (this.FirstFleet != null)
-					this.FirstFleet.Formation = (Formation)api_formation[0];
+				if (this.AliasFirst != null)
+					this.AliasFirst.Formation = (Formation)api_formation[0];
 
-				if (this.Enemies != null)
-					this.Enemies.Formation = (Formation)api_formation[1];
+				if (this.EnemyFirst != null)
+					this.EnemyFirst.Formation = (Formation)api_formation[1];
 			}
 
 			// 출격중인 함대 번호 갱신
@@ -1111,19 +1112,19 @@ namespace BattleInfoPlugin.Models
 		{
 			var organization = KanColleClient.Current.Homeport.Organization;
 
-			this.FirstFleet = new FleetData(
+			this.AliasFirst = new FleetData(
 				organization.Fleets[deckID].Ships.Select(s => new MembersShipData(s)).ToArray(),
-				this.FirstFleet?.Formation ?? Formation.없음,
+				this.AliasFirst?.Formation ?? Formation.없음,
 				organization.Fleets[deckID].Name,
-				FleetType.First
+				FleetType.AliasFirst
 			);
-			this.SecondFleet = new FleetData(
+			this.AliasSecond = new FleetData(
 				organization.Combined && deckID == 1
 					? organization.Fleets[2].Ships.Select(s => new MembersShipData(s)).ToArray()
 					: new MembersShipData[0],
-				this.SecondFleet?.Formation ?? Formation.없음,
+				this.AliasSecond?.Formation ?? Formation.없음,
 				organization.Fleets[2].Name,
-				FleetType.Second
+				FleetType.AliasSecond
 			);
 		}
 
@@ -1136,13 +1137,13 @@ namespace BattleInfoPlugin.Models
 		/// <param name="api_e_maxhps_combined">적군 2함대</param>
 		private void UpdateMaxHP(int[] api_f_maxhps, int[] api_e_maxhps, int[] api_f_maxhps_combined = null, int[] api_e_maxhps_combined = null)
 		{
-			this.FirstFleet.Ships.SetValues(api_f_maxhps, (s, v) => s.MaxHP = v);
+			this.AliasFirst.Ships.SetValues(api_f_maxhps, (s, v) => s.MaxHP = v);
 			if (api_f_maxhps_combined != null)
-				this.SecondFleet.Ships.SetValues(api_f_maxhps_combined, (s, v) => s.MaxHP = v);
+				this.AliasSecond.Ships.SetValues(api_f_maxhps_combined, (s, v) => s.MaxHP = v);
 
-			this.Enemies.Ships.SetValues(api_e_maxhps, (s, v) => s.MaxHP = v);
+			this.EnemyFirst.Ships.SetValues(api_e_maxhps, (s, v) => s.MaxHP = v);
 			if (api_e_maxhps_combined != null)
-				this.SecondEnemies.Ships.SetValues(api_e_maxhps_combined, (s, v) => s.MaxHP = v);
+				this.EnemySecond.Ships.SetValues(api_e_maxhps_combined, (s, v) => s.MaxHP = v);
 		}
 
 		/// <summary>
@@ -1154,13 +1155,13 @@ namespace BattleInfoPlugin.Models
 		/// <param name="api_e_nowhps_combined">적군 2함대</param>
 		private void UpdateNowHP(int[] api_f_nowhps, int[] api_e_nowhps, int[] api_f_nowhps_combined = null, int[] api_e_nowhps_combined = null)
 		{
-			this.FirstFleet.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			this.AliasFirst.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
 			if (api_f_nowhps_combined != null)
-				this.SecondFleet.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+				this.AliasSecond.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
 
-			this.Enemies.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			this.EnemyFirst.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
 			if (api_e_nowhps_combined != null)
-				this.SecondEnemies.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+				this.EnemySecond.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
 		}
 
 		/// <summary>
@@ -1179,39 +1180,39 @@ namespace BattleInfoPlugin.Models
 		{
 			try
 			{
-				var AliasFirstShips = this.FirstFleet.Ships
+				var AliasFirstShips = this.AliasFirst.Ships
 					.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
 				var ShipCount = AliasFirstShips.Count();
-				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x.Source.NowHP < 0);
-				var AliasMax = AliasFirstShips.Sum(x => x.BeforeNowHP);
-				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x.TotalDamaged);
+				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x?.Source.NowHP < 0);
+				var AliasMax = AliasFirstShips.Sum(x => x?.BeforeNowHP ?? 0);
+				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x?.TotalDamaged ?? 0);
 
-				var EnemyFirstShips = this.Enemies.Ships;
+				var EnemyFirstShips = this.EnemyFirst.Ships;
 				var EnemyShipCount = EnemyFirstShips.Count();
-				var EnemySinkCount = battleCalculator.EnemyFirstShips.Count(x => x.Source.NowHP < 0);
-				var EnemyMax = EnemyFirstShips.Sum(x => x.BeforeNowHP);
-				var EnemyDamaged = battleCalculator.EnemyFirstShips.Sum(x => x.TotalDamaged);
+				var EnemySinkCount = battleCalculator.EnemyFirstShips.Count(x => x?.Source.NowHP < 0);
+				var EnemyMax = EnemyFirstShips.Sum(x => x?.BeforeNowHP ?? 0);
+				var EnemyDamaged = battleCalculator.EnemyFirstShips.Sum(x => x?.TotalDamaged ?? 0);
 
 				if (IsCombined)
 				{
-					var AliasSecondShips = this.SecondFleet.Ships
+					var AliasSecondShips = this.AliasSecond.Ships
 						.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
 					ShipCount += AliasSecondShips.Count();
-					SinkCount += battleCalculator.AliasSecondShips.Count(x => x.Source.NowHP < 0);
-					AliasMax += AliasSecondShips.Sum(x => x.BeforeNowHP);
-					AliasDamaged += battleCalculator.AliasSecondShips.Sum(x => x.TotalDamaged);
+					SinkCount += battleCalculator.AliasSecondShips.Count(x => x?.Source.NowHP < 0);
+					AliasMax += AliasSecondShips.Sum(x => x?.BeforeNowHP ?? 0);
+					AliasDamaged += battleCalculator.AliasSecondShips.Sum(x => x?.TotalDamaged ?? 0);
 				}
 				if (IsEnemyCombined)
 				{
-					var EnemySecondShips = this.SecondEnemies.Ships;
+					var EnemySecondShips = this.EnemySecond.Ships;
 					EnemyShipCount += EnemySecondShips.Count();
-					EnemySinkCount += battleCalculator.EnemySecondShips.Count(x => x.Source.NowHP < 0);
-					EnemyMax += EnemySecondShips.Sum(x => x.BeforeNowHP);
-					EnemyDamaged += battleCalculator.EnemySecondShips.Sum(x => x.TotalDamaged);
+					EnemySinkCount += battleCalculator.EnemySecondShips.Count(x => x?.Source.NowHP < 0);
+					EnemyMax += EnemySecondShips.Sum(x => x?.BeforeNowHP ?? 0);
+					EnemyDamaged += battleCalculator.EnemySecondShips.Sum(x => x?.TotalDamaged ?? 0);
 				}
 
 				var IsShipSink = SinkCount > 0;
-				var flagshipSink = this.Enemies.Ships.First().NowHP < 0;
+				var flagshipSink = this.EnemyFirst.Ships.First().NowHP < 0;
 
 				decimal AliasDamagedPercent = AliasDamaged / (decimal)AliasMax; // 아군이 받은 총 데미지
 				decimal EnemyDamagedPercent = EnemyDamaged / (decimal)EnemyMax; // 적군이 받은 총 데미지
@@ -1220,8 +1221,8 @@ namespace BattleInfoPlugin.Models
 					? -1 // same with x2.5
 					: (decimal)EnemyDamagedPercent / AliasDamagedPercent;
 
-				this.FirstFleet.AttackGauge = this.MakeGaugeText(EnemyDamaged, EnemyMax, EnemyDamagedPercent);
-				this.Enemies.AttackGauge = this.MakeGaugeText(AliasDamaged, AliasMax, AliasDamagedPercent);
+				this.AliasFirst.AttackGauge = this.MakeGaugeText(EnemyDamaged, EnemyMax, EnemyDamagedPercent);
+				this.EnemyFirst.AttackGauge = this.MakeGaugeText(AliasDamaged, AliasMax, AliasDamagedPercent);
 
 				if (!IsShipSink)
 				{
@@ -1261,15 +1262,15 @@ namespace BattleInfoPlugin.Models
 		{
 			try
 			{
-				var AliasFirstShips = this.FirstFleet.Ships
+				var AliasFirstShips = this.AliasFirst.Ships
 					.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
-				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x.Source.NowHP < 0);
-				var AliasMax = AliasFirstShips.Sum(x => x.BeforeNowHP);
-				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x.TotalDamaged);
+				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x?.Source.NowHP < 0);
+				var AliasMax = AliasFirstShips.Sum(x => x?.BeforeNowHP ?? 0);
+				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x?.TotalDamaged ?? 0);
 
 				if (IsCombined)
 				{
-					var AliasSecondShips = this.SecondFleet.Ships
+					var AliasSecondShips = this.AliasSecond.Ships
 						.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
 
 					SinkCount += battleCalculator.AliasSecondShips.Count(x => x.Source.NowHP < 0);
@@ -1281,8 +1282,8 @@ namespace BattleInfoPlugin.Models
 				var IsShipSink = SinkCount > 0;
 				decimal AliasDamagedPercent = AliasDamaged / (decimal)AliasMax; // 아군이 받은 총 데미지
 
-				this.FirstFleet.AttackGauge = ""; // 항공전/공습전은 받은 데미지로만 계산됨
-				this.Enemies.AttackGauge = this.MakeGaugeText(AliasDamaged, AliasMax, AliasDamagedPercent);
+				this.AliasFirst.AttackGauge = ""; // 항공전/공습전은 받은 데미지로만 계산됨
+				this.EnemyFirst.AttackGauge = this.MakeGaugeText(AliasDamaged, AliasMax, AliasDamagedPercent);
 
 				if (AliasDamaged > 0)
 				{

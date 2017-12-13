@@ -322,11 +322,23 @@ namespace BattleInfoPlugin.Models
 			public int TotalDealt => this.DamageList.Where(x => x.IsDealt).Sum(x => x.Damage);
 
 
+			private ShipBattleInfo(ShipBattleInfo source)
+			{
+				this.Index = source.Index;
+				this.Source = source.Source.Clone();
+				this.DamageList = source.DamageList?.ToList();
+			}
+
 			public ShipBattleInfo(int Index, ShipData Source)
 			{
 				this.Index = Index;
 				this.Source = Source;
-				this.DamageList = null;
+				this.DamageList = new List<DamageLog>();
+			}
+
+			public ShipBattleInfo Clone()
+			{
+				return new ShipBattleInfo(this);
 			}
 
 			/// <summary>
@@ -502,7 +514,25 @@ namespace BattleInfoPlugin.Models
 		/// </summary>
 		public int MVP_Second { get; private set; } = 0;
 		#endregion
+		 
 
+		/// <summary>
+		/// 같은 값을 가지는 새 객체를 반환
+		/// </summary>
+		/// <returns></returns>
+		public BattleCalculator Clone()
+		{
+			return new BattleCalculator
+			{
+				AliasFirstShips = this.AliasFirstShips?.Select(x => x?.Clone()).ToArray(),
+				AliasSecondShips = this.AliasSecondShips?.Select(x => x?.Clone()).ToArray(),
+				EnemyFirstShips = this.EnemyFirstShips?.Select(x => x?.Clone()).ToArray(),
+				EnemySecondShips = this.EnemySecondShips?.Select(x => x?.Clone()).ToArray(),
+
+				MVP_First = this.MVP_First,
+				MVP_Second = this.MVP_Second
+			};
+		}
 
 		/// <summary>
 		/// 초기화
@@ -516,7 +546,7 @@ namespace BattleInfoPlugin.Models
 			if (aliasSecond == null || aliasSecond.Ships.Count() == 0)
 			{
 				// 단일함대
-				this.AliasFirstShips = new ShipBattleInfo[aliasShipsFirst.Length];
+				this.AliasFirstShips = new ShipBattleInfo[7];
 				this.AliasSecondShips = null;
 
 				for (var i = 0; i < aliasShipsFirst.Length; i++)
@@ -527,8 +557,8 @@ namespace BattleInfoPlugin.Models
 				var aliasShipsSecond = aliasSecond.Ships.ToArray();
 
 				// 연합함대
-				this.AliasFirstShips = new ShipBattleInfo[aliasShipsFirst.Length];
-				this.AliasSecondShips = new ShipBattleInfo[aliasShipsSecond.Length];
+				this.AliasFirstShips = new ShipBattleInfo[7];
+				this.AliasSecondShips = new ShipBattleInfo[7];
 
 				for (var i = 0; i < aliasShipsFirst.Length; i++)
 					this.AliasFirstShips[i] = new ShipBattleInfo(i + 1, aliasShipsFirst[i]);
@@ -541,7 +571,7 @@ namespace BattleInfoPlugin.Models
 			if (enemySecond == null || enemySecond.Ships.Count() == 0)
 			{
 				// 단일함대
-				this.EnemyFirstShips = new ShipBattleInfo[enemyShipsFirst.Length];
+				this.EnemyFirstShips = new ShipBattleInfo[7];
 				this.EnemySecondShips = null;
 
 				for (var i = 0; i < enemyShipsFirst.Length; i++)
@@ -552,8 +582,8 @@ namespace BattleInfoPlugin.Models
 				var enemyShipsSecond = enemySecond.Ships.ToArray();
 
 				// 연합함대
-				this.EnemyFirstShips = new ShipBattleInfo[enemyShipsFirst.Length];
-				this.EnemySecondShips = new ShipBattleInfo[enemyShipsSecond.Length];
+				this.EnemyFirstShips = new ShipBattleInfo[7];
+				this.EnemySecondShips = new ShipBattleInfo[7];
 
 				for (var i = 0; i < enemyShipsFirst.Length; i++)
 					this.EnemyFirstShips[i] = new ShipBattleInfo(i + 1, enemyShipsFirst[i]);
@@ -586,8 +616,11 @@ namespace BattleInfoPlugin.Models
 			this.UpdateAirBattle(data.api_air_base_injection, BattlePhase.airbase_injection);
 
 			// 기지항공대 항공전
-			foreach (var _data in data.api_air_base_attack)
-				this.UpdateAirBattle(_data, BattlePhase.airbase_attack);
+			if (data.api_air_base_attack != null)
+			{
+				foreach (var _data in data.api_air_base_attack)
+					this.UpdateAirBattle(_data, BattlePhase.airbase_attack);
+			}
 
 			// 분식 항공전
 			this.UpdateAirBattle(data.api_injection_kouku, BattlePhase.injection_kouku);
@@ -690,6 +723,7 @@ namespace BattleInfoPlugin.Models
 
 			// MVP 산출
 			this.MVP_First = this.AliasFirstShips
+				?.Where(x => x != null)
 				?.OrderByDescending(x => x.TotalDealt)
 				?.FirstOrDefault()
 				?.Index ?? 0;
@@ -727,8 +761,11 @@ namespace BattleInfoPlugin.Models
 			this.UpdateAirBattle(data.api_air_base_injection, BattlePhase.airbase_injection);
 
 			// 기지항공대 항공전
-			foreach (var _data in data.api_air_base_attack)
-				this.UpdateAirBattle(_data, BattlePhase.airbase_attack);
+			if (data.api_air_base_attack != null)
+			{
+				foreach (var _data in data.api_air_base_attack)
+					this.UpdateAirBattle(_data, BattlePhase.airbase_attack);
+			}
 
 			// 분식 항공전
 			this.UpdateAirBattle(data.api_injection_kouku, BattlePhase.injection_kouku);
@@ -790,9 +827,9 @@ namespace BattleInfoPlugin.Models
 					for (int i = 0; i < api_fdam.Length; i++)
 					{
 						if (IsCombined && i >= 6)
-							AliasSecondShips[i - 6].Damaged(api_fdam[i], phase, -1, DamageType.Normal);
+							AliasSecondShips[i - 6]?.Damaged(api_fdam[i], phase, -1, DamageType.Normal);
 						else
-							AliasFirstShips[i].Damaged(api_fdam[i], phase, -1, DamageType.Normal);
+							AliasFirstShips[i]?.Damaged(api_fdam[i], phase, -1, DamageType.Normal);
 					}
 				}
 
@@ -802,9 +839,9 @@ namespace BattleInfoPlugin.Models
 					for (int i = 0; i < api_edam.Length; i++)
 					{
 						if (IsEnemyCombined && i >= 6)
-							EnemySecondShips[i - 6].Damaged(api_edam[i], phase, -1, DamageType.Normal);
+							EnemySecondShips[i - 6]?.Damaged(api_edam[i], phase, -1, DamageType.Normal);
 						else
-							EnemyFirstShips[i].Damaged(api_edam[i], phase, -1, DamageType.Normal);
+							EnemyFirstShips[i]?.Damaged(api_edam[i], phase, -1, DamageType.Normal);
 					}
 				}
 			}
@@ -816,9 +853,9 @@ namespace BattleInfoPlugin.Models
 					for (int i = 0; i < api_fdam.Length; i++)
 					{
 						if (IsCombined && i >= 6)
-							AliasSecondShips[i - 6].Damaged(api_fdam[i], phase, -1, DamageType.Normal);
+							AliasSecondShips[i - 6]?.Damaged(api_fdam[i], phase, -1, DamageType.Normal);
 						else
-							AliasFirstShips[i].Damaged(api_fdam[i], phase, -1, DamageType.Normal);
+							AliasFirstShips[i]?.Damaged(api_fdam[i], phase, -1, DamageType.Normal);
 					}
 				}
 
@@ -828,9 +865,9 @@ namespace BattleInfoPlugin.Models
 					for (int i = 0; i < api_edam.Length; i++)
 					{
 						if (IsEnemyCombined && i >= 6)
-							EnemySecondShips[i - 6].Damaged(api_edam[i], phase, -1, DamageType.Normal);
+							EnemySecondShips[i - 6]?.Damaged(api_edam[i], phase, -1, DamageType.Normal);
 						else
-							EnemyFirstShips[i].Damaged(api_edam[i], phase, -1, DamageType.Normal);
+							EnemyFirstShips[i]?.Damaged(api_edam[i], phase, -1, DamageType.Normal);
 					}
 				}
 			}
@@ -841,6 +878,8 @@ namespace BattleInfoPlugin.Models
 		/// </summary>
 		private void UpdateSupport(Api_Support_Info data, BattlePhase phase)
 		{
+			if (data == null) return;
+
 			decimal[] damages = null;
 			decimal[] damages_combined = null;
 
@@ -860,15 +899,15 @@ namespace BattleInfoPlugin.Models
 				for (int i = 0; i < damages.Length; i++)
 				{
 					if (i < 6)
-						EnemyFirstShips[i].Damaged(damages[i], phase, -1, DamageType.Normal);
+						EnemyFirstShips[i]?.Damaged(damages[i], phase, -1, DamageType.Normal);
 					else
-						EnemySecondShips[i - 6].Damaged(damages[i], phase, -1, DamageType.Normal);
+						EnemySecondShips[i - 6]?.Damaged(damages[i], phase, -1, DamageType.Normal);
 				}
 			}
 			if (damages_combined != null)
 			{
 				for (int i = 0; i < damages_combined.Length; i++)
-					EnemySecondShips[i].Damaged(damages_combined[i], phase, -1, DamageType.Normal);
+					EnemySecondShips[i]?.Damaged(damages_combined[i], phase, -1, DamageType.Normal);
 			}
 		}
 
@@ -903,15 +942,15 @@ namespace BattleInfoPlugin.Models
 						// 아군이 공격 (적군이 맞음)
 						if (eflag == 0)
 						{
-							EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
-							AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+							EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
+							AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 						}
 
 						// 적군이 공격 (아군이 맞음)
 						else
 						{
-							AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
-							EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+							AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
+							EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 						}
 					}
 				}
@@ -955,23 +994,23 @@ namespace BattleInfoPlugin.Models
 								// 아군이 공격 (적군이 맞음)
 								if (eflag == 0)
 								{
-									EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 
 								// 적군이 공격 (아군이 맞음)
 								else
 								{
-									AliasSecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasSecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 							}
 							else
@@ -979,23 +1018,23 @@ namespace BattleInfoPlugin.Models
 								// 아군이 공격 (적군이 맞음)
 								if (eflag == 0)
 								{
-									EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 
 								// 적군이 공격 (아군이 맞음)
 								else
 								{
-									AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 							}
 						}
@@ -1006,23 +1045,23 @@ namespace BattleInfoPlugin.Models
 								// 아군이 공격 (적군이 맞음)
 								if (eflag == 0)
 								{
-									EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 
 								// 적군이 공격 (아군이 맞음)
 								else
 								{
-									AliasSecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasSecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 							}
 							else
@@ -1030,23 +1069,23 @@ namespace BattleInfoPlugin.Models
 								// 아군이 공격 (적군이 맞음)
 								if (eflag == 0)
 								{
-									EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 
 								// 적군이 공격 (아군이 맞음)
 								else
 								{
-									AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 									if (IsCombined && from >= 6)
-										EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 									else
-										EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+										EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								}
 							}
 						}
@@ -1089,23 +1128,23 @@ namespace BattleInfoPlugin.Models
 							// 아군이 공격 (적군이 맞음)
 							if (eflag == 0)
 							{
-								EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+								EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsCombined && from >= 6)
-									AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 
 							// 적군이 공격 (아군이 맞음)
 							else
 							{
-								AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+								AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsCombined && from >= 6)
-									EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 						}
 						else if (combinedPhase == EachCombinedPhase.SecondPhase)
@@ -1113,26 +1152,26 @@ namespace BattleInfoPlugin.Models
 							// 아군이 공격 (적군이 맞음)
 							if (eflag == 0)
 							{
-								EnemySecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+								EnemySecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsCombined && from >= 6)
-									AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 
 							// 적군이 공격 (아군이 맞음)
 							else
 							{
 								if (combinedType == CombinedType.Default || combinedType == CombinedType.Water)
-									AliasSecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasSecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 								else
-									AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsEnemyCombined && from >= 6)
-									EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 						}
 						else if (combinedPhase == EachCombinedPhase.AllPhase)
@@ -1141,28 +1180,28 @@ namespace BattleInfoPlugin.Models
 							if (eflag == 0)
 							{
 								if (IsEnemyCombined && target_idx >= 6)
-									EnemySecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemySecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 								else
-									EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsCombined && from >= 6)
-									AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									AliasFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									AliasFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 
 							// 적군이 공격 (아군이 맞음)
 							else
 							{
 								if (IsCombined && target_idx >= 6)
-									AliasSecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasSecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 								else
-									AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, (DamageType)type);
+									AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, (DamageType)type);
 
 								if (IsEnemyCombined && from >= 6)
-									EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, (DamageType)type);
 								else
-									EnemyFirstShips[from].Dealt(target_dmg[j], phase, (DamageType)type);
+									EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, (DamageType)type);
 							}
 						}
 					}
@@ -1202,28 +1241,28 @@ namespace BattleInfoPlugin.Models
 						if (eflag == 0)
 						{
 							if (enemy_deck == 1)
-								EnemyFirstShips[target_idx].Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
+								EnemyFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
 							else
-								EnemySecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
+								EnemySecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
 
 							if (IsCombined && from >= 6)
-								AliasSecondShips[from - 6].Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
+								AliasSecondShips[from - 6]?.Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
 							else
-								AliasFirstShips[from].Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
+								AliasFirstShips[from]?.Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
 						}
 
 						// 적군이 공격 (아군이 맞음)
 						else
 						{
 							if (IsCombined && target_idx >= 6)
-								AliasFirstShips[target_idx].Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
+								AliasFirstShips[target_idx]?.Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
 							else
-								AliasSecondShips[target_idx - 6].Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
+								AliasSecondShips[target_idx - 6]?.Damaged(target_dmg[j], phase, from, DamageTypeFromSP(type));
 
 							if (enemy_deck == 1)
-								EnemyFirstShips[from].Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
+								EnemyFirstShips[from]?.Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
 							else
-								EnemySecondShips[from - 6].Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
+								EnemySecondShips[from - 6]?.Dealt(target_dmg[j], phase, DamageTypeFromSP(type));
 						}
 					}
 				}
@@ -1245,30 +1284,32 @@ namespace BattleInfoPlugin.Models
 			for (int i = 0; i < frai.Length; i++)
 			{
 				var idx = frai[i];
+				if (idx < 0) continue;
 
 				if (IsEnemyCombined && idx >= 6)
-					EnemySecondShips[idx - 6].Damaged(fydam[i], phase, -1, DamageType.Normal);
+					EnemySecondShips[idx - 6]?.Damaged(fydam[i], phase, -1, DamageType.Normal);
 				else
-					EnemyFirstShips[idx].Damaged(fydam[i], phase, -1, DamageType.Normal);
+					EnemyFirstShips[idx]?.Damaged(fydam[i], phase, -1, DamageType.Normal);
 
 				if (IsCombined && i >= 6)
-					AliasSecondShips[i - 6].Dealt(fydam[i], phase, DamageType.Normal);
+					AliasSecondShips[i - 6]?.Dealt(fydam[i], phase, DamageType.Normal);
 				else
-					AliasFirstShips[i].Dealt(fydam[i], phase, DamageType.Normal);
+					AliasFirstShips[i]?.Dealt(fydam[i], phase, DamageType.Normal);
 			}
 			for (int i = 0; i < erai.Length; i++)
 			{
 				var idx = erai[i];
+				if (idx < 0) continue;
 
 				if (IsCombined && idx >= 6)
-					AliasSecondShips[idx - 6].Damaged(eydam[i], phase, -1, DamageType.Normal);
+					AliasSecondShips[idx - 6]?.Damaged(eydam[i], phase, -1, DamageType.Normal);
 				else
-					AliasFirstShips[idx].Damaged(eydam[i], phase, -1, DamageType.Normal);
+					AliasFirstShips[idx]?.Damaged(eydam[i], phase, -1, DamageType.Normal);
 
 				if (IsEnemyCombined && i >= 6)
-					EnemySecondShips[i - 6].Dealt(eydam[i], phase, DamageType.Normal);
+					EnemySecondShips[i - 6]?.Dealt(eydam[i], phase, DamageType.Normal);
 				else
-					EnemyFirstShips[i].Dealt(eydam[i], phase, DamageType.Normal);
+					EnemyFirstShips[i]?.Dealt(eydam[i], phase, DamageType.Normal);
 			}
 		}
 

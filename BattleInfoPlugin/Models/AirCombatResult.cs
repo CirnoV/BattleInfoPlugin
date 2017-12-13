@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 
 namespace BattleInfoPlugin.Models
 {
-	public class AirCombatResult
+	public struct AirCombatResult
 	{
 		public string Name { get; }
 		public bool IsHappen { get; }
+
 		public int FriendCount { get; }
 		public int FriendLostCount { get; }
 		public int FriendRemainingCount => this.FriendCount - this.FriendLostCount;
+
 		public int EnemyCount { get; }
 		public int EnemyLostCount { get; }
 		public int EnemyRemainingCount => this.EnemyCount - this.EnemyLostCount;
+
 		public AirCombatResult(string name, int fCount, int fLost, int eCount, int eLost, bool isHappen = true)
 		{
 			this.Name = name;

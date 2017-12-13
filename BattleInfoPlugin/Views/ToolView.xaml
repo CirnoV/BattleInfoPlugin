@@ -4,18 +4,27 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:views="clr-namespace:BattleInfoPlugin.Views"
+			 xmlns:viewmodels="clr-namespace:BattleInfoPlugin.ViewModels"
 			 xmlns:converters="clr-namespace:BattleInfoPlugin.Views.Converters"
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
 			 xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
 			 xmlns:models="clr-namespace:BattleInfoPlugin.Models"
+			 xmlns:metro2="clr-namespace:MetroTrilithon.UI.Controls;assembly=MetroTrilithon.Desktop"
 			 Foreground="{DynamicResource ActiveForegroundBrushKey}"
+			 d:DataContext="{d:DesignInstance viewmodels:ToolViewModel}"
 			 mc:Ignorable="d"
+			 x:Name="RootElement"
 			 d:DesignWidth="800"
 			 d:DesignHeight="440">
 
 	<UserControl.Resources>
 		<ResourceDictionary>
+			<converters:SupportUsedConverter x:Key="SupportUsedConverter" />
+			<converters:UsedFlagConverter x:Key="UsedFlagConverter" />
+			<converters:AntiAirFireConverter x:Key="AntiAirFireConverter" />
+			<converters:NodeEventIdColorConverter x:Key="NodeEventIdColorConverter" />
+
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="../Styles/PluginStyle.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
@@ -24,9 +33,9 @@
 
 	<i:Interaction.Triggers>
 		<l:InteractionMessageTrigger Messenger="{Binding Messenger}"
-									 MessageKey="Show/EnemyWindow">
+									 MessageKey="Show/HistoryWindow">
 			<l:TransitionInteractionMessageAction Mode="NewOrActive"
-												  WindowType="views:EnemyWindow"
+												  WindowType="views:HistoryWindow"
 												  IsOwned="False" />
 		</l:InteractionMessageTrigger>
 	</i:Interaction.Triggers>
@@ -87,13 +96,13 @@
 							</TextBlock>
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="지원함대:"/>
-								<Run Text="{Binding SupportUsed, Mode=OneWay}"
+								<Run Text="{Binding CurrentBattleFlag.SupportUsed, Mode=OneWay, Converter={StaticResource SupportUsedConverter}}"
 									 FontSize="12">
 									<Run.Style>
 										<Style TargetType="{x:Type Run}">
 											<Setter Property="Foreground" Value="#FFFFFFFF" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding SupportUsed, Mode=OneWay}" Value="지원 없음">
+												<DataTrigger Binding="{Binding CurrentBattleFlag.SupportUsed, Mode=OneWay}" Value="Unused">
 													<Setter Property="Foreground" Value="#80FFFFFF" />
 												</DataTrigger>
 											</Style.Triggers>
@@ -105,13 +114,13 @@
 						<StackPanel Grid.Column="2">
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="조명탄:　"/>
-								<Run Text="{Binding FlareUsed, Mode=OneWay}"
+								<Run Text="{Binding CurrentBattleFlag.FlareUsed, Mode=OneWay, Converter={StaticResource UsedFlagConverter}}"
 									 FontSize="12">
 									<Run.Style>
 										<Style TargetType="{x:Type Run}">
 											<Setter Property="Foreground" Value="#FFFFFFFF" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding FlareUsed, Mode=OneWay}" Value="발동 안됨">
+												<DataTrigger Binding="{Binding CurrentBattleFlag.FlareUsed, Mode=OneWay}" Value="Unused">
 													<Setter Property="Foreground" Value="#80FFFFFF" />
 												</DataTrigger>
 											</Style.Triggers>
@@ -121,13 +130,13 @@
 							</TextBlock>
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="야간정찰:"/>
-								<Run Text="{Binding NightReconScouted, Mode=OneWay}"
+								<Run Text="{Binding CurrentBattleFlag.NightReconScouted, Mode=OneWay, Converter={StaticResource UsedFlagConverter}}"
 									 FontSize="12">
 									<Run.Style>
 										<Style TargetType="{x:Type Run}">
 											<Setter Property="Foreground" Value="#FFFFFFFF" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding NightReconScouted, Mode=OneWay}" Value="발동 안됨">
+												<DataTrigger Binding="{Binding CurrentBattleFlag.NightReconScouted, Mode=OneWay}" Value="Unused">
 													<Setter Property="Foreground" Value="#80FFFFFF" />
 												</DataTrigger>
 											</Style.Triggers>
@@ -137,13 +146,13 @@
 							</TextBlock>
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="대공컷인:"/>
-								<Run Text="{Binding AntiAirFired, Mode=OneWay}"
+								<Run Text="{Binding CurrentBattleFlag.AntiAirFired, Mode=OneWay, Converter={StaticResource AntiAirFireConverter}}"
 									 FontSize="12">
 									<Run.Style>
 										<Style TargetType="{x:Type Run}">
 											<Setter Property="Foreground" Value="#FFFFFFFF" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding AntiAirFired, Mode=OneWay}" Value="발동 안됨">
+												<DataTrigger Binding="{Binding CurrentBattleFlag.AntiAirFired, Mode=OneWay}" Value="Unused">
 													<Setter Property="Foreground" Value="#80FFFFFF" />
 												</DataTrigger>
 											</Style.Triggers>
@@ -152,20 +161,6 @@
 								</Run>
 							</TextBlock>
 						</StackPanel>
-<!--
-						<Button Grid.Column="3"
-								Content="적 정보 목록"
-								VerticalAlignment="Stretch"
-								HorizontalAlignment="Right"
-								Margin="0,3,4,0">
-							<i:Interaction.Triggers>
-								<i:EventTrigger EventName="Click">
-									<ei:CallMethodAction TargetObject="{Binding}"
-														 MethodName="OpenEnemyWindow"/>
-								</i:EventTrigger>
-							</i:Interaction.Triggers>
-						</Button>
--->
 					</Grid>
 
 					<Rectangle Height="1"
@@ -187,20 +182,20 @@
 							   Padding="10,2"
 							   Foreground="White"
 							   Background="#FF007ACC">
-						<Run Text="{Binding CurrentMap, Mode=OneWay}" />
+						<Run Text="{Binding CurrentSortie.MapDisplay, Mode=OneWay}" />
 
 						<TextBlock.Style>
 							<Style TargetType="TextBlock">
 								<Style.Triggers>
-									<DataTrigger Binding="{Binding CurrentMap}" Value="">
+									<DataTrigger Binding="{Binding CurrentSortie.MapDisplay}" Value="0-0">
 										<Setter Property="Visibility" Value="Collapsed" />
 									</DataTrigger>
 								</Style.Triggers>
 							</Style>
 						</TextBlock.Style>
 					</TextBlock>
-					
-					<ItemsControl ItemsSource="{Binding Cells}"
+
+					<ItemsControl ItemsSource="{Binding CurrentSortie.NodeHistory}"
 								  Grid.Column="1"
 								  HorizontalAlignment="Right">
 						<ItemsControl.ItemsPanel>
@@ -208,28 +203,65 @@
 								<StackPanel Orientation="Horizontal"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<TextBlock HorizontalAlignment="Right" VerticalAlignment="Center"
-											Margin="4,2"
-											Padding="10,2"
-											Foreground="White"
-											Background="{Binding CellEvent, Converter={StaticResource CellEventToEventColor}}">
-									<Run Text="{Binding CellName, Mode=OneWay}" />
-									<Run Text="{Binding CellText, Mode=OneWay}"/>
+						<ItemsControl.Resources>
+							<DataTemplate DataType="{x:Type models:SortieNodeData}">
+								<metro2:CallMethodButton HorizontalAlignment="Right"
+														 VerticalAlignment="Center"
+														 Cursor="Hand"
+														 Margin="4,2"
+														 Padding="10,2"
+														 Foreground="White"
+														 Background="{Binding EventInfo.Id, Converter={StaticResource NodeEventIdColorConverter}}"
+														 MethodName="OpenHistoryWindow"
+														 MethodParameter="{Binding}"
+														 MethodTarget="{Binding Path=DataContext, ElementName=RootElement}">
 
-									<TextBlock.Style>
-										<Style TargetType="TextBlock">
+									<metro2:CallMethodButton.ToolTip>
+										<TextBlock Padding="0,5"
+												   Foreground="White"
+												   Text="{Binding Description, Mode=OneWay}" />
+									</metro2:CallMethodButton.ToolTip>
+									<metro2:CallMethodButton.Style>
+										<Style TargetType="Button">
+											<Setter Property="Content" Value="{Binding FullName, Mode=OneWay}" />
+
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding IsOld}" Value="True">
+												<DataTrigger Binding="{Binding Outdated}" Value="True">
 													<Setter Property="Opacity" Value="0.46"/>
+													<Setter Property="Content" Value="{Binding Name, Mode=OneWay}" />
 												</DataTrigger>
 											</Style.Triggers>
 										</Style>
-									</TextBlock.Style>
-								</TextBlock>
+									</metro2:CallMethodButton.Style>
+								</metro2:CallMethodButton>
 							</DataTemplate>
-						</ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type models:PracticeNodeData}">
+								<metro2:CallMethodButton HorizontalAlignment="Right"
+														 VerticalAlignment="Center"
+														 Cursor="Hand"
+														 Margin="4,2"
+														 Padding="10,2"
+														 Foreground="White"
+														 Background="#FF8DC660"
+														 Content="연습전"
+														 MethodName="OpenHistoryWindow"
+														 MethodParameter="{Binding}"
+														 MethodTarget="{Binding Path=DataContext, ElementName=RootElement}" />
+							</DataTemplate>
+							<DataTemplate DataType="{x:Type models:BaseNodeData}">
+								<metro2:CallMethodButton HorizontalAlignment="Right"
+														 VerticalAlignment="Center"
+														 Cursor="Hand"
+														 Margin="4,2"
+														 Padding="10,2"
+														 Foreground="White"
+														 Background="#48FFFFFF"
+														 Content="{Binding FullName}"
+														 MethodName="OpenHistoryWindow"
+														 MethodParameter="{Binding}"
+														 MethodTarget="{Binding Path=DataContext, ElementName=RootElement}" />
+							</DataTemplate>
+						</ItemsControl.Resources>
 					</ItemsControl>
 				</Grid>
 				<StackPanel Orientation="Horizontal"
@@ -310,33 +342,30 @@
 							</Style>
 						</TextBlock.Style>
 					</TextBlock>
-				</StackPanel>
 
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-				    <TextBlock Padding="8,5"
-						       FontSize="16"
-						       FontWeight="Bold"
-						       TextAlignment="Center"
-						       Text="기믹 발동됨"
-						       Foreground="#FF40C820"
-						       Visibility="{Binding MechanismOn, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
-                    <TextBlock Padding="8,5"
-						       FontSize="16"
-						       FontWeight="Bold"
-						       TextAlignment="Center"
-						       Text="맵 확장됨"
-						       Foreground="Gold"
-						       Visibility="{Binding MapExtended, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
-                </StackPanel>
-            </StackPanel>
+					<TextBlock Padding="10,6"
+							   FontSize="18"
+							   FontWeight="ExtraBold"
+							   TextAlignment="Center"
+							   Text="기믹발동"
+							   Foreground="#FF40C820"
+							   Visibility="{Binding CurrentBattleFlag.MechanismOn, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+					<TextBlock Padding="10,6"
+							   FontSize="18"
+							   FontWeight="ExtraBold"
+							   TextAlignment="Center"
+							   Text="맵 확장"
+							   Foreground="Gold"
+							   Visibility="{Binding CurrentBattleFlag.MapExtended, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+				</StackPanel>
+			</StackPanel>
 
 			<StackPanel Grid.Row="2"
 						Orientation="Horizontal">
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding FirstFleet}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding SecondFleet}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding SecondEnemies}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding Enemies}" />
+				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasFirst}" />
+				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasSecond}" />
+				<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemySecond}" />
+				<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemyFirst}" />
 			</StackPanel>
 
 			<Expander Grid.Row="3"

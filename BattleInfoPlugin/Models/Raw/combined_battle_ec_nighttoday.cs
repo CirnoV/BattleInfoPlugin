@@ -47,6 +47,7 @@
 		public Hougeki api_opening_taisen { get; set; }
 		public int api_opening_flag { get; set; }
 		public Raigeki api_opening_atack { get; set; }
+
 		public int[] api_hourai_flag { get; set; }
 		public Hougeki api_hougeki1 { get; set; }
 		public Hougeki api_hougeki2 { get; set; }

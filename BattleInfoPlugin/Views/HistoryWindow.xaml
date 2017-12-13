@@ -1,0 +1,367 @@
+﻿<metro:MetroWindow x:Class="BattleInfoPlugin.Views.HistoryWindow"
+				   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+				   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				   xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
+				   xmlns:views="clr-namespace:BattleInfoPlugin.Views"
+				   xmlns:viewmodels="clr-namespace:BattleInfoPlugin.ViewModels"
+				   xmlns:models="clr-namespace:BattleInfoPlugin.Models"
+				   xmlns:converters="clr-namespace:BattleInfoPlugin.Views.Converters"
+				   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+				   xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+				   xmlns:controls="clr-namespace:Grabacr07.KanColleViewer.Controls;assembly=KanColleViewer.Controls"
+				   mc:Ignorable="d" 
+				   Title="전투 세부 기록"
+				   Width="640"
+				   Height="480"
+				   FontSize="12"
+				   Background="{DynamicResource ThemeBrushKey}"
+				   Foreground="{DynamicResource ActiveForegroundBrushKey}"
+				   IsRestoringWindowPlacement="True"
+				   SnapsToDevicePixels="True"
+				   TextOptions.TextFormattingMode="Display"
+				   metro:ThemeHelper.HasThemeResources="True"
+				   d:DataContext="{d:DesignInstance viewmodels:HistoryWindowViewModel}">
+
+	<metro:MetroWindow.Resources>
+		<ResourceDictionary>
+			<converters:SupportUsedConverter x:Key="SupportUsedConverter" />
+			<converters:UsedFlagConverter x:Key="UsedFlagConverter" />
+			<converters:AntiAirFireConverter x:Key="AntiAirFireConverter" />
+			<converters:NodeEventIdColorConverter x:Key="NodeEventIdColorConverter" />
+
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../Styles/PluginStyle.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</metro:MetroWindow.Resources>
+
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="ContentRendered">
+			<l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
+		</i:EventTrigger>
+
+		<!--Windowが閉じたタイミングでViewModelのDisposeメソッドが呼ばれます-->
+		<i:EventTrigger EventName="Closed">
+			<l:DataContextDisposeAction/>
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- #region CaptionBar -->
+		<Border metro:MetroWindow.IsCaptionBar="True"
+				Panel.ZIndex="100">
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<controls:AppIcon Width="36"
+								  Height="36"
+								  Background="Transparent"
+								  AnchorVisibility="Collapsed"
+								  BandVisibility="Collapsed" />
+
+				<TextBlock Grid.Column="1"
+						   Text="전투 세부 기록"
+						   Style="{DynamicResource CaptionTextStyleKey}"
+						   Margin="2,0,8,0" />
+
+				<metro:SystemButtons Grid.Column="2"
+									 HorizontalAlignment="Right"
+									 VerticalAlignment="Top" />
+			</Grid>
+		</Border>
+		<!-- #endregion -->
+
+
+		<Grid Grid.Row="1">
+			<ScrollViewer VerticalScrollBarVisibility="Auto"
+						  HorizontalScrollBarVisibility="Auto"
+						  PanningMode="Both">
+				<Grid Margin="8,4">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<DockPanel Grid.Row="0">
+						<StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="120" />
+								</Grid.ColumnDefinitions>
+
+								<StackPanel Margin="0,0,10,0">
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="전투종류:"/>
+										<Run Text="{Binding BattleName, Mode=OneWay}"
+											 FontSize="12"
+											 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="교전형태:"/>
+										<Run Text="{Binding BattleSituation, Mode=OneWay}"
+											 FontSize="12"
+											 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="제공종류:"/>
+										<Run Text="{Binding FriendAirSupremacy, Mode=OneWay}"
+											 FontSize="12"
+											 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									</TextBlock>
+								</StackPanel>
+								<StackPanel Grid.Column="1"
+											MinWidth="144">
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="갱신일시:"/>
+										<Run Text="{Binding UpdatedTime, Mode=OneWay}"
+											 FontSize="12"
+											 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="드롭:"/>
+										<Run Text="{Binding DropShipName, Mode=OneWay}"
+											 FontSize="12"
+											 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="지원함대:"/>
+										<Run Text="{Binding CurrentBattleFlag.SupportUsed, Mode=OneWay, Converter={StaticResource SupportUsedConverter}}"
+											 FontSize="12">
+											<Run.Style>
+												<Style TargetType="{x:Type Run}">
+													<Setter Property="Foreground" Value="#FFFFFFFF" />
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CurrentBattleFlag.SupportUsed, Mode=OneWay}" Value="Unused">
+															<Setter Property="Foreground" Value="#80FFFFFF" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Run.Style>
+										</Run>
+									</TextBlock>
+								</StackPanel>
+								<StackPanel Grid.Column="2">
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="조명탄:　"/>
+										<Run Text="{Binding CurrentBattleFlag.FlareUsed, Mode=OneWay, Converter={StaticResource UsedFlagConverter}}"
+											 FontSize="12">
+											<Run.Style>
+												<Style TargetType="{x:Type Run}">
+													<Setter Property="Foreground" Value="#FFFFFFFF" />
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CurrentBattleFlag.FlareUsed, Mode=OneWay}" Value="Unused">
+															<Setter Property="Foreground" Value="#80FFFFFF" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Run.Style>
+										</Run>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="야간정찰:"/>
+										<Run Text="{Binding CurrentBattleFlag.NightReconScouted, Mode=OneWay, Converter={StaticResource UsedFlagConverter}}"
+											 FontSize="12">
+											<Run.Style>
+												<Style TargetType="{x:Type Run}">
+													<Setter Property="Foreground" Value="#FFFFFFFF" />
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CurrentBattleFlag.NightReconScouted, Mode=OneWay}" Value="Unused">
+															<Setter Property="Foreground" Value="#80FFFFFF" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Run.Style>
+										</Run>
+									</TextBlock>
+									<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
+										<Run Text="대공컷인:"/>
+										<Run Text="{Binding CurrentBattleFlag.AntiAirFired, Mode=OneWay, Converter={StaticResource AntiAirFireConverter}}"
+											 FontSize="12">
+											<Run.Style>
+												<Style TargetType="{x:Type Run}">
+													<Setter Property="Foreground" Value="#FFFFFFFF" />
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding CurrentBattleFlag.AntiAirFired, Mode=OneWay}" Value="Unused">
+															<Setter Property="Foreground" Value="#80FFFFFF" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Run.Style>
+										</Run>
+									</TextBlock>
+								</StackPanel>
+							</Grid>
+
+							<Rectangle Height="1"
+									   Margin="3, 4"
+									   Style="{DynamicResource SeparatorRectangleStyleKey}" />
+						</StackPanel>
+					</DockPanel>
+
+					<StackPanel Grid.Row="1" Orientation="Vertical">
+						<ContentControl Content="{Binding CurrentNode}"
+										HorizontalAlignment="Right">
+							<ContentControl.Resources>
+								<DataTemplate DataType="{x:Type models:SortieNodeData}">
+									<TextBlock HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Margin="4,2"
+											   Padding="10,2"
+											   Foreground="White"
+											   Background="{Binding EventInfo.Id, Converter={StaticResource NodeEventIdColorConverter}}"
+											   Text="{Binding FullName, Mode=OneWay}">
+
+										<TextBlock.ToolTip>
+											<TextBlock Padding="0,5"
+													   Foreground="White"
+													   Text="{Binding Description, Mode=OneWay}" />
+										</TextBlock.ToolTip>
+									</TextBlock>
+								</DataTemplate>
+								<DataTemplate DataType="{x:Type models:PracticeNodeData}">
+									<TextBlock HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Margin="4,2"
+											   Padding="10,2"
+											   Foreground="White"
+											   Background="#FF8DC660"
+											   Text="연습전">
+									</TextBlock>
+								</DataTemplate>
+								<DataTemplate DataType="{x:Type models:BaseNodeData}">
+									<TextBlock HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Margin="4,2"
+											   Padding="10,2"
+											   Foreground="White"
+											   Background="#48FFFFFF"
+											   Text="{Binding FullName}">
+									</TextBlock>
+								</DataTemplate>
+							</ContentControl.Resources>
+						</ContentControl>
+
+						<StackPanel Orientation="Horizontal"
+									HorizontalAlignment="Center">
+							<TextBlock Padding="10,6"
+								   FontWeight="ExtraBold"
+								   FontSize="18"
+								   TextAlignment="Center"
+								   Text="{Binding RankResult, Mode=OneWay}">
+								<TextBlock.Style>
+									<Style TargetType="TextBlock">
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding RankResult}" Value="에러">
+												<Setter Property="Foreground" Value="Red"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="없음">
+												<Setter Property="Foreground" Value="Transparent"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="완전승리S">
+												<Setter Property="Foreground" Value="#FFFFE558"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="S승리">
+												<Setter Property="Foreground" Value="Gold"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="A승리">
+												<Setter Property="Foreground" Value="#FFD10000"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="B승리">
+												<Setter Property="Foreground" Value="#FFD43353"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="C패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="D패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="E패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RankResult}" Value="공습전">
+												<Setter Property="Foreground" Value="#FF52A661"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</TextBlock.Style>
+							</TextBlock>
+							<TextBlock Padding="10,6"
+								   FontWeight="ExtraBold"
+								   FontSize="18"
+								   TextAlignment="Center"
+								   Text="{Binding AirRankResult, Mode=OneWay}">
+								<TextBlock.Style>
+									<Style TargetType="TextBlock">
+										<Setter Property="Visibility" Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding AirRankAvailable}" Value="True">
+												<Setter Property="Visibility" Value="Visible"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="완전승리S">
+												<Setter Property="Foreground" Value="#FFFFE558"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="A승리">
+												<Setter Property="Foreground" Value="#FFD10000"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="B승리">
+												<Setter Property="Foreground" Value="#FFD43353"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="C패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="D패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding AirRankResult}" Value="E패배">
+												<Setter Property="Foreground" Value="#FF42428F"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</TextBlock.Style>
+							</TextBlock>
+
+							<TextBlock Padding="10,6"
+									   FontSize="18"
+									   FontWeight="ExtraBold"
+									   TextAlignment="Center"
+									   Text="기믹발동"
+									   Foreground="#FF40C820"
+									   Visibility="{Binding CurrentBattleFlag.MechanismOn, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+							<TextBlock Padding="10,6"
+									   FontSize="18"
+									   FontWeight="ExtraBold"
+									   TextAlignment="Center"
+									   Text="맵 확장"
+									   Foreground="Gold"
+									   Visibility="{Binding CurrentBattleFlag.MapExtended, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+						</StackPanel>
+					</StackPanel>
+
+					<StackPanel Grid.Row="2"
+								Orientation="Horizontal">
+						<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasFirst}" />
+						<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasSecond}" />
+						<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemySecond}" />
+						<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemyFirst}" />
+					</StackPanel>
+				</Grid>
+			</ScrollViewer>
+		</Grid>
+	</Grid>
+</metro:MetroWindow>

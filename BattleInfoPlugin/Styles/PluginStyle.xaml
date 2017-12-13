@@ -28,9 +28,6 @@
 		<ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.PinButton.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.TabControl.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.Text.xaml" />
-
-		<ResourceDictionary Source="pack://application:,,,/BattleInfoPlugin;component/Styles/Cell.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/BattleInfoPlugin;component/Styles/Flag.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
@@ -43,14 +40,8 @@
 	<l:VisibilityAndBooleanConverter x:Key="FalseToHiddenConverter"
 									 ConvertWhenTrue="Visible"
 									 ConvertWhenFalse="Hidden"/>
-	<converters:BrTagToNewLineConverter x:Key="BrTagToNewLineConverter"/>
 	<converters:AdditionalNameColorConverter x:Key="AdditionalNameColorConverter"/>
 	<converters:AttackTypeToDisplayTextConverter x:Key="AttackTypeConverter"/>
-	<converters:FleetBackgroundConverter x:Key="FleetBackgroundConverter"
-										 Background1="{StaticResource ThemeBrushKey}"
-										 Background2="{StaticResource SemiactiveBackgroundBrushKey}"/>
 	<converters:UnknownValueConverter x:Key="UnknownValueConverter"/>
-	<converters:CellEventToEventName x:Key="CellEventToEventName"/>
-	<converters:CellEventToEventColor x:Key="CellEventToEventColor"/>
 	<converters1:HasFlagConverter x:Key="HasFlagConverter"/>
 </ResourceDictionary>

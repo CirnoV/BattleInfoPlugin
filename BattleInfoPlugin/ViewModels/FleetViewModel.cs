@@ -39,9 +39,9 @@ namespace BattleInfoPlugin.ViewModels
 					this._Fleet = value;
 					this.RaisePropertyChanged();
 
-					this.RaisePropertyChanged(nameof(this.FleetFormation));
 					this.RaisePropertyChanged(nameof(this.IsVisible));
-					this.RaisePropertyChanged(nameof(this.FleetGauge));
+					//this.RaisePropertyChanged(nameof(this.FleetFormation));
+					//this.RaisePropertyChanged(nameof(this.FleetGauge));
 
 					this.Name = !string.IsNullOrWhiteSpace(value.Name)
 						? value.Name
@@ -51,6 +51,7 @@ namespace BattleInfoPlugin.ViewModels
 		}
 		#endregion
 
+		/*
 		public string FleetGauge =>
 			(this.Fleet?.AttackGauge ?? string.Empty) != string.Empty
 				? this.Fleet.AttackGauge
@@ -60,6 +61,7 @@ namespace BattleInfoPlugin.ViewModels
 			(this.Fleet?.Formation ?? Formation.없음) != Formation.없음
 				? this.Fleet.Formation.ToString()
 				: "";
+		*/
 
 		#region AirCombatResults変更通知プロパティ
 		private AirCombatResultViewModel[] _AirCombatResults;

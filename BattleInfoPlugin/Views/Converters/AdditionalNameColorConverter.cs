@@ -12,9 +12,16 @@ namespace BattleInfoPlugin.Views.Converters
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
 			var name = value as string;
-			if (string.IsNullOrEmpty(name)) return new SolidColorBrush(Colors.Transparent);
-			if (name.ToLower().Trim() == "elite") return new SolidColorBrush(Color.FromRgb(238, 69, 76));
-			if (name.ToLower().Trim() == "flagship") return new SolidColorBrush(Color.FromRgb(221, 182, 42));
+
+			if (string.IsNullOrEmpty(name))
+				return new SolidColorBrush(Colors.Transparent);
+
+			else if (name.ToLower().Trim() == "elite")
+				return new SolidColorBrush(Color.FromRgb(238, 69, 76));
+
+			else if (name.ToLower().Trim() == "flagship")
+				return new SolidColorBrush(Color.FromRgb(221, 182, 42));
+
 			return new SolidColorBrush(Colors.Transparent);
 		}
 

@@ -108,23 +108,6 @@ namespace BattleInfoPlugin.Models
 		}
 		#endregion
 
-		#region Rank変更通知プロパティ
-		private int[] _Rank;
-		public int[] Rank
-		{
-			get
-			{ return this._Rank; }
-			set
-			{
-				if (this._Rank != value)
-				{
-					this._Rank = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-		#endregion
-
 		//#region AirSuperiorityPotential変更通知プロパティ
 		//private int _AirSuperiorityPotential;
 
@@ -146,19 +129,18 @@ namespace BattleInfoPlugin.Models
 		//public int AirSuperiorityRequirements => this.AirSuperiorityPotential * 3 / 2;
 		//public int AirSupremacyRequirements => this.AirSuperiorityPotential * 3;
 
-		public FleetData() : this(new ShipData[0], Formation.없음, "", FleetType.Enemy)
+		public FleetData() : this(new ShipData[0], Formation.없음, "", FleetType.EnemyFirst)
 		{
 		}
 
-		public FleetData(IEnumerable<ShipData> ships, Formation formation, string name, FleetType type, int[] rank = null)
+		public FleetData(IEnumerable<ShipData> ships, Formation formation, string name, FleetType type)
 		{
 			this._Ships = ships;
 			this._Formation = formation;
 			this._Name = name;
 			this._FleetType = type;
-			this._Rank = rank ?? new[] { 0 };
 
-			if (type == FleetType.Enemy || type == FleetType.SecondEnemy) return;
+			if (type == FleetType.EnemyFirst || type == FleetType.EnemySecond) return;
 			this.IsCritical = this.Ships?
 				.Any(x => (x.NowHP / (double)x.MaxHP <= 0.25) && (x.NowHP / (double)x.MaxHP > 0))
 				?? false;
@@ -168,6 +150,19 @@ namespace BattleInfoPlugin.Models
 			//	.Where(s => s.Source.IsAirSuperiorityFighter)
 			//	.Sum(s => (int)(s.AA * Math.Sqrt(s.Current)))
 			//	;
+		}
+
+		public FleetData Clone()
+		{
+			return new FleetData
+			{
+				FleetType = this.FleetType,
+				Name = this.Name,
+				AttackGauge = this.AttackGauge,
+				IsCritical = this.IsCritical,
+				Ships = this.Ships.Select(x => x.Clone()).ToArray(),
+				Formation = this.Formation
+			};
 		}
 	}
 
