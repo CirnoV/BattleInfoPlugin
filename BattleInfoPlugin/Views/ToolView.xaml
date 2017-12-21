@@ -91,8 +91,18 @@
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="드롭:"/>
 								<Run Text="{Binding DropShipName, Mode=OneWay}"
-									 FontSize="12"
-									 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+									 FontSize="12">
+									<Run.Style>
+										<Style TargetType="{x:Type Run}" BasedOn="{DynamicResource EmphaticTextElementStyleKey}">
+											<Setter Property="Foreground" Value="#FFFFFFFF" />
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding DropShipName, Mode=OneWay}" Value="(없음)">
+													<Setter Property="Foreground" Value="#80FFFFFF" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Run.Style>
+								</Run>
 							</TextBlock>
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="지원함대:"/>
@@ -360,13 +370,29 @@
 				</StackPanel>
 			</StackPanel>
 
-			<StackPanel Grid.Row="2"
-						Orientation="Horizontal">
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasFirst}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasSecond}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemySecond}" />
-				<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemyFirst}" />
-			</StackPanel>
+			<Grid Grid.Row="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="0"
+									 DataContext="{Binding AliasFirst}" />
+				<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="1"
+									 DataContext="{Binding AliasSecond}" />
+
+				<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="3"
+									 DataContext="{Binding EnemySecond}" />
+				<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="4"
+									 DataContext="{Binding EnemyFirst}" />
+			</Grid>
 
 			<Expander Grid.Row="3"
 					  Margin="0,10,0,0"

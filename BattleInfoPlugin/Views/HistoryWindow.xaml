@@ -13,7 +13,7 @@
 				   xmlns:controls="clr-namespace:Grabacr07.KanColleViewer.Controls;assembly=KanColleViewer.Controls"
 				   mc:Ignorable="d" 
 				   Title="전투 세부 기록"
-				   Width="640"
+				   Width="896"
 				   Height="480"
 				   FontSize="12"
 				   Background="{DynamicResource ThemeBrushKey}"
@@ -30,6 +30,7 @@
 			<converters:UsedFlagConverter x:Key="UsedFlagConverter" />
 			<converters:AntiAirFireConverter x:Key="AntiAirFireConverter" />
 			<converters:NodeEventIdColorConverter x:Key="NodeEventIdColorConverter" />
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="../Styles/PluginStyle.xaml"/>
@@ -89,11 +90,15 @@
 						  HorizontalScrollBarVisibility="Auto"
 						  PanningMode="Both">
 				<Grid Margin="8,4">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
 					<DockPanel Grid.Row="0">
@@ -353,12 +358,170 @@
 						</StackPanel>
 					</StackPanel>
 
-					<StackPanel Grid.Row="2"
-								Orientation="Horizontal">
-						<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasFirst}" />
-						<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasSecond}" />
-						<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemySecond}" />
-						<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemyFirst}" />
+					<Grid Grid.Row="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="0"
+									 DataContext="{Binding AliasFirst}" />
+						<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="1"
+									 DataContext="{Binding AliasSecond}" />
+
+						<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="3"
+									 DataContext="{Binding EnemySecond}" />
+						<views:Fleet Margin="0,6,0,0"
+									 Grid.Column="4"
+									 DataContext="{Binding EnemyFirst}" />
+					</Grid>
+
+					<Rectangle Width="1"
+							   Grid.Column="1"
+							   Grid.RowSpan="3"
+							   Margin="3, 4"
+							   Style="{DynamicResource SeparatorRectangleStyleKey}" />
+
+					<StackPanel Grid.Column="2"
+								Grid.RowSpan="3"
+								Margin="10,0,0,0"
+								Orientation="Vertical">
+
+						<TextBlock Margin="0,0,0,8"
+								   FontSize="15"
+								   Style="{StaticResource HeaderTextStyleKey}"
+								   Text="세부 전투 로그" />
+
+						<ItemsControl ItemsSource="{Binding DetailBattleLog, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<StackPanel>
+										<TextBlock Visibility="{Binding IsTitle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+												   Style="{StaticResource EmphaticTextStyleKey}"
+												   Margin="0,15,0,5"
+												   Text="{Binding TitleText, Mode=OneWay}" />
+										<Grid Margin="20,0,0,10">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" SharedSizeGroup="DetailLog_Left" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="DetailLog_Center" />
+												<ColumnDefinition Width="Auto" SharedSizeGroup="DetailLog_Right" />
+											</Grid.ColumnDefinitions>
+
+											<TextBlock Grid.Column="0"
+													   VerticalAlignment="Center">
+												<Run Text="{Binding LeftName, Mode=OneWay}" />
+												<Run Text="{Binding LeftAdditional, Mode=OneWay}"
+													 Foreground="{Binding LeftAdditional, Converter={StaticResource AdditionalNameColorConverter}}"/>
+												<LineBreak />
+												<Run Text="{Binding LeftHP, Mode=OneWay, StringFormat={}HP: {0}}" />
+											</TextBlock>
+
+											<StackPanel Grid.Column="1"
+														Margin="10,0"
+														Orientation="Vertical">
+												<TextBlock Margin="15,0"
+														   HorizontalAlignment="Center"
+														   Text="{Binding TypeText, Mode=OneWay}" />
+
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto" />
+														<ColumnDefinition Width="*" />
+														<ColumnDefinition Width="Auto" />
+													</Grid.ColumnDefinitions>
+
+													<TextBlock Grid.Column="0"
+															   Margin="0,0,-4,0"
+															   VerticalAlignment="Center"
+															   FontSize="11"
+															   Text="◀">
+														<TextBlock.Style>
+															<Style TargetType="{x:Type TextBlock}">
+																<Style.Triggers>
+																	<DataTrigger Binding="{Binding ToRight, Mode=OneWay}" Value="True">
+																		<Setter Property="Visibility" Value="Hidden" />
+																	</DataTrigger>
+																	<DataTrigger Binding="{Binding ToRight, Mode=OneWay}" Value="False">
+																		<Setter Property="Visibility" Value="Visible" />
+																	</DataTrigger>
+																</Style.Triggers>
+															</Style>
+														</TextBlock.Style>
+													</TextBlock>
+													<Rectangle Grid.Column="1"
+															   Height="1"
+															   VerticalAlignment="Center"
+															   Fill="White" />
+													<TextBlock Grid.Column="2"
+															   Margin="-4,0,0,0"
+															   VerticalAlignment="Center"
+															   FontSize="11"
+															   Text="▶">
+														<TextBlock.Style>
+															<Style TargetType="{x:Type TextBlock}">
+																<Style.Triggers>
+																	<DataTrigger Binding="{Binding ToRight, Mode=OneWay}" Value="True">
+																		<Setter Property="Visibility" Value="Visible" />
+																	</DataTrigger>
+																	<DataTrigger Binding="{Binding ToRight, Mode=OneWay}" Value="False">
+																		<Setter Property="Visibility" Value="Hidden" />
+																	</DataTrigger>
+																</Style.Triggers>
+															</Style>
+														</TextBlock.Style>
+													</TextBlock>
+												</Grid>
+												<TextBlock Margin="15,0"
+														   HorizontalAlignment="Center">
+													<TextBlock.Style>
+														<Style TargetType="{x:Type TextBlock}">
+															<Setter Property="Text" Value="{Binding Damage, Mode=OneWay, StringFormat={}{0} dmg}" />
+
+															<Style.Triggers>
+																<DataTrigger Binding="{Binding IsMiss, Mode=OneWay}" Value="True">
+																	<Setter Property="Text" Value="miss" />
+																	<Setter Property="Opacity" Value="0.66" />
+																</DataTrigger>
+															</Style.Triggers>
+														</Style>
+													</TextBlock.Style>
+												</TextBlock>
+											</StackPanel>
+
+											<TextBlock Grid.Column="2"
+													   VerticalAlignment="Center">
+												<Run Text="{Binding RightName, Mode=OneWay}" />
+												<Run Text="{Binding RightAdditional, Mode=OneWay}"
+													 Foreground="{Binding RightAdditional, Converter={StaticResource AdditionalNameColorConverter}}"/>
+												<LineBreak />
+												<Run Text="{Binding RightHP, Mode=OneWay, StringFormat={}HP: {0}}" />
+											</TextBlock>
+
+											<Grid.Style>
+												<Style TargetType="{x:Type Grid}">
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding IsTitle, Mode=OneWay}" Value="True">
+															<Setter Property="Visibility" Value="Collapsed" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Grid.Style>
+										</Grid>
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
 					</StackPanel>
 				</Grid>
 			</ScrollViewer>

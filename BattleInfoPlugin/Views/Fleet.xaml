@@ -318,7 +318,7 @@
 									<ItemsControl ItemsSource="{Binding Slots}">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<Grid Margin="0,4,0,0">
+												<Grid>
 													<Grid.ColumnDefinitions>
 														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemIcon" />
 														<ColumnDefinition Width="Auto" SharedSizeGroup="SlotitemName" />
