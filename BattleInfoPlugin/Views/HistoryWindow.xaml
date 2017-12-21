@@ -13,7 +13,7 @@
 				   xmlns:controls="clr-namespace:Grabacr07.KanColleViewer.Controls;assembly=KanColleViewer.Controls"
 				   mc:Ignorable="d" 
 				   Title="전투 세부 기록"
-				   Width="896"
+				   Width="920"
 				   Height="480"
 				   FontSize="12"
 				   Background="{DynamicResource ThemeBrushKey}"
@@ -92,6 +92,7 @@
 				<Grid Margin="8,4">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
@@ -383,13 +384,15 @@
 					</Grid>
 
 					<Rectangle Width="1"
-							   Grid.Column="1"
+							   Grid.Column="2"
 							   Grid.RowSpan="3"
+								HorizontalAlignment="Right"
 							   Margin="3, 4"
 							   Style="{DynamicResource SeparatorRectangleStyleKey}" />
 
-					<StackPanel Grid.Column="2"
+					<StackPanel Grid.Column="3"
 								Grid.RowSpan="3"
+								HorizontalAlignment="Right"
 								Margin="10,0,0,0"
 								Orientation="Vertical">
 
@@ -398,7 +401,8 @@
 								   Style="{StaticResource HeaderTextStyleKey}"
 								   Text="세부 전투 로그" />
 
-						<ItemsControl ItemsSource="{Binding DetailBattleLog, Mode=OneWay}">
+						<ItemsControl ItemsSource="{Binding DetailBattleLog, Mode=OneWay}"
+									  Grid.IsSharedSizeScope="True">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<StackPanel Orientation="Vertical" />
@@ -410,8 +414,10 @@
 										<TextBlock Visibility="{Binding IsTitle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
 												   Style="{StaticResource EmphaticTextStyleKey}"
 												   Margin="0,15,0,5"
-												   Text="{Binding TitleText, Mode=OneWay}" />
-										<Grid Margin="20,0,0,10">
+												   Text="{Binding TitleText, Mode=OneWay}"
+												   TextAlignment="Center" />
+										<Grid Margin="20,0,0,10"
+											  HorizontalAlignment="Center">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" SharedSizeGroup="DetailLog_Left" />
 												<ColumnDefinition Width="Auto" SharedSizeGroup="DetailLog_Center" />
@@ -444,6 +450,7 @@
 													<TextBlock Grid.Column="0"
 															   Margin="0,0,-4,0"
 															   VerticalAlignment="Center"
+															   Foreground="{Binding ArrowColor, Mode=OneWay}"
 															   FontSize="11"
 															   Text="◀">
 														<TextBlock.Style>
@@ -462,10 +469,11 @@
 													<Rectangle Grid.Column="1"
 															   Height="1"
 															   VerticalAlignment="Center"
-															   Fill="White" />
+															   Fill="{Binding ArrowColor, Mode=OneWay}" />
 													<TextBlock Grid.Column="2"
 															   Margin="-4,0,0,0"
 															   VerticalAlignment="Center"
+															   Foreground="{Binding ArrowColor, Mode=OneWay}"
 															   FontSize="11"
 															   Text="▶">
 														<TextBlock.Style>

@@ -378,6 +378,7 @@ namespace BattleInfoPlugin.ViewModels
 		public string TitleText { get; set; }
 
 		public bool ToRight { get; set; }
+		public string ArrowColor => this.ToRight ? "#FFEFEF16" : "#FFEF1616";
 
 		public string LeftName { get; set; }
 		public string LeftAdditional { get; set; }

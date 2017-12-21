@@ -163,6 +163,11 @@ namespace BattleInfoPlugin.Models
 				this._MaxHP = value;
 				this.RaisePropertyChanged();
 				this.RaisePropertyChanged(() => this.HP);
+
+				if (this.IsHeavilyDamage())
+					this.Situation |= ShipSituation.HeavilyDamaged;
+				else
+					this.Situation &= ~ShipSituation.HeavilyDamaged;
 			}
 		}
 		#endregion
@@ -179,6 +184,11 @@ namespace BattleInfoPlugin.Models
 				this._NowHP = value;
 				this.RaisePropertyChanged();
 				this.RaisePropertyChanged(() => this.HP);
+
+				if (this.IsHeavilyDamage())
+					this.Situation |= ShipSituation.HeavilyDamaged;
+				else
+					this.Situation &= ~ShipSituation.HeavilyDamaged;
 			}
 		}
 		#endregion
@@ -552,6 +562,11 @@ namespace BattleInfoPlugin.Models
 			};
 			return data.Slots.Count(x => LateModelTorpedos.Contains(x.Source.Id))
 				+ (LateModelTorpedos.Contains(data.ExSlot?.Source.Id ?? 0) ? 1 : 0);
+		}
+
+		public static bool IsHeavilyDamage(this ShipData ship)
+		{
+			return (ship.NowHP / (double)ship.MaxHP) <= 0.25;
 		}
 	}
 

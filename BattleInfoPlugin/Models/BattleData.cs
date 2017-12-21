@@ -36,7 +36,7 @@ namespace BattleInfoPlugin.Models
 			get
 			{ return this._BattleName; }
 			set
-			{ 
+			{
 				if (this._BattleName == value)
 					return;
 				this._BattleName = value;
@@ -53,7 +53,7 @@ namespace BattleInfoPlugin.Models
 			get
 			{ return this._UpdatedTime; }
 			set
-			{ 
+			{
 				if (this._UpdatedTime == value)
 					return;
 				this._UpdatedTime = value;
@@ -121,12 +121,12 @@ namespace BattleInfoPlugin.Models
 			get
 			{ return this._AliasFirst; }
 			set
-			{ 
+			{
 				if (this._AliasFirst == value)
 					return;
 				this._AliasFirst = value;
 				this._AliasFirst.FleetType = FleetType.AliasFirst;
-				Settings.Default.FirstIsCritical = this._AliasFirst.CriticalCheck();
+				Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
 				this.RaisePropertyChanged();
 			}
 		}
@@ -140,12 +140,12 @@ namespace BattleInfoPlugin.Models
 			get
 			{ return this._AliasSecond; }
 			set
-			{ 
+			{
 				if (this._AliasSecond == value)
 					return;
 				this._AliasSecond = value;
 				this._AliasSecond.FleetType = FleetType.AliasSecond;
-				Settings.Default.SecondIsCritical = this._AliasSecond.CriticalCheck();
+				Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
 				this.RaisePropertyChanged();
 			}
 		}
@@ -159,7 +159,7 @@ namespace BattleInfoPlugin.Models
 			get
 			{ return this._EnemyFirst; }
 			set
-			{ 
+			{
 				if (this._EnemyFirst == value)
 					return;
 				this._EnemyFirst = value;
@@ -436,6 +436,7 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
 			// 대공컷인, 지원함대 갱신
@@ -450,11 +451,12 @@ namespace BattleInfoPlugin.Models
 				)
 				.Update(data, (ApiTypes_Sortie)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 			this.AirCombatResults =
@@ -464,6 +466,9 @@ namespace BattleInfoPlugin.Models
 					.Concat(data.api_kouku.ToResult()).ToArray();
 
 			this.RankResult = this.CalcRank();
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 		private void Update(sortie_battle_midnight data, ApiTypes apiType)
 		{
@@ -490,6 +495,7 @@ namespace BattleInfoPlugin.Models
 
 				// 체력 갱신
 				this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+				this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps);
 			}
 
 			// 체력 갱신
@@ -510,16 +516,20 @@ namespace BattleInfoPlugin.Models
 
 			battleCalculator.Update(data, (ApiTypes_SortieMidnight)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			if (apiType == ApiTypes.sortie_battle_midnight_sp)
 				this.RankResult = this.CalcRank();
 			else
 				this.RankResult = this.CalcRank(false, false);
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 		private void Update(sortie_airbattle data, ApiTypes apiType)
 		{
@@ -540,10 +550,11 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps);
 
 			// 대공컷인, 지원함대 갱신
-			if(apiType==ApiTypes.sortie_airbattle)
+			if (apiType == ApiTypes.sortie_airbattle)
 				this.CurrentBattleFlag.UpdateAntiAirFire(
 					data.api_kouku?.api_stage2?.api_air_fire,
 					data.api_kouku2?.api_stage2?.api_air_fire
@@ -561,11 +572,12 @@ namespace BattleInfoPlugin.Models
 				)
 				.Update(data, (ApiTypes_SortieAirBattle)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 			this.AirCombatResults =
@@ -595,6 +607,9 @@ namespace BattleInfoPlugin.Models
 				this.AirRankResult = this.CalcLDAirRank();
 				this.RankResult = Rank.공습전;
 			}
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 
 		private void Update(combined_battle data, ApiTypes apiType)
@@ -616,6 +631,7 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_maxhps_combined);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined);
 
 			// 대공컷인, 지원함대 갱신
@@ -630,11 +646,12 @@ namespace BattleInfoPlugin.Models
 				)
 				.Update(data, (ApiTypes_CombinedBattle)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 			this.AirCombatResults =
@@ -644,6 +661,9 @@ namespace BattleInfoPlugin.Models
 					.Concat(data.api_kouku.ToResult()).ToArray();
 
 			this.RankResult = this.CalcRank(true);
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 		private void Update(combined_battle_each data, ApiTypes apiType)
 		{
@@ -667,6 +687,7 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_maxhps_combined, data.api_e_nowhps_combined);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
 			// 대공컷인, 지원함대 갱신
@@ -681,11 +702,12 @@ namespace BattleInfoPlugin.Models
 				)
 				.Update(data, (ApiTypes_CombinedBattleEC)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 			this.AirCombatResults =
@@ -695,6 +717,9 @@ namespace BattleInfoPlugin.Models
 					.Concat(data.api_kouku.ToResult()).ToArray();
 
 			this.RankResult = this.CalcRank(true, true);
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 		private void Update(combined_airbattle data, ApiTypes apiType)
 		{
@@ -715,6 +740,7 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_maxhps_combined);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined);
 
 			// 대공컷인, 지원함대 갱신
@@ -736,11 +762,12 @@ namespace BattleInfoPlugin.Models
 				)
 				.Update(data, (ApiTypes_CombinedAirBattle)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 
@@ -768,6 +795,9 @@ namespace BattleInfoPlugin.Models
 					this.RankResult = Rank.공습전;
 					break;
 			}
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 
 		private void Update(combined_battle_midnight data, ApiTypes apiType)
@@ -792,6 +822,7 @@ namespace BattleInfoPlugin.Models
 
 				// 체력 갱신
 				this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined);
+				this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_maxhps_combined);
 			}
 
 			// 체력 갱신
@@ -811,11 +842,12 @@ namespace BattleInfoPlugin.Models
 
 			battleCalculator.Update(data, (ApiTypes_CombinedMidnight)apiType);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			switch (apiType)
 			{
@@ -826,6 +858,9 @@ namespace BattleInfoPlugin.Models
 					this.RankResult = this.CalcRank(true);
 					break;
 			}
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 		private void Update(combined_battle_midnight_ec data, ApiTypes apiType)
 		{
@@ -846,13 +881,17 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator.Update(data);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
 
+			this.RankResult = this.CalcRank(true, true);
+
 			// 현재 노드에 전투 결과를 반영 (임시)
 			this.CurrentSortie.UpdateResult(this);
-
-			this.RankResult = this.CalcRank(true, true);
 		}
 		private void Update(combined_battle_ec_nighttoday data, ApiTypes apiType)
 		{
@@ -864,6 +903,7 @@ namespace BattleInfoPlugin.Models
 
 			// 체력 갱신
 			this.UpdateMaxHP(data.api_f_maxhps, data.api_e_maxhps, data.api_f_maxhps_combined, data.api_e_maxhps_combined);
+			this.UpdateBefHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_maxhps_combined, data.api_e_nowhps_combined);
 			this.UpdateNowHP(data.api_f_nowhps, data.api_e_nowhps, data.api_f_nowhps_combined, data.api_e_nowhps_combined);
 
 			// 대공컷인, 지원함대, 조명탄, 야간정찰 갱신
@@ -875,11 +915,12 @@ namespace BattleInfoPlugin.Models
 			// 전투 계산
 			battleCalculator.Update(data);
 
+			// 대파 체크
+			Settings.Default.FirstIsCritical = AliasFirst.CriticalCheck();
+			Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+
 			// MVP 예상
 			UpdateMVP(battleCalculator.MVP_First, battleCalculator.MVP_Second);
-
-			// 현재 노드에 전투 결과를 반영 (임시)
-			this.CurrentSortie.UpdateResult(this);
 
 			this.FriendAirSupremacy = data.api_kouku.GetAirSupremacy();
 			this.AirCombatResults =
@@ -889,6 +930,9 @@ namespace BattleInfoPlugin.Models
 					.Concat(data.api_kouku.ToResult()).ToArray();
 
 			this.RankResult = this.CalcRank(true, true);
+
+			// 현재 노드에 전투 결과를 반영 (임시)
+			this.CurrentSortie.UpdateResult(this);
 		}
 
 		#endregion
@@ -1166,13 +1210,31 @@ namespace BattleInfoPlugin.Models
 		/// <param name="api_e_nowhps_combined">적군 2함대</param>
 		private void UpdateNowHP(int[] api_f_nowhps, int[] api_e_nowhps, int[] api_f_nowhps_combined = null, int[] api_e_nowhps_combined = null)
 		{
-			this.AliasFirst.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			this.AliasFirst.Ships.SetValues(api_f_nowhps, (s, v) => s.NowHP = v);
 			if (api_f_nowhps_combined != null)
-				this.AliasSecond.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+				this.AliasSecond.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.NowHP = v);
 
-			this.EnemyFirst.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = s.BeforeNowHP = v);
+			this.EnemyFirst.Ships.SetValues(api_e_nowhps, (s, v) => s.NowHP = v);
 			if (api_e_nowhps_combined != null)
-				this.EnemySecond.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = s.BeforeNowHP = v);
+				this.EnemySecond.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.NowHP = v);
+		}
+
+		/// <summary>
+		/// 현재 HP 갱신
+		/// </summary>
+		/// <param name="api_f_nowhps">아군 1함대</param>
+		/// <param name="api_e_nowhps">적군 1함대</param>
+		/// <param name="api_f_nowhps_combined">아군 2함대</param>
+		/// <param name="api_e_nowhps_combined">적군 2함대</param>
+		private void UpdateBefHP(int[] api_f_nowhps, int[] api_e_nowhps, int[] api_f_nowhps_combined = null, int[] api_e_nowhps_combined = null)
+		{
+			this.AliasFirst.Ships.SetValues(api_f_nowhps, (s, v) => s.BeforeNowHP = v);
+			if (api_f_nowhps_combined != null)
+				this.AliasSecond.Ships.SetValues(api_f_nowhps_combined, (s, v) => s.BeforeNowHP = v);
+
+			this.EnemyFirst.Ships.SetValues(api_e_nowhps, (s, v) => s.BeforeNowHP = v);
+			if (api_e_nowhps_combined != null)
+				this.EnemySecond.Ships.SetValues(api_e_nowhps_combined, (s, v) => s.BeforeNowHP = v);
 		}
 
 		/// <summary>
@@ -1181,7 +1243,7 @@ namespace BattleInfoPlugin.Models
 		/// <param name="port"></param>
 		private void ReturnHomeport(kcsapi_port port)
 		{
-			if(this.IsInSortie) AutoBackTab();
+			if (this.IsInSortie) AutoBackTab();
 			this.IsInSortie = false;
 
 			this.CurrentBattleFlag.MechanismOn = (port.api_event_object?.api_m_flag2 == 1);
@@ -1194,32 +1256,32 @@ namespace BattleInfoPlugin.Models
 				var AliasFirstShips = this.AliasFirst.Ships
 					.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
 				var ShipCount = AliasFirstShips.Count();
-				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x?.Source.NowHP < 0);
+				var SinkCount = battleCalculator.AliasFirstShips.Count(x => x?.Source.NowHP <= 0);
 				var AliasMax = AliasFirstShips.Sum(x => x?.BeforeNowHP ?? 0);
-				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x?.TotalDamagedAdjusted ?? 0);
+				var AliasDamaged = battleCalculator.AliasFirstShips.Sum(x => x?.HPChangedValue ?? 0);
 
 				var EnemyFirstShips = this.EnemyFirst.Ships;
 				var EnemyShipCount = EnemyFirstShips.Count();
-				var EnemySinkCount = battleCalculator.EnemyFirstShips.Count(x => x?.Source.NowHP < 0);
+				var EnemySinkCount = battleCalculator.EnemyFirstShips.Count(x => x?.Source.NowHP <= 0);
 				var EnemyMax = EnemyFirstShips.Sum(x => x?.BeforeNowHP ?? 0);
-				var EnemyDamaged = battleCalculator.EnemyFirstShips.Sum(x => x?.TotalDamagedAdjusted ?? 0);
+				var EnemyDamaged = battleCalculator.EnemyFirstShips.Sum(x => x?.HPChangedValue ?? 0);
 
 				if (IsCombined)
 				{
 					var AliasSecondShips = this.AliasSecond.Ships
 						.Where(x => !x.Situation.HasFlag(ShipSituation.Tow) && !x.Situation.HasFlag(ShipSituation.Evacuation));
 					ShipCount += AliasSecondShips.Count();
-					SinkCount += battleCalculator.AliasSecondShips.Count(x => x?.Source.NowHP < 0);
+					SinkCount += battleCalculator.AliasSecondShips.Count(x => x?.Source.NowHP <= 0);
 					AliasMax += AliasSecondShips.Sum(x => x?.BeforeNowHP ?? 0);
-					AliasDamaged += battleCalculator.AliasSecondShips.Sum(x => x?.TotalDamagedAdjusted ?? 0);
+					AliasDamaged += battleCalculator.AliasSecondShips.Sum(x => x?.HPChangedValue ?? 0);
 				}
 				if (IsEnemyCombined)
 				{
 					var EnemySecondShips = this.EnemySecond.Ships;
 					EnemyShipCount += EnemySecondShips.Count();
-					EnemySinkCount += battleCalculator.EnemySecondShips.Count(x => x?.Source.NowHP < 0);
+					EnemySinkCount += battleCalculator.EnemySecondShips.Count(x => x?.Source.NowHP <= 0);
 					EnemyMax += EnemySecondShips.Sum(x => x?.BeforeNowHP ?? 0);
-					EnemyDamaged += battleCalculator.EnemySecondShips.Sum(x => x?.TotalDamagedAdjusted ?? 0);
+					EnemyDamaged += battleCalculator.EnemySecondShips.Sum(x => x?.HPChangedValue ?? 0);
 				}
 
 				var IsShipSink = SinkCount > 0;
