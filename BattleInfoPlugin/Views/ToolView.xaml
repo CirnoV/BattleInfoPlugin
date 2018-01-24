@@ -370,7 +370,8 @@
 				</StackPanel>
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal"
+						Grid.Row="2">
 				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasFirst}" />
 				<views:Fleet Margin="0,6,0,0" DataContext="{Binding AliasSecond}" />
 				<views:Fleet Margin="0,6,0,0" DataContext="{Binding EnemySecond}" />

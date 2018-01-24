@@ -1285,7 +1285,7 @@ namespace BattleInfoPlugin.Models
 				}
 
 				var IsShipSink = SinkCount > 0;
-				var flagshipSink = this.EnemyFirst.Ships.First().NowHP < 0;
+				var flagshipSink = EnemyFirstShips.FirstOrDefault()?.NowHP < 0;
 
 				decimal AliasDamagedPercent = AliasDamaged / (decimal)AliasMax; // 아군이 받은 총 데미지
 				decimal EnemyDamagedPercent = EnemyDamaged / (decimal)EnemyMax; // 적군이 받은 총 데미지
