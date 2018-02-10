@@ -3,17 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BattleInfoPlugin.Models.Raw;
-using SlotItemType = Grabacr07.KanColleWrapper.Models.SlotItemType;
-
-#region Alias
-using practice_battle = BattleInfoPlugin.Models.Raw.sortie_battle;
-using battle_midnight_sp_midnight = BattleInfoPlugin.Models.Raw.sortie_battle_midnight;
-using practice_midnight_battle = BattleInfoPlugin.Models.Raw.sortie_battle_midnight;
-using sortie_ld_airbattle = BattleInfoPlugin.Models.Raw.sortie_airbattle;
-using combined_battle_battle_water = BattleInfoPlugin.Models.Raw.combined_battle;
-using combined_battle_ld_airbattle = BattleInfoPlugin.Models.Raw.combined_airbattle;
-using combined_battle_sp_midnight = BattleInfoPlugin.Models.Raw.combined_battle_midnight;
-#endregion
 
 namespace BattleInfoPlugin.Models
 {
@@ -347,6 +336,11 @@ namespace BattleInfoPlugin.Models
 			public int Index { get; }
 
 			/// <summary>
+			/// 적군인지 여부 (다메콘 소비 결정용)
+			/// </summary>
+			public bool IsEnemy { get; set; }
+
+			/// <summary>
 			/// 함선 정보
 			/// </summary>
 			public ShipData Source { get; }
@@ -411,7 +405,7 @@ namespace BattleInfoPlugin.Models
 				var DameconUsed = false;
 
 				this.Source.NowHP -= Damage;
-				if (this.Source.NowHP <= 0)
+				if (this.Source.NowHP <= 0 && !this.IsEnemy)
 				{
 					// 다메콘에 의한 회복 처리. 같은 전투에서 두 번 사용되지 않는다는 전제
 					// 다메콘 우선도: 확장 슬롯 -> 인덱스 순
@@ -645,7 +639,7 @@ namespace BattleInfoPlugin.Models
 				this.EnemySecondShips = null;
 
 				for (var i = 0; i < enemyShipsFirst.Length; i++)
-					this.EnemyFirstShips[i] = new ShipBattleInfo(this, i + 1, enemyShipsFirst[i]);
+					this.EnemyFirstShips[i] = new ShipBattleInfo(this, i + 1, enemyShipsFirst[i]) { IsEnemy = true };
 			}
 			else
 			{
@@ -656,10 +650,10 @@ namespace BattleInfoPlugin.Models
 				this.EnemySecondShips = new ShipBattleInfo[7];
 
 				for (var i = 0; i < enemyShipsFirst.Length; i++)
-					this.EnemyFirstShips[i] = new ShipBattleInfo(this, i + 1, enemyShipsFirst[i]);
+					this.EnemyFirstShips[i] = new ShipBattleInfo(this, i + 1, enemyShipsFirst[i]) { IsEnemy = true };
 
 				for (var i = 0; i < enemyShipsSecond.Length; i++)
-					this.EnemySecondShips[i] = new ShipBattleInfo(this, 6 + i + 1, enemyShipsSecond[i]);
+					this.EnemySecondShips[i] = new ShipBattleInfo(this, 6 + i + 1, enemyShipsSecond[i]) { IsEnemy = true };
 			}
 
 			// 전체 전투 기록 초기화
