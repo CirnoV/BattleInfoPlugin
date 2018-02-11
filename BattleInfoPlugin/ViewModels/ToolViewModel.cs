@@ -213,6 +213,22 @@ namespace BattleInfoPlugin.ViewModels
 		}
 		#endregion
 
+		#region DisplayAdditionalName
+		public bool DisplayAdditionalName
+		{
+			get { return settings.Default.DisplayAdditionalName; }
+			set
+			{
+				if (settings.Default.DisplayAdditionalName != value)
+				{
+					settings.Default.DisplayAdditionalName = value;
+					settings.Default.Save();
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		#endregion
+
 		#region DetailKouku
 		public bool DetailKouku
 		{

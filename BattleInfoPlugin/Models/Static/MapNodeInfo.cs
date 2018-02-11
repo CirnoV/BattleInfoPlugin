@@ -14,8 +14,20 @@ namespace BattleInfoPlugin.Models.Static
 		[Flags]
 		public enum NodeType
 		{
+			/// <summary>
+			/// 특이사항 없음
+			/// </summary>
 			None = 0,
+
+			/// <summary>
+			/// 잠수함 노드 (모든 패턴에서 잠수함이 함대의 대부분을 차지)
+			/// </summary>
 			Submarine = 1,
+
+			/// <summary>
+			/// 일부 잠수함 노드 (일부 패턴에서 잠수함이 함대의 대부분을 차지)
+			/// </summary>
+			PartialSubmarine = 2,
 		}
 
 		/// <summary>
@@ -27,13 +39,15 @@ namespace BattleInfoPlugin.Models.Static
 			public int Map { get; }
 			public int Node { get; }
 			public string Display { get; }
+			public NodeType Type { get; }
 
-			internal NodeInfo(int World, int Map, int Node, string Display)
+			internal NodeInfo(int World, int Map, int Node, string Display, NodeType Type = NodeType.None)
 			{
 				this.World = World;
 				this.Map = Map;
 				this.Node = Node;
 				this.Display = Display;
+				this.Type = Type;
 			}
 		}
 
@@ -221,22 +235,22 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(3, 5, 15, "K"),
 			new NodeInfo(4, 1, 1, "E"),
 			new NodeInfo(4, 1, 2, "A"),
-			new NodeInfo(4, 1, 3, "H"),
+			new NodeInfo(4, 1, 3, "H", NodeType.Submarine),
 			new NodeInfo(4, 1, 4, "F"),
 			new NodeInfo(4, 1, 5, "I"),
-			new NodeInfo(4, 1, 6, "B"),
-			new NodeInfo(4, 1, 7, "G"),
+			new NodeInfo(4, 1, 6, "B", NodeType.Submarine),
+			new NodeInfo(4, 1, 7, "G", NodeType.Submarine),
 			new NodeInfo(4, 1, 8, "C"),
 			new NodeInfo(4, 1, 9, "D"),
 			new NodeInfo(4, 1, 10, "I"),
 			new NodeInfo(4, 1, 11, "I"),
 			new NodeInfo(4, 1, 12, "D"),
-			new NodeInfo(4, 2, 1, "F"),
+			new NodeInfo(4, 2, 1, "F", NodeType.Submarine),
 			new NodeInfo(4, 2, 2, "A"),
 			new NodeInfo(4, 2, 3, "B"),
 			new NodeInfo(4, 2, 4, "G"),
 			new NodeInfo(4, 2, 5, "E"),
-			new NodeInfo(4, 2, 6, "C"),
+			new NodeInfo(4, 2, 6, "C", NodeType.Submarine),
 			new NodeInfo(4, 2, 7, "H"),
 			new NodeInfo(4, 2, 8, "I"),
 			new NodeInfo(4, 2, 9, "D"),
@@ -247,28 +261,28 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(4, 3, 1, "J"),
 			new NodeInfo(4, 3, 2, "A"),
 			new NodeInfo(4, 3, 3, "B"),
-			new NodeInfo(4, 3, 4, "F"),
-			new NodeInfo(4, 3, 5, "K"),
+			new NodeInfo(4, 3, 4, "F", NodeType.Submarine),
+			new NodeInfo(4, 3, 5, "K", NodeType.Submarine),
 			new NodeInfo(4, 3, 6, "C"),
-			new NodeInfo(4, 3, 7, "D"),
+			new NodeInfo(4, 3, 7, "D", NodeType.Submarine),
 			new NodeInfo(4, 3, 8, "G"),
 			new NodeInfo(4, 3, 9, "H"),
 			new NodeInfo(4, 3, 10, "L"),
 			new NodeInfo(4, 3, 11, "E"),
 			new NodeInfo(4, 3, 12, "M"),
 			new NodeInfo(4, 3, 13, "I"),
-			new NodeInfo(4, 3, 14, "F"),
-			new NodeInfo(4, 3, 15, "F"),
-			new NodeInfo(4, 3, 16, "K"),
-			new NodeInfo(4, 3, 17, "D"),
-			new NodeInfo(4, 3, 18, "D"),
+			new NodeInfo(4, 3, 14, "F", NodeType.Submarine),
+			new NodeInfo(4, 3, 15, "F", NodeType.Submarine),
+			new NodeInfo(4, 3, 16, "K", NodeType.Submarine),
+			new NodeInfo(4, 3, 17, "D", NodeType.Submarine),
+			new NodeInfo(4, 3, 18, "D", NodeType.Submarine),
 			new NodeInfo(4, 3, 19, "G"),
 			new NodeInfo(4, 3, 20, "G"),
 			new NodeInfo(4, 3, 21, "L"),
 			new NodeInfo(4, 4, 1, "A"),
 			new NodeInfo(4, 4, 2, "B"),
-			new NodeInfo(4, 4, 3, "I"),
-			new NodeInfo(4, 4, 4, "F"),
+			new NodeInfo(4, 4, 3, "I", NodeType.Submarine),
+			new NodeInfo(4, 4, 4, "F", NodeType.Submarine),
 			new NodeInfo(4, 4, 5, "C"),
 			new NodeInfo(4, 4, 6, "D"),
 			new NodeInfo(4, 4, 7, "G"),
@@ -284,7 +298,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(4, 5, 3, "D"),
 			new NodeInfo(4, 5, 4, "C"),
 			new NodeInfo(4, 5, 5, "E"),
-			new NodeInfo(4, 5, 6, "F"),
+			new NodeInfo(4, 5, 6, "F", NodeType.Submarine),
 			new NodeInfo(4, 5, 7, "G"),
 			new NodeInfo(4, 5, 8, "H"),
 			new NodeInfo(4, 5, 9, "I"),
@@ -293,14 +307,14 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(4, 5, 12, "L"),
 			new NodeInfo(4, 5, 13, "M"),
 			new NodeInfo(4, 5, 14, "C"),
-			new NodeInfo(4, 5, 15, "F"),
-			new NodeInfo(4, 5, 16, "F"),
+			new NodeInfo(4, 5, 15, "F", NodeType.Submarine),
+			new NodeInfo(4, 5, 16, "F", NodeType.Submarine),
 			new NodeInfo(4, 5, 17, "H"),
 			new NodeInfo(4, 5, 18, "J"),
 			new NodeInfo(4, 5, 19, "M"),
 			new NodeInfo(5, 1, 1, "B"),
 			new NodeInfo(5, 1, 2, "A"),
-			new NodeInfo(5, 1, 3, "D"),
+			new NodeInfo(5, 1, 3, "D", NodeType.Submarine),
 			new NodeInfo(5, 1, 4, "C"),
 			new NodeInfo(5, 1, 5, "F"),
 			new NodeInfo(5, 1, 6, "E"),
@@ -311,8 +325,8 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 1, 11, "E"),
 			new NodeInfo(5, 1, 12, "H"),
 			new NodeInfo(5, 2, 1, "A"),
-			new NodeInfo(5, 2, 2, "B"),
-			new NodeInfo(5, 2, 3, "F"),
+			new NodeInfo(5, 2, 2, "B", NodeType.Submarine),
+			new NodeInfo(5, 2, 3, "F", NodeType.Submarine),
 			new NodeInfo(5, 2, 4, "G"),
 			new NodeInfo(5, 2, 5, "E"),
 			new NodeInfo(5, 2, 6, "C"),
@@ -325,7 +339,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 2, 13, "J"),
 			new NodeInfo(5, 2, 14, "D"),
 			new NodeInfo(5, 3, 1, "A"),
-			new NodeInfo(5, 3, 2, "B"),
+			new NodeInfo(5, 3, 2, "B", NodeType.Submarine),
 			new NodeInfo(5, 3, 3, "C"),
 			new NodeInfo(5, 3, 4, "D"),
 			new NodeInfo(5, 3, 5, "E"),
@@ -333,7 +347,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 3, 7, "G"),
 			new NodeInfo(5, 3, 8, "H"),
 			new NodeInfo(5, 3, 9, "I"),
-			new NodeInfo(5, 3, 10, "J"),
+			new NodeInfo(5, 3, 10, "J", NodeType.PartialSubmarine),
 			new NodeInfo(5, 3, 11, "K"),
 			new NodeInfo(5, 3, 12, "D"),
 			new NodeInfo(5, 3, 13, "I"),
@@ -343,7 +357,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 4, 3, "C"),
 			new NodeInfo(5, 4, 4, "F"),
 			new NodeInfo(5, 4, 5, "G"),
-			new NodeInfo(5, 4, 6, "I"),
+			new NodeInfo(5, 4, 6, "I", NodeType.Submarine),
 			new NodeInfo(5, 4, 7, "E"),
 			new NodeInfo(5, 4, 8, "D"),
 			new NodeInfo(5, 4, 9, "L"),
@@ -353,7 +367,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 4, 13, "K"),
 			new NodeInfo(5, 4, 14, "J"),
 			new NodeInfo(5, 4, 15, "O"),
-			new NodeInfo(5, 4, 16, "I"),
+			new NodeInfo(5, 4, 16, "I", NodeType.Submarine),
 			new NodeInfo(5, 4, 17, "H"),
 			new NodeInfo(5, 4, 18, "M"),
 			new NodeInfo(5, 4, 19, "O"),
@@ -361,7 +375,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(5, 5, 1, "B"),
 			new NodeInfo(5, 5, 2, "A"),
 			new NodeInfo(5, 5, 3, "F"),
-			new NodeInfo(5, 5, 4, "C"),
+			new NodeInfo(5, 5, 4, "C", NodeType.Submarine),
 			new NodeInfo(5, 5, 5, "D"),
 			new NodeInfo(5, 5, 6, "K"),
 			new NodeInfo(5, 5, 7, "M"),
@@ -408,8 +422,8 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(6, 2, 17, "K"),
 			new NodeInfo(6, 2, 18, "K"),
 			new NodeInfo(6, 3, 1, "A"),
-			new NodeInfo(6, 3, 2, "B"),
-			new NodeInfo(6, 3, 3, "C"),
+			new NodeInfo(6, 3, 2, "B", NodeType.PartialSubmarine),
+			new NodeInfo(6, 3, 3, "C", NodeType.Submarine),
 			new NodeInfo(6, 3, 4, "D"),
 			new NodeInfo(6, 3, 5, "E"),
 			new NodeInfo(6, 3, 6, "F"),
@@ -431,7 +445,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(6, 4, 10, "J"),
 			new NodeInfo(6, 4, 11, "K"),
 			new NodeInfo(6, 4, 12, "L"),
-			new NodeInfo(6, 4, 13, "M"),
+			new NodeInfo(6, 4, 13, "M", NodeType.Submarine),
 			new NodeInfo(6, 4, 14, "N"),
 			new NodeInfo(6, 4, 15, "D"),
 			new NodeInfo(6, 4, 16, "D"),
@@ -441,7 +455,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(6, 4, 20, "N"),
 			new NodeInfo(6, 4, 21, "N"),
 			new NodeInfo(6, 5, 1, "A"),
-			new NodeInfo(6, 5, 2, "B"),
+			new NodeInfo(6, 5, 2, "B", NodeType.Submarine),
 			new NodeInfo(6, 5, 3, "C"),
 			new NodeInfo(6, 5, 4, "D"),
 			new NodeInfo(6, 5, 5, "E"),
@@ -458,6 +472,7 @@ namespace BattleInfoPlugin.Models.Static
 			new NodeInfo(6, 5, 16, "H"),
 			new NodeInfo(6, 5, 17, "I"),
 			new NodeInfo(6, 5, 18, "M"),
+
 			new NodeInfo(31, 1, 1, "A"),
 			new NodeInfo(31, 1, 2, "B"),
 			new NodeInfo(31, 1, 3, "C"),
@@ -1480,7 +1495,7 @@ namespace BattleInfoPlugin.Models.Static
 		{
 			var node = MapNodeInfo.NodeList.FirstOrDefault(x => x.World == World && x.Map == Map && x.Node == Node);
 
-			if (node == null) return MapNodeInfo.RawNode(World, Map, Node);
+			if (node == null) return MapNodeInfo.RawNode(World, Map, Node, FullNode);
 			return node;
 		}
 
@@ -1500,6 +1515,26 @@ namespace BattleInfoPlugin.Models.Static
 					? string.Format("{0}-{1}-{2}", World, Map, Node)
 					: Node.ToString()
 			);
+		}
+
+		/// <summary>
+		/// 노드 특이사항을 읽을 수 있는 문자열로 반환
+		/// </summary>
+		/// <param name="type">특이사항 종류</param>
+		/// <returns></returns>
+		public static string GetNodeTypeText(NodeType type)
+		{
+			switch (type)
+			{
+				case NodeType.Submarine:
+					return "잠수함";
+				case NodeType.PartialSubmarine:
+					return "잠수함?";
+
+				case NodeType.None:
+				default:
+					return "";
+			}
 		}
 	}
 }

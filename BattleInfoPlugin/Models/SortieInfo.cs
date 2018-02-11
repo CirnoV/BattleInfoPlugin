@@ -165,7 +165,7 @@ namespace BattleInfoPlugin.Models
 					EnemySecond = battleData.EnemySecond?.Clone(),
 
 					BattleFlags = battleData.CurrentBattleFlag?.Clone()
-		}
+				}
 			);
 
 			this.Updated?.Invoke(this, EventArgs.Empty);
@@ -416,9 +416,27 @@ namespace BattleInfoPlugin.Models
 		public virtual string Detail { get; set; }
 
 		/// <summary>
-		/// 알파벳과 설명을 합친 풀네임
+		/// 알파벳과 설명만 합친 간단한 노드명
 		/// </summary>
-		public string FullName => string.Format("{0} {1}", this.Name, this.Detail).Trim();
+		public string SimpleName => string.Format("{0} {1}", this.Name, this.Detail).Trim();
+
+		/// <summary>
+		/// 추가 이름 (특이사항 등)
+		/// </summary>
+		public virtual string AdditionalName => "";
+
+		/// <summary>
+		/// 알파벳과 설명, 추가 이름을 합친 풀네임
+		/// </summary>
+		public string FullName
+			=> string.Format(
+				"{0} {1}{2}",
+				this.Name,
+				this.Detail,
+				string.IsNullOrEmpty(this.AdditionalName)
+					? ""
+					: string.Format("({0})", this.AdditionalName)
+			).Trim();
 
 		/// <summary>
 		/// 아주 자세한 설명.
@@ -487,6 +505,7 @@ namespace BattleInfoPlugin.Models
 		public NodeEventInfo EventInfo { get; private set; }
 		public override string Detail => EventInfo.ToString();
 
+		public override string AdditionalName => MapNodeInfo.GetNodeTypeText(this.NodeInfo.Type);
 		public override string Description => this.GetDescription();
 
 		public SortieNodeData(int World, int Map, int Node, NodeEventInfo EventInfo)
