@@ -197,36 +197,60 @@ namespace BattleInfoPlugin.ViewModels
 						fromCombined = (log.Index >= 6 && enemyCombined);
 						targetCombined = (log.Target >= 6 && aliasCombined);
 
-						if (log.Target >= 0)
-							fromShip = fromCombined
-								? this.BattleCalculator.EnemySecondShips[log.Target]
-								: this.BattleCalculator.EnemyFirstShips[log.Target];
-						else
+						// 공격한 주체를 알 수 없는 데미지
+						if (log.Phase == BattleCalculator.BattlePhase.airbase_attack
+							|| log.Phase == BattleCalculator.BattlePhase.airbase_injection
+							|| log.Phase == BattleCalculator.BattlePhase.injection_kouku
+							|| log.Phase == BattleCalculator.BattlePhase.kouku
+							|| log.Phase == BattleCalculator.BattlePhase.kouku2)
+						{
 							fromShip = null;
+						}
+						else
+						{
+							if (log.Target >= 0)
+								fromShip = fromCombined
+									? this.BattleCalculator.EnemySecondShips[log.Target - 6]
+									: this.BattleCalculator.EnemyFirstShips[log.Target];
+							else
+								fromShip = null;
+						}
 
 						if (log.Index >= 0)
 							targetShip = targetCombined
-								? this.BattleCalculator.AliasSecondShips[log.Index]
+								? this.BattleCalculator.AliasSecondShips[log.Index - 6]
 								: this.BattleCalculator.AliasFirstShips[log.Index];
 						else
 							targetShip = null;
 					}
-					else
+					else // 아군이 준 피해
 					{
 						fromCombined = (log.Index >= 6 && aliasCombined);
 						targetCombined = (log.Target >= 6 && enemyCombined);
 
-						if (log.Target >= 0)
-							fromShip = fromCombined
-								? this.BattleCalculator.AliasSecondShips[log.Target]
-								: this.BattleCalculator.AliasFirstShips[log.Target];
-						else
+						// 공격한 주체를 알 수 없는 데미지
+						if (log.Phase == BattleCalculator.BattlePhase.airbase_attack
+							|| log.Phase == BattleCalculator.BattlePhase.airbase_injection
+							|| log.Phase == BattleCalculator.BattlePhase.injection_kouku
+							|| log.Phase == BattleCalculator.BattlePhase.kouku
+							|| log.Phase == BattleCalculator.BattlePhase.kouku2)
+						{
 							fromShip = null;
+						}
+						else
+						{
+							if (log.Index >= 0)
+								fromShip = fromCombined
+									? this.BattleCalculator.AliasSecondShips[log.Index - 6]
+									: this.BattleCalculator.AliasFirstShips[log.Index];
+							else
+								fromShip = null;
+						}
 
-						if (log.Index >= 0)
+						if (log.Target >= 0)
 							targetShip = targetCombined
-								? this.BattleCalculator.EnemySecondShips[log.Index]
-								: this.BattleCalculator.EnemyFirstShips[log.Index];
+								? this.BattleCalculator.EnemySecondShips[log.Target - 6]
+								: this.BattleCalculator.EnemyFirstShips[log.Target];
 						else
 							targetShip = null;
 					}

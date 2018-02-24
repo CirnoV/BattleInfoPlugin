@@ -65,9 +65,26 @@
 		<TextBlock Margin="3, 4">
 				<Run Text="{Binding Name, Mode=OneWay}"/>
 				<Run Text="  "/>
-				<Run Text="{Binding Fleet.Formation, Mode=OneWay}"
-					 FontSize="12"
-					 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+				<Run FontSize="12">
+					<Run.Style>
+						<Style TargetType="{x:Type Run}">
+							<!-- Hard coding -->
+							<Setter Property="FontFamily"
+									Value="{DynamicResource EmphaticFontFamilyKey}" />
+							<Setter Property="FontSize"
+									Value="{DynamicResource EmphaticFontSizeKey}" />
+							<Setter Property="Foreground"
+									Value="{DynamicResource ActiveForegroundBrushKey}" />
+
+							<Setter Property="Text" Value="{Binding Fleet.Formation, Mode=OneWay}" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Fleet.Formation, Mode=OneWay}" Value="없음">
+									<Setter Property="Text" Value="" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Run.Style>
+				</Run>
 		</TextBlock>
 
 		<Rectangle Height="1"

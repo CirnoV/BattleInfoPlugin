@@ -119,7 +119,7 @@ namespace BattleInfoPlugin.Models
 		/// </summary>
 		public string MapDisplay => string.Format(
 			"{0}-{1} {2}",
-			this.World,
+			this.World >= 30 ? "E" : this.World.ToString(),
 			this.Map,
 			this.Difficulty.ToDisplayString()
 		).Trim();
@@ -563,6 +563,7 @@ namespace BattleInfoPlugin.Models
 		{
 			switch (difficulty)
 			{
+				case MapDifficulty.Casual: return "丁";
 				case MapDifficulty.Easy: return "丙";
 				case MapDifficulty.Normal: return "乙";
 				case MapDifficulty.Hard: return "甲";

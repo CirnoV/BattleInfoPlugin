@@ -555,12 +555,12 @@ namespace BattleInfoPlugin.Models
 		/// <summary>
 		/// 아군 연합함대 여부
 		/// </summary>
-		private bool IsCombined => this.AliasSecondShips?.Length > 0;
+		public bool IsCombined => this.AliasSecondShips?.Length > 0;
 
 		/// <summary>
 		/// 적군 연합함대 여부
 		/// </summary>
-		private bool IsEnemyCombined => this.EnemySecondShips?.Length > 0;
+		public bool IsEnemyCombined => this.EnemySecondShips?.Length > 0;
 
 		/// <summary>
 		/// 아군 1함대 MVP
@@ -793,6 +793,7 @@ namespace BattleInfoPlugin.Models
 				?.Index ?? 0;
 
 			this.MVP_Second = this.AliasSecondShips
+				?.Where(x => x != null)
 				?.OrderByDescending(x => x.TotalDealt)
 				?.FirstOrDefault()
 				?.Index ?? 0;
@@ -915,24 +916,14 @@ namespace BattleInfoPlugin.Models
 				if (api_fdam != null)
 				{
 					for (int i = 0; i < api_fdam.Length; i++)
-					{
-						if (IsCombined && i >= 6)
-							AliasSecondShips[i - 6]?.Damaged(api_fdam[i], phase, null, DamageType.Normal);
-						else
-							AliasFirstShips[i]?.Damaged(api_fdam[i], phase, null, DamageType.Normal);
-					}
+						AliasSecondShips[i]?.Damaged(api_fdam[i], phase, null, DamageType.Normal);
 				}
 
 				var api_edam = data.api_stage3_combined.api_edam;
 				if (api_edam != null)
 				{
 					for (int i = 0; i < api_edam.Length; i++)
-					{
-						if (IsEnemyCombined && i >= 6)
-							EnemySecondShips[i - 6]?.Damaged(api_edam[i], phase, null, DamageType.Normal);
-						else
-							EnemyFirstShips[i]?.Damaged(api_edam[i], phase, null, DamageType.Normal);
-					}
+						EnemySecondShips[i]?.Damaged(api_edam[i], phase, null, DamageType.Normal);
 				}
 			}
 		}
@@ -1319,6 +1310,7 @@ namespace BattleInfoPlugin.Models
 			var frai = data.api_frai; // 아군이 누구 때렸는지
 			var erai = data.api_erai; // 적군이 누구 때렸는지
 
+			// 아군 > 적군
 			for (int i = 0; i < frai.Length; i++)
 			{
 				var idx = frai[i];
@@ -1332,13 +1324,15 @@ namespace BattleInfoPlugin.Models
 				else
 					EnemyFirstShips[idx]?.Damaged(fydam[i], phase, _from, DamageType.Normal);
 			}
+
+			// 적군 > 아군
 			for (int i = 0; i < erai.Length; i++)
 			{
 				var idx = erai[i];
 				if (idx < 0) continue;
 
 				var _from = (IsEnemyCombined && i >= 6 ? EnemySecondShips[i - 6] : EnemyFirstShips[i]);
-				_from?.Dealt(fydam[i], phase, DamageType.Normal);
+				_from?.Dealt(eydam[i], phase, DamageType.Normal);
 
 				if (IsCombined && idx >= 6)
 					AliasSecondShips[idx - 6]?.Damaged(eydam[i], phase, _from, DamageType.Normal);

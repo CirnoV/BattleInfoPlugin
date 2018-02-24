@@ -110,6 +110,7 @@
     <Compile Include="Models\Raw\combined_battle_midnight_ec.cs" />
     <Compile Include="Models\Raw\combined_battle_ec_nighttoday.cs" />
     <Compile Include="Models\Raw\ICommonEachBattleMembers.cs" />
+    <Compile Include="Models\Raw\mapinfo.cs" />
     <Compile Include="Models\SortieInfo.cs" />
     <Compile Include="Models\MapDifficulty.cs" />
     <Compile Include="Models\Static\MapNodeInfo.cs" />

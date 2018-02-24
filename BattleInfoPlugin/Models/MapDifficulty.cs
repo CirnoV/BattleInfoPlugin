@@ -14,6 +14,11 @@ namespace BattleInfoPlugin.Models
 		None,
 
 		/// <summary>
+		/// 정
+		/// </summary>
+		Casual,
+
+		/// <summary>
 		/// 병
 		/// </summary>
 		Easy,
