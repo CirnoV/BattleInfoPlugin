@@ -186,14 +186,15 @@ namespace BattleInfoPlugin.Models
 				.ToList()
 				.ForEach(x => setter(x.s, x.v));
 		}
-		public static bool CriticalCheck(this FleetData fleet)
+		public static bool CriticalCheck(this FleetData fleet, bool ExceptFlagship = false)
 		{
-			if (fleet.Ships
-					.Where(x => !x.Situation.HasFlag(ShipSituation.DamageControlled))
-					.Where(x => !x.Situation.HasFlag(ShipSituation.Evacuation))
-					.Where(x => !x.Situation.HasFlag(ShipSituation.Tow))
-					.Any(x => x.Situation.HasFlag(ShipSituation.HeavilyDamaged)))
-				return true;
+			var y = fleet.Ships;
+			if (ExceptFlagship) y = y.Skip(1);
+
+			if (y.Where(x => !x.Situation.HasFlag(ShipSituation.DamageControlled))
+				.Where(x => !x.Situation.HasFlag(ShipSituation.Evacuation))
+				.Where(x => !x.Situation.HasFlag(ShipSituation.Tow))
+				.Any(x => x.Situation.HasFlag(ShipSituation.HeavilyDamaged))) return true;
 			else return false;
 		}
 	}

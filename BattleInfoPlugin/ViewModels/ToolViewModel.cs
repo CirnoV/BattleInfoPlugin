@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
-using settings=BattleInfoPlugin.Properties.Settings;
+using System.Collections;
+using System.Collections.Generic;
+using settings = BattleInfoPlugin.Properties.Settings;
 using BattleInfoPlugin.Models;
 using BattleInfoPlugin.Models.Notifiers;
+using MetroTrilithon.Mvvm;
 using Livet;
 using Livet.EventListeners;
 using Livet.Messaging;
@@ -293,6 +296,31 @@ namespace BattleInfoPlugin.ViewModels
 		}
 		#endregion
 
+		#region CriticalActionList, CriticalAction property
+		public IReadOnlyCollection<DisplayViewModel<CriticalActionType>> CriticalActionList { get; }
+			= new DisplayViewModel<CriticalActionType>[]
+			{
+				DisplayViewModel.Create(CriticalActionType.Notify, "알림"),
+				DisplayViewModel.Create(CriticalActionType.None, "무시"),
+				DisplayViewModel.Create(CriticalActionType.ForceRefresh, "새로고침")
+			};
+
+		public CriticalActionType CriticalAction
+		{
+			get
+			{
+				return CriticalActionTypeExtension.Parse(settings.Default.CriticalAction);
+			}
+			set
+			{
+				if (value != this.CriticalAction)
+				{
+					BattleInfoPlugin.Properties.Settings.Default.CriticalAction = value.ToString();
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		#endregion
 
 		public ToolViewModel(Plugin plugin)
 		{

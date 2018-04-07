@@ -146,7 +146,7 @@ namespace BattleInfoPlugin.Models
 					return;
 				this._AliasSecond = value;
 				this._AliasSecond.FleetType = FleetType.AliasSecond;
-				Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck();
+				Settings.Default.SecondIsCritical = AliasSecond.CriticalCheck(true);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -1074,6 +1074,13 @@ namespace BattleInfoPlugin.Models
 			// 노드 방문만으로 맵이 확장되는 경우
 			if (data.Data.api_m1.HasValue)
 				this.CurrentBattleFlag.MapExtended = (data.Data.api_m1.Value == 1);
+
+			// 기항대 전투 후 맵이 확장되는 경우
+			if (data.Data.api_destruction_battle != null)
+			{
+				if (data.Data.api_destruction_battle.api_m1.HasValue)
+					this.CurrentBattleFlag.MapExtended = (data.Data.api_destruction_battle.api_m1.Value == 1);
+			}
 
 			// 노드 방문
 			CurrentSortie.Update(

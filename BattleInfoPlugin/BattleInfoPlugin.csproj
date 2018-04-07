@@ -106,6 +106,7 @@
     <Compile Include="Models\BattleHistory.cs" />
     <Compile Include="Models\BrowserExtension.cs" />
     <Compile Include="Models\BattleCalculator.cs" />
+    <Compile Include="Models\CriticalActionType.cs" />
     <Compile Include="Models\Raw\combined_battle_each.cs" />
     <Compile Include="Models\Raw\combined_battle_midnight_ec.cs" />
     <Compile Include="Models\Raw\combined_battle_ec_nighttoday.cs" />

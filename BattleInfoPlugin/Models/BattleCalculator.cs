@@ -432,8 +432,8 @@ namespace BattleInfoPlugin.Models
 				(
 					false, // IsDealt
 					Damage,
-					this.Index - 1,
 					(From?.Index - 1) ?? -1,
+					this.Index - 1,
 					Type,
 					Phase,
 					DameconUsed,
@@ -952,7 +952,12 @@ namespace BattleInfoPlugin.Models
 			if (damages != null)
 			{
 				for (int i = 0; i < damages.Length; i++)
-					EnemyFirstShips[i]?.Damaged(damages[i], phase, null, DamageType.Normal);
+				{
+					if (IsEnemyCombined && i >= 6)
+						EnemySecondShips[i - 6]?.Damaged(damages[i], phase, null, DamageType.Normal);
+					else
+						EnemyFirstShips[i]?.Damaged(damages[i], phase, null, DamageType.Normal);
+				}
 			}
 			if (damages_combined != null)
 			{

@@ -56,5 +56,8 @@
     <Setting Name="DisplayAdditionalName" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="CriticalAction" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Notify</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

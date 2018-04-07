@@ -27,6 +27,8 @@
 		public int api_ration_flag { get; set; }
 		public Api_Itemget api_itemget_eo_comment { get; set; }
 
+		public Api_Destruction_Battle api_destruction_battle { get; set; }
+
 		public int? api_m1 { get; set; }
 	}
 	public class map_start_next2
@@ -83,5 +85,21 @@
 	{
 		public int[] api_select_cells { get; set; }
 	}
+	public class Api_Destruction_Battle
+	{
+		public int[] api_ship_ke { get; set; }
+		public int[] api_ship_lv { get; set; }
+		public int[] api_f_nowhps { get; set; }
+		public int[] api_f_maxhps { get; set; }
+		public int[] api_e_nowhps { get; set; }
+		public int[] api_e_maxhps { get; set; }
+		public int[][] api_eSlot { get; set; }
+		public int[] api_formation { get; set; }
 
+		public Api_Air_Base_Injection api_air_base_injection { get; set; }
+		public Api_Air_Base_Attack[] api_air_base_attack { get; set; }
+
+		public int api_lost_kind { get; set; }
+		public int? api_m1 { get; set; }
+	}
 }

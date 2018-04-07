@@ -10,7 +10,8 @@
 			 xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
 			 xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
 			 xmlns:models="clr-namespace:BattleInfoPlugin.Models"
-			 xmlns:metro2="clr-namespace:MetroTrilithon.UI.Controls;assembly=MetroTrilithon.Desktop"
+			 xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
+			 xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
 			 Foreground="{DynamicResource ActiveForegroundBrushKey}"
 			 d:DataContext="{d:DesignInstance viewmodels:ToolViewModel}"
 			 mc:Ignorable="d"
@@ -399,6 +400,16 @@
 						<CheckBox Content="노드 특이사항 표시"
 								  IsChecked="{Binding DisplayAdditionalName}"
 								  Margin="5,0,5,0" />
+						<Border Width="1" Margin="2" Background="#60FFFFFF"/>
+						<TextBlock Margin="5,2,5,0"
+								   Text="대파 진격시" />
+						<metro:PromptComboBox Margin="5,-2,5,0"
+											  ItemsSource="{Binding CriticalActionList}"
+											  DisplayMemberPath="Display"
+											  SelectedValuePath="Value"
+											  SelectedValue="{Binding CriticalAction}"
+											  Prompt=""
+											  MinWidth="80" />
 					</StackPanel>
 
 					<Border Height="1" Margin="2,1" Background="#33FFFFFF"/>

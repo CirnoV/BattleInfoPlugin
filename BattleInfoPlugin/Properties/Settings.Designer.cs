@@ -226,5 +226,17 @@ namespace BattleInfoPlugin.Properties {
                 this["DisplayAdditionalName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Notify")]
+        public string CriticalAction {
+            get {
+                return ((string)(this["CriticalAction"]));
+            }
+            set {
+                this["CriticalAction"] = value;
+            }
+        }
     }
 }

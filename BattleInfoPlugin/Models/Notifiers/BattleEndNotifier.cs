@@ -9,6 +9,7 @@ using Grabacr07.KanColleWrapper;
 using Livet;
 using BattleInfoPlugin.Models.Raw;
 using MetroRadiance.UI;
+using System.Windows.Threading;
 
 namespace BattleInfoPlugin.Models.Notifiers
 {
@@ -101,23 +102,53 @@ namespace BattleInfoPlugin.Models.Notifiers
 				.Subscribe(async _ => await this.IsCriticalCheck());
 
 			proxy.ApiSessionSource.Where(x => x.Request.PathAndQuery == "/kcsapi/api_req_map/next")
-				.Subscribe(async x => await this.IsCriticalCheck());
+				.Subscribe(async x => await this.IsCriticalCheck(true));
 
 			monitor.ConfirmPursuit += () => this.Notify(NotificationType.ConfirmPursuit, "추격확인", "야전을 실시할지 선택하시기 바랍니다");
 		}
-		private async Task<bool> IsCriticalCheck()
+		private async Task<bool> IsCriticalCheck(bool doCriticalAction = false)
 		{
 			await Task.Delay(100);
 
 			if (!CriticalEnabled) return false;
 			if (Settings.Default.FirstIsCritical || Settings.Default.SecondIsCritical)
 			{
-				this.Notify(
-					NotificationType.CriticalState,
-					"대파알림",
-					"대파된 칸무스가 있습니다!",
-					true
-				);
+				switch (CriticalActionTypeExtension.Parse(settings.CriticalAction))
+				{
+					default:
+					case CriticalActionType.None:
+						// 대파 무시. 전투 종료 알림은 재생되어야 하므로 false 리턴
+						return false;
+
+					case CriticalActionType.Notify:
+						// 대파 알림.
+						this.Notify(
+							NotificationType.CriticalState,
+							"대파알림",
+							"대파된 칸무스가 있습니다!",
+							true
+						);
+						break;
+
+					case CriticalActionType.ForceRefresh:
+						// 대파 새로고침. 메시지도 함께
+						this.Notify(
+							NotificationType.CriticalState,
+							"대파알림",
+							"대파된 칸무스가 있습니다! 설정에 따라 새로고침합니다.",
+							true
+						);
+
+						// 새로고침
+						Grabacr07.KanColleViewer.Application.Current.Dispatcher.Invoke(() =>
+						{
+							var service = WindowService.Current;
+							var window = service?.MainWindow as Grabacr07.KanColleViewer.ViewModels.KanColleWindowViewModel;
+							window.RefreshNavigator?.Execute(null);
+						});
+						break;
+				}
+
 				return true;
 			}
 			else return false;
