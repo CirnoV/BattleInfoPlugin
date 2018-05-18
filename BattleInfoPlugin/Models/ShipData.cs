@@ -460,7 +460,7 @@ namespace BattleInfoPlugin.Models
 				: this.ShipType == 7 && this.ShipSpeed == ShipSpeed.Slow ? TotalASW >= 65 // 저속 경공모
 				: TotalASW >= 100;
 
-		public LimitedValue HP => new LimitedValue(this.NowHP, this.MaxHP, 0);
+		public LimitedValue HP => new LimitedValue(this.NowHP, this.MaxHP, 0, this.BeforeNowHP);
 
 		#region TODO 나중에
 		public AttackType DayAttackType
