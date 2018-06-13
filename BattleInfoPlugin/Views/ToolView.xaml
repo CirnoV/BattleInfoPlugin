@@ -91,14 +91,28 @@
 							</TextBlock>
 							<TextBlock Style="{DynamicResource DefaultTextStyleKey}">
 								<Run Text="드롭:"/>
-								<Run Text="{Binding DropShipName, Mode=OneWay}"
+								<Run FontSize="12">
+									<Run.Style>
+										<Style TargetType="{x:Type Run}">
+											<Setter Property="Text" Value="{Binding DropShipName, Mode=OneWay}" />
+											<Setter Property="Foreground" Value="#FFFFFFFF" />
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding DropShipName, Mode=OneWay}" Value="{x:Null}">
+													<Setter Property="Text" Value="(없음)" />
+													<Setter Property="Foreground" Value="#80FFFFFF" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Run.Style>
+								</Run>
+								<Run Foreground="#FFC0D4F0"
 									 FontSize="12">
 									<Run.Style>
 										<Style TargetType="{x:Type Run}">
-											<Setter Property="Foreground" Value="#FFFFFFFF" />
+											<Setter Property="Text" Value="{Binding DropItemName, Mode=OneWay, StringFormat={}+{0}}" />
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding DropShipName, Mode=OneWay}" Value="(없음)">
-													<Setter Property="Foreground" Value="#80FFFFFF" />
+												<DataTrigger Binding="{Binding DropItemName, Mode=OneWay}" Value="{x:Null}">
+													<Setter Property="Text" Value="" />
 												</DataTrigger>
 											</Style.Triggers>
 										</Style>

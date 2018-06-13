@@ -271,6 +271,22 @@ namespace BattleInfoPlugin.Models
 		private string _DropShipName;
 		#endregion
 
+		#region DropItemName 변경통지 프로퍼티
+		public string DropItemName
+		{
+			get { return this._DropItemName; }
+			set
+			{
+				if (this._DropItemName != value)
+				{
+					this._DropItemName = value;
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		private string _DropItemName;
+		#endregion
+
 		#endregion
 
 		public BattleCalculator battleCalculator { get; }
@@ -994,8 +1010,15 @@ namespace BattleInfoPlugin.Models
 				.SingleOrDefault(x => x.Value.Id == data.api_get_ship?.api_ship_id).Value
 				?.Name;
 
-			if (this.DropShipName == null)
-				this.DropShipName = "(없음)";
+			{
+				var _item = KanColleClient.Current.Master.UseItems
+					.SingleOrDefault(x => x.Value.Id == data.api_get_useitem?.api_useitem_id).Value
+					?.Name;
+				if (_item != null)
+					this.DropItemName = KanColleClient.Current.Translations.GetTranslation(_item, TranslationType.Useitems, false, data);
+				else
+					this.DropItemName = null;
+			}
 
 			if (this.RankResult != Rank.완전승리S)
 			{
@@ -1109,7 +1132,8 @@ namespace BattleInfoPlugin.Models
 			// 시간 갱신, 전투명 및 드롭 초기화
 			this.UpdatedTime = DateTimeOffset.Now;
 			this.BattleName = "";
-			this.DropShipName = null;
+			this.DropShipName = "";
+			this.DropItemName = null;
 
 			// MVP 초기화
 			if (this.AliasFirst != null) AliasFirst.Ships.SetValues(new bool[6], (s, v) => s.IsMvp = v);

@@ -23,6 +23,7 @@ namespace BattleInfoPlugin.ViewModels
 
 		public AirCombatResult[] AirCombatResults { get; }
 		public string DropShipName { get; }
+		public string DropItemName { get; }
 
 		public FleetViewModel AliasFirst { get; }
 		public FleetViewModel AliasSecond { get; }
@@ -58,7 +59,8 @@ namespace BattleInfoPlugin.ViewModels
 
 			this.AirRankAvailable = BattleHistory?.RankResult == Rank.공습전;
 
-			this.DropShipName = BattleHistory?.DropShipName ?? "";
+			this.DropShipName = BattleHistory?.DropShipName;
+			this.DropItemName = BattleHistory?.DropItemName;
 
 			this.AirCombatResults = BattleHistory?.AirCombatResults ?? new AirCombatResult[0];
 

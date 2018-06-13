@@ -25,6 +25,7 @@ namespace BattleInfoPlugin.Models.Raw
 		public int api_first_clear { get; set; }
 		public int[] api_get_flag { get; set; }
 		public Api_Get_Ship api_get_ship { get; set; }
+		public Api_Get_Useitem api_get_useitem { get; set; }
 		public Api_Get_Eventitem[] api_get_eventitem { get; set; }
 		public int api_get_exmap_rate { get; set; }
 		public int api_get_exmap_useitem_id { get; set; }
@@ -53,6 +54,11 @@ namespace BattleInfoPlugin.Models.Raw
 		public string api_ship_getmes { get; set; }
 	}
 
+	public class Api_Get_Useitem
+	{
+		public int api_useitem_id { get; set; }
+		public int api_useitem_count { get; set; }
+	}
 	public class Api_Get_Eventitem
 	{
 		public int api_type { get; set; }

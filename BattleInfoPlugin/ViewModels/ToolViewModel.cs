@@ -52,6 +52,9 @@ namespace BattleInfoPlugin.ViewModels
 		public string DropShipName
 			=> this.BattleData?.DropShipName;
 
+		public string DropItemName
+			=> this.BattleData?.DropItemName;
+
 		public AirCombatResult[] AirCombatResults
 			=> this.BattleData?.AirCombatResults ?? new AirCombatResult[0];
 
@@ -370,6 +373,10 @@ namespace BattleInfoPlugin.ViewModels
 				{
 					nameof(this.BattleData.DropShipName),
 					(_, __) => this.RaisePropertyChanged(() => this.DropShipName)
+				},
+				{
+					nameof(this.BattleData.DropItemName),
+					(_, __) => this.RaisePropertyChanged(() => this.DropItemName)
 				},
 				{
 					nameof(this.BattleData.AliasFirst),

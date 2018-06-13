@@ -21,6 +21,7 @@ namespace BattleInfoPlugin.Models
 		public Rank AirRankResult { get; }
 
 		public string DropShipName { get; }
+		public string DropItemName { get; }
 		public AirCombatResult[] AirCombatResults { get; }
 
 		public FleetData AliasFirst { get; }
@@ -45,6 +46,7 @@ namespace BattleInfoPlugin.Models
 			this.AirRankResult = Source.AirRankResult;
 
 			this.DropShipName = Source.DropShipName;
+			this.DropItemName = Source.DropItemName;
 			this.AirCombatResults = Source.AirCombatResults;
 
 			this.AliasFirst = Source.AliasFirst.Clone();
