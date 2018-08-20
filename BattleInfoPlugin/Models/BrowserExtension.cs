@@ -13,7 +13,7 @@ using BattleInfoPlugin.Models.Raw;
 using Grabacr07.KanColleViewer.Views.Controls;
 using Grabacr07.KanColleViewer;
 using Grabacr07.KanColleWrapper;
-using mshtml;
+using Microsoft.Toolkit.Win32.UI.Controls.WPF;
 using System.Net;
 using Dispatcher = System.Windows.Threading.Dispatcher;
 
@@ -36,8 +36,8 @@ namespace BattleInfoPlugin.Models
 
 	internal class BrowserExtension
 	{
-		private IHTMLElement layer { get; set; }
 		private overlayData overlayTableData { get; set; }
+		private WebView browserView { get; set; }
 
 		private Dispatcher dispatcher { get; set; }
 
@@ -79,32 +79,18 @@ namespace BattleInfoPlugin.Models
 
 				try
 				{
-					var browser = host.WebBrowser;
-					var document = browser.Document as HTMLDocument;
-					if (document == null) return;
+					var browser = browserView = host.WebView;
 
-					var gameFrame = document.getElementById("game_frame");
-					if (gameFrame == null)
-					{
-						if (document.url.Contains(".swf?"))
-						{
-							gameFrame = document.body;
-						}
-					}
+					var css = "#battleinfo_display_overlay { position:fixed; left:0; top:0; width:800px; height:480px; z-index:9145; pointer-events:none; font:bold 22px sans-serif; }"
+						+ " @keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }"
+						+ " #battleinfo_display_overlay > .overlay_node, #battleinfo_display_overlay > .overlay_marker { animation-duration: 4s; animation-fill-mode: both; animation-delay: 10s; }"
+						+ " #battleinfo_display_overlay > .overlay_node { position:absolute; display:inline-block; text-shadow: #F5F5F5 1px 1px 2px, #F5F5F5 0 0 2px; color:#333; font:inherit; animation-name: fadeOut }"
+						+ " #battleinfo_display_overlay > .overlay_marker { position:absolute; display:block; border:2px solid #37373f; border-radius:9999px; background-color:#F5F5F5; animation-name: fadeOut }";
 
-					var target = gameFrame?.document as HTMLDocument;
-					if (target != null)
-					{
-						target.createStyleSheet().cssText = "#battleinfo_display_overlay { position:fixed; left:0; top:0; width:800px; height:480px; z-index:9145; pointer-events:none; font:bold 22px sans-serif; }"
-							+ "@keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }"
-							+ "#battleinfo_display_overlay > .overlay_node, #battleinfo_display_overlay > .overlay_marker { animation-duration: 4s; animation-fill-mode: both; animation-delay: 10s; }"
-							+ "#battleinfo_display_overlay > .overlay_node { position:absolute; display:inline-block; text-shadow: #F5F5F5 1px 1px 2px, #F5F5F5 0 0 2px; color:#333; font:inherit; animation-name: fadeOut }"
-							+ "#battleinfo_display_overlay > .overlay_marker { position:absolute; display:block; border:2px solid #37373f; border-radius:9999px; background-color:#F5F5F5; animation-name: fadeOut }";
+					var js = "var css = document.createElement('style'); css.type='text/css'; css.innerHTML='" + css + "'; document.body.appendChild(css);"
+					+ "var layer = document.createElement('div'); layer.id='battleinfo_display_overlay'; document.body.appendChild(layer);";
 
-						layer = target.createElement("div");
-						layer.id = "battleinfo_display_overlay";
-						target.appendChild(layer as IHTMLDOMNode);
-					}
+					browserView.InvokeScript("eval", new string[] { js });
 				}
 				catch (Exception ex)
 				{
@@ -147,7 +133,11 @@ namespace BattleInfoPlugin.Models
 
 		private void resetLayer()
 		{
-			this.dispatcher.Invoke(() => this.layer.innerHTML = "");
+			this.dispatcher.Invoke(() =>
+			{
+				var js = "document.getElementById('battleinfo_display_overlay').innerHTML = '';";
+				browserView.InvokeScript("eval", new string[] { js });
+			});
 		}
 		private void updateLayer(map_start_next data)
 		{
@@ -186,7 +176,11 @@ namespace BattleInfoPlugin.Models
 				}
 			}
 
-			this.dispatcher.Invoke(() => layer.innerHTML = html);
+			this.dispatcher.Invoke(() =>
+			{
+				var js = "document.getElementById('battleinfo_display_overlay').innerHTML = '" + html.Replace("'", "\\'") + "';";
+				browserView.InvokeScript("eval", new string[] { js });
+			});
 		}
 
 		private static bool IsInstanceOrSubclass<T>(Type type)
