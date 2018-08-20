@@ -86,7 +86,7 @@ namespace BattleInfoPlugin.Models
 					var gameFrame = document.getElementById("game_frame");
 					if (gameFrame == null)
 					{
-						if (document.url.Contains(".swf?"))
+						if (document.url.Contains("/ifr?"))
 						{
 							gameFrame = document.body;
 						}
@@ -95,7 +95,7 @@ namespace BattleInfoPlugin.Models
 					var target = gameFrame?.document as HTMLDocument;
 					if (target != null)
 					{
-						target.createStyleSheet().cssText = "#battleinfo_display_overlay { position:fixed; left:0; top:0; width:800px; height:480px; z-index:9145; pointer-events:none; font:bold 22px sans-serif; }"
+						target.createStyleSheet().cssText = "#battleinfo_display_overlay { position:fixed; left:0; top:0; width:1200px; height:720px; z-index:9145; pointer-events:none; font:bold 22px sans-serif; }"
 							+ "@keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }"
 							+ "#battleinfo_display_overlay > .overlay_node, #battleinfo_display_overlay > .overlay_marker { animation-duration: 4s; animation-fill-mode: both; animation-delay: 10s; }"
 							+ "#battleinfo_display_overlay > .overlay_node { position:absolute; display:inline-block; text-shadow: #F5F5F5 1px 1px 2px, #F5F5F5 0 0 2px; color:#333; font:inherit; animation-name: fadeOut }"
