@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using BattleInfoPlugin.Win32;
 using mshtml;
-using SHDocVw;
 using IServiceProvider = BattleInfoPlugin.Win32.IServiceProvider;
-using WebBrowser = System.Windows.Controls.WebBrowser;
+using WebBrowser = CefSharp.Wpf.ChromiumWebBrowser;
 using BattleInfoPlugin.Properties;
 using Grabacr07.KanColleWrapper;
 using BattleInfoPlugin.Models.Notifiers._Internal;
 using MetroRadiance.UI;
+using Grabacr07.KanColleViewer.Models.Cef;
 
 namespace BattleInfoPlugin.Models.Notifiers
 {
@@ -54,7 +54,7 @@ namespace BattleInfoPlugin.Models.Notifiers
 
 			var proxy = KanColleClient.Current.Proxy;
 
-			proxy.api_start2
+			proxy.api_start2_getData
 				.ObserveOn(SynchronizationContext.Current)
 				.Subscribe(_ => this.FindKanColleBrowser());
 
@@ -82,23 +82,25 @@ namespace BattleInfoPlugin.Models.Notifiers
 			if (this.isConfirmPursuitNotified) return;
 			if (!settings.IsPursuitEnabled) return;
 
-			var image = this.kanColleBrowser?.GetImage();
-			if (image == null) return;
-
-			// 雑比較
-			var browserImage = image.Resize().GetBitmapBytes();
-			var confirmPursuitImage = Resources.ConfirmPursuit.Resize().GetBitmapBytes();
-			var diff = browserImage.Zip(confirmPursuitImage, (a, b) => Math.Abs(a - b)).Average();
-			// System.Diagnostics.Debug.WriteLine(diff); Shut up
-			if (diff < 0.9)
+			this.kanColleBrowser?.GetImage(image =>
 			{
-				// ボタンマウスオーバー状態とかでも大体0.5くらいまでに収まる
-				// 戦闘終了の瞬間は 1.2 位の事も
-				this.ConfirmPursuit?.Invoke();
-				this.isConfirmPursuitNotified = true;
-			}
+				if (image == null) return;
 
-			image.Dispose();
+				// 雑比較
+				var browserImage = image.Resize().GetBitmapBytes();
+				var confirmPursuitImage = Resources.ConfirmPursuit.Resize().GetBitmapBytes();
+				var diff = browserImage.Zip(confirmPursuitImage, (a, b) => Math.Abs(a - b)).Average();
+				// System.Diagnostics.Debug.WriteLine(diff); Shut up
+				if (diff < 0.9)
+				{
+					// ボタンマウスオーバー状態とかでも大体0.5くらいまでに収まる
+					// 戦闘終了の瞬間は 1.2 位の事も
+					this.ConfirmPursuit?.Invoke();
+					this.isConfirmPursuitNotified = true;
+				}
+
+				image.Dispose();
+			});
 		}
 	}
 }
@@ -107,54 +109,28 @@ namespace BattleInfoPlugin.Models.Notifiers._Internal
 {
 	internal static class Extensions
 	{
-		public static Bitmap GetImage(this WebBrowser browser)
+		public static void GetImage(this WebBrowser browser, Action<Bitmap> callback)
 		{
-			var document = browser?.Document as HTMLDocument;
-			if (document == null) return null;
+			CefSharp.IFrame targetCanvas;
+			if (!browser.TryGetKanColleCanvas(out targetCanvas))
+				return;
 
-			if (document.url.Contains(".swf?"))
-			{
-				var viewObject = document.getElementsByTagName("embed").item(0, 0) as IViewObject;
-				if (viewObject == null) return null;
+			var request = new ScreenshotRequest(x=> callback?.Invoke(x));
+			var script = $@"
+(async function()
+{{
+	await CefSharp.BindObjectAsync('{request.Id}');
 
-				var width = ((HTMLEmbed)viewObject).clientWidth;
-				var height = ((HTMLEmbed)viewObject).clientHeight;
-				return GetScreenshot(viewObject, width, height);
-			}
-
-			var gameFrame = document.getElementById("game_frame")?.document as HTMLDocument;
-			if (gameFrame == null) return null;
-
-			var frames = document.frames;
-			for (var i = 0; i < frames.length; i++)
-			{
-				var item = frames.item(i);
-				var provider = item as IServiceProvider;
-				if (provider == null) continue;
-
-				object ppvObject;
-				provider.QueryService(typeof(IWebBrowserApp).GUID, typeof(IWebBrowser2).GUID, out ppvObject);
-				var webBrowser = ppvObject as IWebBrowser2;
-				var iframeDocument = webBrowser?.Document as HTMLDocument;
-				var swf = iframeDocument?.getElementById("externalswf");
-				if (swf == null) continue;
-
-				IViewObject viewObject = null;
-				var width = 0;
-				var height = 0;
-				Func<dynamic, bool> findSwf = target =>
-				{
-					if (target == null) return false;
-					viewObject = target as IViewObject;
-					if (viewObject == null) return false;
-					width = int.Parse(target.width);
-					height = int.Parse(target.height);
-					return true;
-				};
-				if (findSwf(swf as HTMLEmbed) || findSwf(swf as HTMLObjectElement))
-					return GetScreenshot(viewObject, width, height);
-			}
-			return null;
+	var canvas = document.querySelector('canvas');
+	requestAnimationFrame(() =>
+	{{
+		var dataUrl = canvas.toDataURL('image/jpeg');
+		{request.Id}.complete(dataUrl);
+	}});
+}})();
+";
+			browser.JavascriptObjectRepository.Register(request.Id, request, true);
+			targetCanvas.ExecuteJavaScriptAsync(script);
 		}
 
 		private static Bitmap GetScreenshot(IViewObject viewObject, int width, int height)

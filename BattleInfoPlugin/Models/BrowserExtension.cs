@@ -13,9 +13,9 @@ using BattleInfoPlugin.Models.Raw;
 using Grabacr07.KanColleViewer.Views.Controls;
 using Grabacr07.KanColleViewer;
 using Grabacr07.KanColleWrapper;
-using Microsoft.Toolkit.Win32.UI.Controls.WPF;
 using System.Net;
 using Dispatcher = System.Windows.Threading.Dispatcher;
+using WebBrowser = CefSharp.Wpf.ChromiumWebBrowser;
 
 namespace BattleInfoPlugin.Models
 {
@@ -37,7 +37,7 @@ namespace BattleInfoPlugin.Models
 	internal class BrowserExtension
 	{
 		private overlayData overlayTableData { get; set; }
-		private WebView browserView { get; set; }
+		private WebBrowser browserView { get; set; }
 
 		private Dispatcher dispatcher { get; set; }
 
@@ -79,7 +79,7 @@ namespace BattleInfoPlugin.Models
 
 				try
 				{
-					var browser = browserView = host.WebView;
+					var browser = browserView = host.WebBrowser;
 
 					var css = "#battleinfo_display_overlay { position:fixed; left:0; top:0; width:800px; height:480px; z-index:9145; pointer-events:none; font:bold 22px sans-serif; }"
 						+ " @keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }"
@@ -90,7 +90,7 @@ namespace BattleInfoPlugin.Models
 					var js = "var css = document.createElement('style'); css.type='text/css'; css.innerHTML='" + css + "'; document.body.appendChild(css);"
 					+ "var layer = document.createElement('div'); layer.id='battleinfo_display_overlay'; document.body.appendChild(layer);";
 
-					browserView.InvokeScript("eval", new string[] { js });
+					browserView.GetBrowser().MainFrame.ExecuteJavaScriptAsync(js);
 				}
 				catch (Exception ex)
 				{
@@ -136,7 +136,7 @@ namespace BattleInfoPlugin.Models
 			this.dispatcher.Invoke(() =>
 			{
 				var js = "document.getElementById('battleinfo_display_overlay').innerHTML = '';";
-				browserView.InvokeScript("eval", new string[] { js });
+				browserView.GetBrowser().MainFrame.ExecuteJavaScriptAsync(js);
 			});
 		}
 		private void updateLayer(map_start_next data)
@@ -179,7 +179,7 @@ namespace BattleInfoPlugin.Models
 			this.dispatcher.Invoke(() =>
 			{
 				var js = "document.getElementById('battleinfo_display_overlay').innerHTML = '" + html.Replace("'", "\\'") + "';";
-				browserView.InvokeScript("eval", new string[] { js });
+				browserView.GetBrowser().MainFrame.ExecuteJavaScriptAsync(js);
 			});
 		}
 

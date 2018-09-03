@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.props" Condition="Exists('..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.props')" />
+  <Import Project="..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.props" Condition="Exists('..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.props')" />
+  <Import Project="..\..\KanColleViewer\source\packages\cef.redist.x86.3.3396.1786\build\cef.redist.x86.props" Condition="Exists('..\..\KanColleViewer\source\packages\cef.redist.x86.3.3396.1786\build\cef.redist.x86.props')" />
+  <Import Project="..\..\KanColleViewer\source\packages\cef.redist.x64.3.3396.1786\build\cef.redist.x64.props" Condition="Exists('..\..\KanColleViewer\source\packages\cef.redist.x64.3.3396.1786\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,6 +43,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, processorArchitecture=MSIL">
@@ -117,6 +124,7 @@
     <Compile Include="Models\BrowserExtension.cs" />
     <Compile Include="Models\BattleCalculator.cs" />
     <Compile Include="Models\CriticalActionType.cs" />
+    <Compile Include="Models\Notifiers\ScreenshotRequest.cs" />
     <Compile Include="Models\Raw\combined_battle_each.cs" />
     <Compile Include="Models\Raw\combined_battle_midnight_ec.cs" />
     <Compile Include="Models\Raw\combined_battle_ec_nighttoday.cs" />
@@ -238,17 +246,6 @@
     <Analyzer Include="..\packages\NotifyPropertyChangedGenerator.1.1.1.0\analyzers\dotnet\cs\NotifyPropertyChangedGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="SHDocVw">
-      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>1</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\KanColleViewer\source\Grabacr07.KanColleViewer.Composition\KanColleViewer.Composition.csproj">
       <Project>{cc139e98-d847-41da-b20f-8aca4564f375}</Project>
       <Name>KanColleViewer.Composition</Name>
@@ -293,12 +290,20 @@
       <ErrorText>このプロジェクトは、このコンピューターにはない NuGet パッケージを参照しています。これらをダウンロードするには、NuGet パッケージの復元を有効にしてください。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。不足しているファイルは {0} です。</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\cef.redist.x64.3.3396.1786\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\cef.redist.x64.3.3396.1786\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\cef.redist.x86.3.3396.1786\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\cef.redist.x86.3.3396.1786\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.props'))" />
+    <Error Condition="!Exists('..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>mkdir $(SolutionDir)Grabacr07.KanColleViewer\bin\$(ConfigurationName)\Plugins
 xcopy /Y $(TargetDir)*.* $(SolutionDir)Grabacr07.KanColleViewer\bin\$(ConfigurationName)
 move $(SolutionDir)Grabacr07.KanColleViewer\bin\$(ConfigurationName)\$(TargetName).* $(SolutionDir)Grabacr07.KanColleViewer\bin\$(ConfigurationName)\Plugins</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.targets" Condition="Exists('..\..\KanColleViewer\source\packages\CefSharp.Common.67.0.0-pre01\build\CefSharp.Common.targets')" />
+  <Import Project="..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.targets" Condition="Exists('..\..\KanColleViewer\source\packages\CefSharp.Wpf.67.0.0-pre01\build\CefSharp.Wpf.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

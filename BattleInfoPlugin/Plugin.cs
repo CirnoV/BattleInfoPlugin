@@ -40,7 +40,7 @@ namespace BattleInfoPlugin
 		{
 			// For Display Overlay Patch
 			if (BattleInfoPlugin.Properties.Settings.Default.UseBrowserOverlay)
-				KanColleClient.Current.Proxy.api_start2.Subscribe(x => this.browserEx.Startup());
+				KanColleClient.Current.Proxy.api_start2_getData.Subscribe(x => this.browserEx.Startup());
 
 			/* For Enemy Info Data
 			KanColleClient.Current.Proxy.api_start2.TryParse<kcsapi_start2>().Subscribe(x =>
